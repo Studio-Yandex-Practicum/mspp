@@ -37,4 +37,4 @@ class Limitation(models.Model):
         )
         
     def __str__(self):
-        return f'От {self.from_age} до {self.to_age}'
+        return f'От {self.from_age}'
