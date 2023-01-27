@@ -30,24 +30,24 @@ ALLOWED_HOSTS=example.com
     ```bash
     poetry install
     ```
+4. Установите pre-commit хуки
+    ```bash
+    pre-commit install --all
+    ```
 
 При каждом коммите выполняются хуки (автоматизации) перечисленные в **.pre-commit-config.yaml**. [Документация pre-commit](https://pre-commit.com)
 Если не понятно какая ошибка мешает сделать коммит можно запустить хуки вручную и посмотреть ошибки:
-    ```shell
+    ```bash
     pre-commit run --all-files
-    ```
-
-Если вы используете linux-систему можете использовать make:
-    ```shell
-    make first_start: # Начальная инициализация
-    make pre-commit: # Проверки pre-commit
-    make up: # Запустить env
-    make down: # Выйти из env
     ```
 
 
 ### Авторы:
 
+[Anton Zelinsky] (https://github.com/AntonZelinsky)
+[kr0t] (https://github.com/kr0t)
 
-
-AlexGriv https://github.com/AlexGriv
+[AlexGriv] (https://github.com/AlexGriv)
+[Serge Balyaba] (https://github.com/erges699)
+[Nikita Troshkin](https://github.com/Esedess)
+[ivanyuk-vl] (https://github.com/ivanyuk-vl)
