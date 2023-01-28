@@ -7,12 +7,12 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 
-UID = uuid.uuid1()
+UUID = uuid.uuid1()
 BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.append(str(BASE_DIR / 'apps'))
 
 
-if (BASE_DIR / ".env").is_file():
+if os.path.exists(BASE_DIR / ".env"):
     dotenv_path = Path(BASE_DIR /'.env')
 else:
     dotenv_path = Path(BASE_DIR / ".env_local")
@@ -21,7 +21,7 @@ load_dotenv(dotenv_path=dotenv_path)
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 if SECRET_KEY is None:
-    SECRET_KEY = str(UID)
+    SECRET_KEY = str(UUID)
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS')
 
