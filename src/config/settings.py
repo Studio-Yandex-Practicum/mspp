@@ -1,21 +1,29 @@
 import os
 import sys
+import uuid
 
 from pathlib import Path
 
 from dotenv import load_dotenv
 
-load_dotenv()
 
-
+UUID = uuid.uuid1()
 BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.append(str(BASE_DIR / 'apps'))
+
+
+if os.path.exists(BASE_DIR / ".env"):
+    dotenv_path = Path(BASE_DIR /'.env')
+else:
+    dotenv_path = Path(BASE_DIR / ".env_local")
+
+load_dotenv(dotenv_path=dotenv_path)
+
 SECRET_KEY = os.getenv('SECRET_KEY')
+if SECRET_KEY is None:
+    SECRET_KEY = str(UUID)
 
-
-DEBUG = True
-
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS')
 
 
 # Application definition
@@ -71,19 +79,6 @@ DATABASES = {
     }
 }
 
-# Postgresql
-"""DATABASES = {
-    'default': {
-        'ENGINE': os.getenv('DB_ENGINE',
-                             default='django.db.backends.postgresql'),
-        'NAME': os.getenv('DB_NAME', default='postgres'),
-        'USER': os.getenv('POSTGRES_USER', default='postgres'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='postgres'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
-    }
-}
-"""
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
