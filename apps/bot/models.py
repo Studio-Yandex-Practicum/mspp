@@ -17,7 +17,7 @@ class BaseModel(models.Model):
         return f"{self.id}"
 
 
-class City(models.Model):
+class City(BaseModel):
     """
     City class model.
     It provides ``name`` field.
@@ -38,7 +38,7 @@ class City(models.Model):
         return self.name
 
 
-class Fund(models.Model):
+class Fund(BaseModel):
     """
     Fund class model.
     It provides ``name`` field.
@@ -54,7 +54,7 @@ class Fund(models.Model):
         return self.name
 
 
-class Limitation(models.Model):
+class Limitation(BaseModel):
     """
     Limitation class model.
     It provides ``from_age`` and ``to_age`` fields.
