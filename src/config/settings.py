@@ -13,7 +13,7 @@ sys.path.append(str(BASE_DIR / 'apps'))
 
 
 if os.path.exists(BASE_DIR / ".env"):
-    dotenv_path = Path(BASE_DIR /'.env')
+    dotenv_path = Path(BASE_DIR / '.env')
 else:
     dotenv_path = Path(BASE_DIR / ".env_local")
 
@@ -24,7 +24,6 @@ if SECRET_KEY is None:
     SECRET_KEY = str(UUID)
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS')
-
 
 # Application definition
 
