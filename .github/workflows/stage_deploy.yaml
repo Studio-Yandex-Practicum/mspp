@@ -1,47 +1,20 @@
 name: Stage Deploy
 
 on:
-  push:
+  pull_request:
+    types: [closed]
     branches:
-      # - develop
-      - an_unknown_branch_that_will_never_be_created
+      - develop
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: '???'  # нужно уточнить
-  DEPLOY_PATH: '???'  # нужно уточнить
+  IMAGE_NAME: '???'
+  DEPLOY_PATH: '???'
 
 jobs:
-  tests:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.9", "3.10", "3.11"]
-
-    steps:
-    - name: Check out the repo
-      uses: actions/checkout@v2
-      with:
-        ref: develop
-
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-
-    - name: Install dependencies
-      run: | 
-        python -m pip install --upgrade pip
-        pip install -r requirements\development.txt
-
-    - name: Test with pytest
-      run: pytest
-
-
   build_and_push_image_to_github_packages:
     name: Push Docker image to GitHub Packages
     runs-on: ubuntu-latest
-    needs: tests
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
@@ -93,9 +66,6 @@ jobs:
         run: ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} mkdir -p ${{ env.DEPLOY_PATH }}
 
       - name: Deploy with scp
-
-        # TODO: уточнить пути
-
         run: scp -r infra/stage/ ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ env.DEPLOY_PATH }}
 
       - name: Make envfile
@@ -103,9 +73,7 @@ jobs:
         with:
           envkey_DB_ENGINE: ${{ secrets.DB_ENGINE }}
           envkey_DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
-
-          # TODO: добавить нужные ключи
-          
+          directory: ${{ env.DEPLOY_PATH }}/stage/
           file_name: .env-stage
           fail_on_empty: false
 
@@ -120,23 +88,3 @@ jobs:
             cd ${{ env.DEPLOY_PATH }}/stage/
             # Очистка неиспользуемых контейнеров, образов, сетей
             docker system prune --force
-
-            # TODO: уточнить способ запуска
-
-
-# При желании можно отправить соощение в телеграм
-
-#   send_message:
-#     name: Send telegram message
-#     runs-on: ubuntu-latest
-#     needs: [tests, build_and_push_image_to_github_packages, deploy]
-#     steps:
-#     - name: send message
-#       uses: appleboy/telegram-action@master
-#       with:
-#         to: ${{ secrets.TELEGRAM_TO }}
-#         token: ${{ secrets.TELEGRAM_TOKEN }}
-#         message: |
-#           В ${{ github.repository }} изменения!
-#           ${{ github.actor }} сделал ${{ github.event_name }} в ${{ github.ref_name }}.
-#           ${{ github.workflow }} успешно завершил работу!
