@@ -36,13 +36,28 @@
     pre-commit run --all-files
     ```
 
+## Запуск
+1. Перейдите в директорию src
+    ```bash
+    cd src
+    ```
+2. Запустите проект
+    ```bash
+    uvicorn config.asgi:application
+    ```
 
 ### Авторы:
 
-[Anton Zelinsky] (https://github.com/AntonZelinsky)
-[kr0t] (https://github.com/kr0t)
+[Anton Zelinsky](https://github.com/AntonZelinsky)
 
-[AlexGriv] (https://github.com/AlexGriv)
-[Serge Balyaba] (https://github.com/erges699)
+[kr0t](https://github.com/kr0t)
+
+---
+
+[AlexGriv](https://github.com/AlexGriv)
+
+[Serge Balyaba](https://github.com/erges699)
+
 [Nikita Troshkin](https://github.com/Esedess)
-[ivanyuk-vl] (https://github.com/ivanyuk-vl)
+
+[ivanyuk-vl](https://github.com/ivanyuk-vl)

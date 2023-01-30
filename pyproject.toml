@@ -35,6 +35,8 @@ python-dotenv = "^0.21.1"
 psycopg2 = "^2.9.5"
 dj-database-url = "^1.2.0"
 python-decouple = "^3.7"
+python-telegram-bot = "^20.0"
+uvicorn = "^0.20.0"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.0.1"
