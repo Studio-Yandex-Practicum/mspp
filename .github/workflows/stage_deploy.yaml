@@ -7,8 +7,6 @@ on:
       - develop
 
 env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: '???'  # нужно уточнить
   DEPLOY_PATH: /MSPP
 
 jobs:
