@@ -3,25 +3,27 @@ import sys
 import uuid
 from pathlib import Path
 
-from dotenv import load_dotenv
+import environ
 
 UUID = uuid.uuid1()
 BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.append(str(BASE_DIR / "apps"))
 
 
-if os.path.exists(BASE_DIR / ".env"):
-    dotenv_path = Path(BASE_DIR / ".env")
+if os.path.exists(BASE_DIR.parent / ".env"):
+    dotenv_path = Path(BASE_DIR.parent / ".env")
 else:
-    dotenv_path = Path(BASE_DIR / ".env_local")
+    dotenv_path = Path(BASE_DIR.parent / ".env_local")
 
-load_dotenv(dotenv_path=dotenv_path)
+env = environ.Env()
+with dotenv_path.open() as file:
+    environ.Env.read_env(file)
 
-SECRET_KEY = os.getenv("SECRET_KEY")
-if SECRET_KEY is None:
-    SECRET_KEY = str(UUID)
+SECRET_KEY = env("SECRET_KEY", default=str(UUID))
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", ["*"])
+DEBUG = env.bool("DJANGO_DEBUG", default=True)
+
+ALLOWED_HOSTS = list(map(str.strip, env.list("ALLOWED_HOSTS", default=["*"])))
 
 
 # Application definition
@@ -33,7 +35,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "bot",
+    "bot.apps.BotConfig",
 ]
 
 MIDDLEWARE = [
@@ -118,3 +120,7 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+TELEGRAM_TOKEN = env("TELEGRAM_TOKEN")
+WEBHOOK_MODE = env.bool("WEBHOOK_MODE", default=False)
+WEBHOOK_URL = env("WEBHOOK_URL", default=environ.Env.NOTSET if WEBHOOK_MODE else "")
