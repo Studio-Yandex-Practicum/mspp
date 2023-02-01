@@ -12,8 +12,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.append(str(BASE_DIR / 'apps'))
 
 
-if os.path.exists(BASE_DIR / ".env"):
-    dotenv_path = Path(BASE_DIR / ".env")
+if os.path.exists(BASE_DIR.parent / ".env"):
+    dotenv_path = Path(BASE_DIR.parent / ".env")
 else:
     dotenv_path = Path(BASE_DIR / ".env_local")
 
