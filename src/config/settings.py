@@ -25,7 +25,6 @@ DEBUG = env.bool("DJANGO_DEBUG", default=True)
 
 ALLOWED_HOSTS = list(map(str.strip, env.list("ALLOWED_HOSTS", default=["*"])))
 
-
 # Application definition
 
 INSTALLED_APPS = [
