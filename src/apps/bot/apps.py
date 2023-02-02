@@ -1,4 +1,5 @@
 import asyncio
+import logging
 
 from django.apps import AppConfig
 
@@ -10,4 +11,7 @@ class BotConfig(AppConfig):
     name = "bot"
 
     def ready(self) -> None:
-        asyncio.ensure_future(start_bot(), loop=asyncio.get_running_loop())
+        try:
+            asyncio.ensure_future(start_bot(), loop=asyncio.get_running_loop())
+        except RuntimeError:
+            logging.warning("Telegram бот не запущен. Для запуска используйте uvicorn.")
