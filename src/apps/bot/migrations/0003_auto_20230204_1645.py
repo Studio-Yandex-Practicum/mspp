@@ -3,23 +3,29 @@
 from django.db import migrations
 
 
-def add_default_values(apps, schema_editor):
+def add_default_values_to_cities(apps, schema_editor):
+    cities = apps.get_model("bot", "City").objects.all()
+    if not cities:
+        return
     Country = apps.get_model("bot", "Country")
     default_country = Country.objects.create(name="Без страны")
     Region = apps.get_model("bot", "Region")
     default_region = Region.objects.create(
         name="Без региона", country=default_country
     )
-    City = apps.get_model("bot", "City")
-    for city in City.objects.all():
+    for city in cities:
         city.region = default_region
         city.save()
-    AgeLimit = apps.get_model("bot", "AgeLimit")
-    default_age_limit = AgeLimit.objects.get_or_create(
+
+
+def add_default_values_to_funds(apps, schema_editor):
+    funds = apps.get_model("bot", "Fund").objects.all()
+    if not funds:
+        return
+    default_age_limit = apps.get_model("bot", "AgeLimit").objects.create(
         from_age=18, to_age=None
     )
-    Fund = apps.get_model("bot", "Fund")
-    for fund in Fund.objects.all():
+    for fund in funds:
         if fund.age_limit is None:
             fund.age_limit = default_age_limit
             fund.save()
@@ -32,5 +38,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(add_default_values),
+        migrations.RunPython(add_default_values_to_cities),
+        migrations.RunPython(add_default_values_to_funds),
     ]
