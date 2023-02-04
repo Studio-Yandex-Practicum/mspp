@@ -105,9 +105,13 @@ class AgeLimit(BaseModel):
         verbose_name = "возрастное ограничение"
         verbose_name_plural = "возрастные ограничения"
         constraints = [
+            models.UniqueConstraint(
+                fields=["from_age", "to_age"],
+                name="Unique age limit",
+            ),
             models.CheckConstraint(
                 check=~models.Q(from_age=None, to_age=None), name="Нужно указать хотя бы одно значение"
-            )
+            ),
         ]
 
     def __str__(self):
