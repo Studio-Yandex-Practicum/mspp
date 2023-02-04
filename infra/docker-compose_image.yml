@@ -1,0 +1,26 @@
+version: '3.11'
+services:
+
+  backend:
+    image: mspp/mspp:latest
+    restart: always
+    volumes:
+      - static_value:/app/static/
+    env_file:
+      - ../.env
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - data_value:/var/html/static/
+
+    restart: always
+    depends_on:
+      - backend
+
+
+volumes:
+  data_value:
