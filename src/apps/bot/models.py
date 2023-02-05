@@ -33,7 +33,7 @@ class City(BaseModel):
 
 
 class Limitation(BaseModel):
-    """Limitation class model.It provides ``from_age`` and ``to_age`` fields."""
+    """Limitation class model.It provides from_age and to_age fields."""
 
     from_age = models.PositiveSmallIntegerField(
         verbose_name="Возраст",
