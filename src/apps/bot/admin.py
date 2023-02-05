@@ -1,22 +1,13 @@
 from django.contrib import admin
+from mptt.admin import MPTTModelAdmin
 
 from .forms import FundAdminForm
-from .models import AgeLimit, City, Country, Fund, Region
+from .models import AgeLimit, CoverageArea, Fund
 
 
-@admin.register(Country)
-class CountryAdmin(admin.ModelAdmin):
+@admin.register(CoverageArea)
+class CoverageAreaAdmin(MPTTModelAdmin):
     pass
-
-
-@admin.register(Region)
-class RegionAdmin(admin.ModelAdmin):
-    list_filter = ("country",)
-
-
-@admin.register(City)
-class CityAdmin(admin.ModelAdmin):
-    list_filter = ("region__country", "region")
 
 
 @admin.register(AgeLimit)

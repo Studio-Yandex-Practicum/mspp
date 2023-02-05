@@ -36,6 +36,7 @@ python-decouple = "^3.7"
 python-telegram-bot = "^20.0"
 uvicorn = "^0.20.0"
 python-environ = "^0.4.54"
+django-mptt = "^0.14.0"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.0.1"

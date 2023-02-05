@@ -1,4 +1,5 @@
 from django.db import models
+from mptt.models import MPTTModel, TreeForeignKey, TreeManyToManyField
 
 
 class BaseModel(models.Model):
@@ -18,68 +19,30 @@ class BaseModel(models.Model):
         return f"{self.id}"
 
 
-class Country(BaseModel):
+class CoverageArea(MPTTModel, BaseModel):
     name = models.CharField(
         verbose_name="название",
         max_length=100,
         unique=True,
     )
+    parent = TreeForeignKey(
+        "self",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="children",
+        verbose_name="родительская зона охвата",
+    )
+
+    class MPTTMeta:
+        order_insertion_by = ("name",)
 
     class Meta:
-        ordering = ("name",)
-        verbose_name = "страна"
-        verbose_name_plural = "страны"
+        verbose_name = "зона охвата"
+        verbose_name_plural = "зоны охвата"
 
     def __str__(self):
         return self.name
-
-
-class Region(BaseModel):
-    name = models.CharField(
-        verbose_name="название",
-        max_length=100,
-        unique=True,
-    )
-    country = models.ForeignKey(
-        Country,
-        verbose_name="страна",
-        on_delete=models.CASCADE,
-        related_name="regions",
-    )
-
-    class Meta:
-        ordering = (
-            "country__name",
-            "name",
-        )
-        verbose_name = "регион"
-        verbose_name_plural = "регионы"
-
-    def __str__(self):
-        return f"{self.name}, {self.country}"
-
-
-class City(BaseModel):
-    """City class model."""
-
-    name = models.CharField(
-        verbose_name="название",
-        max_length=100,
-    )
-    region = models.ForeignKey(Region, verbose_name="регион", on_delete=models.CASCADE, related_name="cities")
-
-    class Meta:
-        ordering = (
-            "region__country__name",
-            "region__name",
-            "name",
-        )
-        verbose_name = "город"
-        verbose_name_plural = "города"
-        constraints = [models.UniqueConstraint(fields=["name", "region"], name="Unique city in region")]
-
-    def __str__(self):
-        return f"{self.name}, {self.region}"
 
 
 class AgeLimit(BaseModel):
@@ -130,29 +93,13 @@ class Fund(BaseModel):
         verbose_name="название",
         max_length=256,
     )
-    countries = models.ManyToManyField(
-        Country,
-        verbose_name="страны",
-        blank=True,
-        related_name="funds",
-    )
-    regions = models.ManyToManyField(
-        Region,
-        verbose_name="регионы",
-        blank=True,
-        related_name="funds",
-    )
-    cities = models.ManyToManyField(
-        City,
-        verbose_name="города",
-        blank=True,
-        related_name="funds",
-    )
+    coverage_area = TreeManyToManyField(CoverageArea, related_name="funds", verbose_name="зоны охвата")
     age_limit = models.ForeignKey(
         AgeLimit,
         verbose_name="возрастные ограничения",
         on_delete=models.PROTECT,
     )
+    description = models.TextField(verbose_name="описание")
 
     class Meta:
         ordering = ("name",)
