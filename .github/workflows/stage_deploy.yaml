@@ -5,6 +5,10 @@ concurrency:
   cancel-in-progress: true
 
 on:
+  push:
+    branches:
+      - develop
+      - 'feature/**'
   pull_request:
     branches:
       - develop
@@ -49,8 +53,8 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v2
         with:
-          context: .
-          file: Dockerfile_stage
+          context: ./infra/
+          file: docker-compose_image
           labels: runnumber=${GITHUB_RUN_ID}
           push: true
           tags: |
@@ -81,6 +85,7 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             cd ${{ env.DEPLOY_PATH }}
+            sudo docker-compose --quiet-pull ${{ env.REGISTRY }}/${{ env.REP_OWNER }}/${{ env.IMAGE_NAME }}:stage            
             # Очистка неиспользуемых контейнеров, образов, сетей
             docker system prune --force
             sudo docker-compose rm -f mssp
