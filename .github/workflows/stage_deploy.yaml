@@ -54,7 +54,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ./infra/
-          file: docker-compose_image
+          file: docker-compose_image.yml
           labels: runnumber=${GITHUB_RUN_ID}
           push: true
           tags: |
@@ -96,5 +96,8 @@ jobs:
             # Secrets variables for google sheets in Django:
             echo GOOGLE_PRIVATE_KEY_ID=${{ secrets.GOOGLE_PRIVATE_KEY_ID }} >> .env-stage
             echo GOOGLE_PRIVATE_KEY=${{ secrets.GOOGLE_PRIVATE_KEY }} >> .env-stage
+            # Secrets variables for webhook:
+            echo WEBHOOK_MODE=${{ secrets.WEBHOOK_MODE }} >> .env-stage
+            echo WEBHOOK_URL=${{ secrets.WEBHOOK_URL }} >> .env-stage             
             # Установка приложения
             sudo docker-compose up -d
