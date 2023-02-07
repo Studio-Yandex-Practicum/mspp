@@ -14,4 +14,4 @@ class BotConfig(AppConfig):
         try:
             asyncio.ensure_future(start_bot(), loop=asyncio.get_running_loop())
         except RuntimeError:
-            logging.warning("Telegram бот не запущен. Для запуска используйте uvicorn.")
+            logging.warning("Telegram бот не запущен.")
