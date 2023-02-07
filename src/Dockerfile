@@ -2,10 +2,10 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-COPY ./requirements .
+COPY ../requirements/*.txt requirements/
 
 RUN python -m pip install --upgrade pip
-RUN pip install -r development.txt
+RUN pip install -r requirements/development.txt
 
 COPY . .
 
