@@ -70,7 +70,7 @@ class AgeLimit(BaseModel):
         constraints = [
             models.UniqueConstraint(
                 fields=["from_age", "to_age"],
-                name="Unique age limit",
+                name="Значения не могут быть одинаковыми",
             ),
             models.CheckConstraint(
                 check=~models.Q(from_age=None, to_age=None), name="Нужно указать хотя бы одно значение"
