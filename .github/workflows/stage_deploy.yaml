@@ -62,4 +62,43 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ghcr.io/${{ env.OWNER_LC }}/mssp_bot
-          
+
+  deploy:
+    name: Deploy changes on server
+    runs-on: ubuntu-latest
+    environment:
+      name: stage_deploy
+    needs: build-and-push-image-to-github-packages
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: develop
+      -
+        name: Create folder for application
+        run: ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} mkdir -p ${{ env.DEPLOY_PATH }}
+      - name: executing remote ssh commands to deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          script: |
+            cd ${{ env.DEPLOY_PATH }}
+            sudo docker-compose --quiet-pull ${{ env.REGISTRY }}/${{ env.REP_OWNER }}/${{ env.IMAGE_NAME }}:stage
+            # Очистка неиспользуемых контейнеров, образов, сетей
+            docker system prune --force
+            sudo docker-compose rm -f mssp
+            touch .env
+            # Django environment variables
+            echo DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> .env-stage
+            echo DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }} >> .env-stage
+            # Secrets variables for google sheets in Django:
+            echo GOOGLE_PRIVATE_KEY_ID=${{ secrets.GOOGLE_PRIVATE_KEY_ID }} >> .env-stage
+            echo GOOGLE_PRIVATE_KEY=${{ secrets.GOOGLE_PRIVATE_KEY }} >> .env-stage
+            # Secrets variables for webhook:
+            echo WEBHOOK_MODE=${{ secrets.WEBHOOK_MODE }} >> .env-stage
+            echo WEBHOOK_URL=${{ secrets.WEBHOOK_URL }} >> .env-stage            
+            # Установка приложения
+            sudo docker-compose up -d
