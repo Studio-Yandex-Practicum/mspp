@@ -85,7 +85,7 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             cd ${{ env.DEPLOY_PATH }}
-            sudo docker-compose --quiet-pull
+            sudo docker-compose --quiet-pull Dockerfile:latest
             # Очистка неиспользуемых контейнеров, образов, сетей
             docker system prune --force
             sudo docker-compose rm -f mssp
