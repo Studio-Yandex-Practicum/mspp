@@ -5,7 +5,6 @@ from pathlib import Path
 
 import environ
 
-UUID = uuid.uuid1()
 BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.append(str(BASE_DIR / "apps"))
 
@@ -18,8 +17,10 @@ else:
 env = environ.Env()
 with dotenv_path.open() as file:
     environ.Env.read_env(file)
-
-SECRET_KEY = env("SECRET_KEY", default=str(UUID))
+if env("SECRET_KEY"):
+    SECRET_KEY = env("SECRET_KEY")
+else:
+    SECRET_KEY = str(uuid.uuid1())
 
 DEBUG = env.bool("DEBUG", default=True)
 
@@ -71,7 +72,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "NAME": BASE_DIR / ".data/db.sqlite3",
     }
 }
 
