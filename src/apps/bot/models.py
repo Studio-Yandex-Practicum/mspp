@@ -69,11 +69,24 @@ class AgeLimit(BaseModel):
         verbose_name_plural = "возрастные ограничения"
         constraints = [
             models.UniqueConstraint(
-                fields=["from_age", "to_age"],
-                name="Значения не могут быть одинаковыми",
+                fields=("from_age", "to_age"),
+                name="диапазон возрастов должен быть уникальным",
+            ),
+            models.UniqueConstraint(
+                fields=("from_age",),
+                name=("значение нижней границы, при не указанном верхнем, " "должно быть уникальным"),
+                condition=models.Q(to_age__isnull=True),
+            ),
+            models.UniqueConstraint(
+                fields=("to_age",),
+                name=("значение верхней границы, при не указанном нижнем, " "должно быть уникальным"),
+                condition=models.Q(from_age__isnull=True),
             ),
             models.CheckConstraint(
-                check=~models.Q(from_age=None, to_age=None), name="Нужно указать хотя бы одно значение"
+                check=~models.Q(from_age=None, to_age=None), name="нужно указать хотя бы одно значение"
+            ),
+            models.CheckConstraint(
+                check=models.Q(from_age__lte=models.F("to_age")), name="нижняя граница не может быть больше верхней"
             ),
         ]
 
