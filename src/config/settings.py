@@ -69,10 +69,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
+
+DB_DIR = BASE_DIR / ".data"
+DB_DIR.mkdir(exist_ok=True)
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / ".data/db.sqlite3",
+        "NAME": DB_DIR / "db.sqlite3",
     }
 }
 
