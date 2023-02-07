@@ -5,7 +5,7 @@ WORKDIR /app
 COPY ../requirements/ requirements/
 
 RUN python -m pip install --upgrade pip
-RUN pip install -r ./requirements/development.txt
+RUN pip install -r /app/requirements/development.txt
 
 COPY . .
 
