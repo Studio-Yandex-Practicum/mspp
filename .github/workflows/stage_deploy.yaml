@@ -49,8 +49,8 @@ jobs:
       - name: Push Stage to ghcr.io
         uses: docker/build-push-action@v2
         with:
-          context: .
-          file: ./src/Dockerfile
+          context: ./src/
+          file: Dockerfile
           push: true
           tags: ghcr.io/${{ env.OWNER_LC }}/mssp_bot
 
