@@ -81,7 +81,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            mkdir MSSP
+            mkdir ${{ env.DEPLOY_FOLDER }}
             cd ${{ env.DEPLOY_PATH }}
             docker pull ${{ steps.repo_slug_deploy.outputs.result }}:stage
             # sudo docker-compose --quiet-pull ${{ steps.repo_slug.outputs.result }}:stage
@@ -99,4 +99,4 @@ jobs:
             echo WEBHOOK_MODE=${{ secrets.WEBHOOK_MODE }} >> .env-stage
             echo WEBHOOK_URL=${{ secrets.WEBHOOK_URL }} >> .env-stage            
             # Установка приложения
-            # sudo docker-compose up -d
+            docker-compose up -d
