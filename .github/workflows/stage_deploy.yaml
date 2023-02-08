@@ -41,12 +41,18 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Sanitize repo slug
+        uses: actions/github-script@v6
+        id: repo_slug
+        with:
+          result-encoding: string
+          script: return 'ghcr.io/${{ github.repository }}'.toLowerCase()
       - name: Push Stage to GitHub Container Registry
         uses: docker/build-push-action@v4
         with:
-          context: "{{defaultContext}}"
+          context: .
           push: true
-          tags: ghcr.io/${{ env.IMAGE_NAME }}:stage
+          tags: ${{ steps.repo_slug.outputs.result }}:stage          
 
   deploy:
     name: Deploy changes on server
