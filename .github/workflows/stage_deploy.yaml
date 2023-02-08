@@ -53,8 +53,8 @@ jobs:
         with:
           context: "{{defaultContext}}"
           push: true
-          # tags: ${{ steps.repo_slug.outputs.result }}:stage  
-          tags: ${{ env.IMAGE_NAME }}:stage
+          tags: ${{ steps.repo_slug.outputs.result }}:stage  
+          # tags: ${{ env.IMAGE_NAME }}:stage
 
   deploy:
     name: Deploy changes on server
@@ -67,7 +67,12 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: develop
-
+      - name: Sanitize repo slug
+        uses: actions/github-script@v6
+        id: repo_slug_deploy
+        with:
+          result-encoding: string
+          script: return 'ghcr.io/${{ github.repository }}'.toLowerCase()
       - name: executing remote ssh commands to deploy
         uses: appleboy/ssh-action@v0.1.7
         with:
@@ -78,7 +83,7 @@ jobs:
           script: |
             mkdir MSSP
             cd ${{ env.DEPLOY_PATH }}
-            docker pull ghcr.io/${{ env.IMAGE_NAME }}:stage
+            docker pull ${{ steps.repo_slug_deploy.outputs.result }}:stage
             # sudo docker-compose --quiet-pull ${{ steps.repo_slug.outputs.result }}:stage
             # Очистка неиспользуемых контейнеров, образов, сетей
             # docker system prune --force
