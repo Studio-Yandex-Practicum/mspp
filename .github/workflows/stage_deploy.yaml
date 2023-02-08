@@ -50,7 +50,7 @@ jobs:
       - name: Push Stage to GitHub Container Registry
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: "{{defaultContext}}"
           push: true
           tags: ${{ steps.repo_slug.outputs.result }}:stage          
 
