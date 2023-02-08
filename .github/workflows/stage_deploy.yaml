@@ -72,7 +72,7 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_DEVELOPER_PUBLIC_KEY }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.PORT }}        
           script: |
             mkdir {{ env.DEPLOY_FOLDER }}
