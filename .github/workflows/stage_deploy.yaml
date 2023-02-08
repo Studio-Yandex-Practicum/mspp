@@ -68,7 +68,7 @@ jobs:
           ref: develop
 
       - name: executing remote ssh commands to deploy
-        uses: appleboy/ssh-action@v0.1.7
+        uses: fifsky/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
