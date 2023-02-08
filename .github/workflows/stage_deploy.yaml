@@ -68,10 +68,27 @@ jobs:
           ref: develop
 
       - name: executing remote ssh commands to deploy
-        uses: fifsky/ssh-action@master
+        uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.HOST }}
-          key: ${{ secrets.SSH_PUBLIC_KEY }}      
-          command: |
-            mkdir {{ env.DEPLOY_FOLDER }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          script: |
             cd ${{ env.DEPLOY_PATH }}
+            sudo docker-compose --quiet-pull ${{ env.REGISTRY }}/${{ env.REP_OWNER }}/${{ env.IMAGE_NAME }}:stage
+            # Очистка неиспользуемых контейнеров, образов, сетей
+            docker system prune --force
+            sudo docker-compose rm -f mssp
+            touch .env
+            # Django environment variables
+            echo DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> .env-stage
+            echo DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }} >> .env-stage
+            # Secrets variables for google sheets in Django:
+            echo GOOGLE_PRIVATE_KEY_ID=${{ secrets.GOOGLE_PRIVATE_KEY_ID }} >> .env-stage
+            echo GOOGLE_PRIVATE_KEY=${{ secrets.GOOGLE_PRIVATE_KEY }} >> .env-stage
+            # Secrets variables for webhook:
+            echo WEBHOOK_MODE=${{ secrets.WEBHOOK_MODE }} >> .env-stage
+            echo WEBHOOK_URL=${{ secrets.WEBHOOK_URL }} >> .env-stage            
+            # Установка приложения
+            sudo docker-compose up -d
