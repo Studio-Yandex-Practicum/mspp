@@ -70,10 +70,9 @@ jobs:
       - name: executing remote ssh commands to deploy
         uses: appleboy/ssh-action@v0.1.7
         with:
-          host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          passphrase: ${{ secrets.PASSPHRASE }}    
+          password: ${{ secrets.PASSPHRASE }}
+          port: ${{ secrets.PORT }}
           script: |
             mkdir {{ env.DEPLOY_FOLDER }}
             cd ${{ env.DEPLOY_PATH }}
