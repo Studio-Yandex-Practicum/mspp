@@ -78,4 +78,3 @@ jobs:
           script: |
             mkdir {{ env.DEPLOY_FOLDER }}
             cd ${{ env.DEPLOY_PATH }}
-
