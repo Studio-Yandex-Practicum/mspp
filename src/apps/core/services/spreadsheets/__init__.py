@@ -1,1 +1,1 @@
-from .sender import google_sender  # noqa
+from .spreadsheets import google_sender  # noqa
