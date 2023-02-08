@@ -71,7 +71,7 @@ jobs:
         uses: fifsky/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}      
-          script: |
+          key: ${{ secrets.SSH_PUBLIC_KEY }}      
+          command: |
             mkdir {{ env.DEPLOY_FOLDER }}
             cd ${{ env.DEPLOY_PATH }}
