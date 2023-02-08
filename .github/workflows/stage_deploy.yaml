@@ -65,6 +65,8 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: develop
+      - name: Create folder for application
+        run: ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} mkdir -p ${{ env.DEPLOY_PATH }}          
       - name: executing remote ssh commands to deploy
         uses: appleboy/ssh-action@master
         with:
