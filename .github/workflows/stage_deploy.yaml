@@ -53,7 +53,8 @@ jobs:
         with:
           context: "{{defaultContext}}"
           push: true
-          tags: ${{ steps.repo_slug.outputs.result }}:stage          
+          # tags: ${{ steps.repo_slug.outputs.result }}:stage  
+          tags: ${{ env.IMAGE_NAME }}:stage
 
   deploy:
     name: Deploy changes on server
@@ -75,11 +76,13 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
+            mkdir MSSP
             cd ${{ env.DEPLOY_PATH }}
-            sudo docker-compose --quiet-pull ${{ steps.repo_slug.outputs.result }}:stage
+            docker pull ghcr.io/${{ env.IMAGE_NAME }}:stage
+            # sudo docker-compose --quiet-pull ${{ steps.repo_slug.outputs.result }}:stage
             # Очистка неиспользуемых контейнеров, образов, сетей
-            docker system prune --force
-            sudo docker-compose rm -f mssp
+            # docker system prune --force
+            # sudo docker-compose rm -f mssp
             touch .env
             # Django environment variables
             echo DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> .env-stage
@@ -91,4 +94,4 @@ jobs:
             echo WEBHOOK_MODE=${{ secrets.WEBHOOK_MODE }} >> .env-stage
             echo WEBHOOK_URL=${{ secrets.WEBHOOK_URL }} >> .env-stage            
             # Установка приложения
-            sudo docker-compose up -d
+            # sudo docker-compose up -d
