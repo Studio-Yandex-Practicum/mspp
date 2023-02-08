@@ -1,1 +1,1 @@
-from .spreadsheets import google_sender  # noqa
+from .runner import send_to_google_sheets  # noqa

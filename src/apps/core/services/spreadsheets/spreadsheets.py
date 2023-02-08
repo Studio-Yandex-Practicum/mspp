@@ -39,9 +39,9 @@ async def send(
         logger.info(settings.SPREADSHEETS_URL.format(spreadsheetid))
 
 
-def google_sender(
+def sender(
     values: list[list[Any]],
-    spreadsheetid: str = settings.SPREADSHEET_ID,
+    spreadsheetid: str,
 ) -> None:
     """Отправляет переданные данные в Google таблицы.
 
