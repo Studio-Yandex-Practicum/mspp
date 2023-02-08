@@ -20,6 +20,7 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: mssp
   DEPLOY_PATH: /MSPP
+  DEPLOY_FOLDER: MSPP
 
 defaults:
   run:
@@ -74,6 +75,6 @@ jobs:
           key: ${{ secrets.SSH_PUBLIC_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}    
           script: |
-            mkdir {{ env.DEPLOY_PATH }}
+            mkdir {{ env.DEPLOY_FOLDER }}
             cd ${{ env.DEPLOY_PATH }}
 
