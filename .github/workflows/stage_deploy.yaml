@@ -44,7 +44,7 @@ jobs:
       - name: Push Stage to GitHub Container Registry
         uses: docker/build-push-action@v4
         with:
-          context: "{{defaultContext}}:src"
+          context: "{{defaultContext}}"
           push: true
           tags: ghcr.io/${{ env.IMAGE_NAME }}:stage
 
