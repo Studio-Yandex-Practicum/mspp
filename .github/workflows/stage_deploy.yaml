@@ -76,7 +76,7 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             cd ${{ env.DEPLOY_PATH }}
-            sudo docker-compose --quiet-pull ${{ env.REGISTRY }}/${{ env.REP_OWNER }}/${{ env.IMAGE_NAME }}:stage
+            sudo docker-compose --quiet-pull ${{ steps.repo_slug.outputs.result }}:stage
             # Очистка неиспользуемых контейнеров, образов, сетей
             docker system prune --force
             sudo docker-compose rm -f mssp
