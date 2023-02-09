@@ -100,4 +100,4 @@ jobs:
             # Установка приложения
             
             cd infra/
-            docker compose -f docker-compose-stage.yaml up
+            docker compose -f docker-compose-stage.yaml up --build
