@@ -89,8 +89,8 @@ jobs:
             # docker rm -f mssp
             touch .env-stage
             # Django environment variables
-            echo DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> .env-stage
-            echo DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }} >> .env-stage
+            echo SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> .env-stage
+            echo ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }} >> .env-stage
             # Secrets variables for google sheets in Django:
             echo GOOGLE_PRIVATE_KEY_ID=${{ secrets.GOOGLE_PRIVATE_KEY_ID }} >> .env-stage
             echo GOOGLE_PRIVATE_KEY=${{ secrets.GOOGLE_PRIVATE_KEY }} >> .env-stage
