@@ -71,12 +71,10 @@ jobs:
         with:
           result-encoding: string
           script: return 'ghcr.io/${{ github.repository }}'.toLowerCase()
+      - name: Create folder for application
+        run: ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} mkdir -p ${{ env.DEPLOY_PATH }}
       - name: Copy infra
-        run: |
-            mkdir -p ${{ env.DEPLOY_PATH  }}
-            # Копирование папки infra
-            scp -r infra ${{ secrets.USERNAME }}@$${{ secrets.HOST }}:{{ env.DEPLOY_PATH }}/infra/
-            # run: scp -r infra_deploy/prod/ ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ env.DEPLOY_PATH }}            
+        run: scp -r infra ${{ secrets.USERNAME }}@$${{ secrets.HOST }}:{{ env.DEPLOY_PATH }}/infra/
       - name: executing remote ssh commands to deploy
         uses: appleboy/ssh-action@v0.1.7
         with:
