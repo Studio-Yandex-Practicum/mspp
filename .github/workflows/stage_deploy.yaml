@@ -86,8 +86,8 @@ jobs:
             docker pull ${{ steps.repo_slug_deploy.outputs.result }}:stage
             # docker compose pull ${{ steps.repo_slug.outputs.result }}:stage
             # Очистка неиспользуемых контейнеров, образов, сетей
-            docker system prune --force
-            docker compose rm -f mssp
+            # docker system prune --force
+            # docker rm -f mssp
             touch .env
             # Django environment variables
             echo DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> .env-stage
@@ -99,4 +99,4 @@ jobs:
             echo WEBHOOK_MODE=${{ secrets.WEBHOOK_MODE }} >> .env-stage
             echo WEBHOOK_URL=${{ secrets.WEBHOOK_URL }} >> .env-stage            
             # Установка приложения
-            docker compose up -d
+            docker up -d
