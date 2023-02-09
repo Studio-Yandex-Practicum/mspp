@@ -19,7 +19,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: mssp
-  DEPLOY_PATH: "./MSPP"
+  DEPLOY_PATH: "/MSPP"
   DEPLOY_FOLDER: MSPP
 
 defaults:
@@ -81,7 +81,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            # mkdir ${{ env.DEPLOY_FOLDER }}
+            mkdir -p ${{ env.DEPLOY_PATH  }}
             cd ${{ env.DEPLOY_PATH }}
             docker pull ${{ steps.repo_slug_deploy.outputs.result }}:stage
             # docker compose pull ${{ steps.repo_slug.outputs.result }}:stage
@@ -99,4 +99,4 @@ jobs:
             echo WEBHOOK_MODE=${{ secrets.WEBHOOK_MODE }} >> .env-stage
             echo WEBHOOK_URL=${{ secrets.WEBHOOK_URL }} >> .env-stage            
             # Установка приложения
-            docker up -d
+            # docker up -d
