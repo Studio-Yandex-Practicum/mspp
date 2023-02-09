@@ -20,7 +20,6 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: mssp
   DEPLOY_PATH: "/MSPP"
-  DEPLOY_FOLDER: MSPP
 
 defaults:
   run:
@@ -54,7 +53,6 @@ jobs:
           context: "{{defaultContext}}"
           push: true
           tags: ${{ steps.repo_slug.outputs.result }}:stage  
-          # tags: ${{ env.IMAGE_NAME }}:stage
 
   deploy:
     name: Deploy changes on server
@@ -73,8 +71,6 @@ jobs:
         with:
           result-encoding: string
           script: return 'ghcr.io/${{ github.repository }}'.toLowerCase()
-      - name: Deploy with scp
-        run: scp -r infra/ ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ env.DEPLOY_PATH }}          
       - name: executing remote ssh commands to deploy
         uses: appleboy/ssh-action@v0.1.7
         with:
@@ -82,8 +78,12 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
-          script: |
+          run: |
             mkdir -p ${{ env.DEPLOY_PATH  }}
+            # Копирование папки infra
+            scp -r infra ${{ env.DEPLOY_PATH }}/infra/
+          script: |
+            # mkdir -p ${{ env.DEPLOY_PATH  }}
             cd ${{ env.DEPLOY_PATH }}
             # docker pull ${{ steps.repo_slug_deploy.outputs.result }}:stage
             # docker compose pull ${{ steps.repo_slug.outputs.result }}:stage
