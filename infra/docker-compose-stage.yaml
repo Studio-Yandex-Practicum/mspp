@@ -9,7 +9,7 @@ services:
       - ./.data:/.data
       - static_value:/app/static/
     env_file:
-      - ./.env
+      - ./.env-stage
 
   nginx:
     image: nginx:latest
