@@ -9,4 +9,4 @@ RUN pip install -r ./requirements/development.txt
 
 COPY ./src .
 
-CMD ["uvicorn ", "src.config.asgi:application"]
+CMD ["uvicorn ", "config.asgi:application"]
