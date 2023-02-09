@@ -73,6 +73,8 @@ jobs:
         with:
           result-encoding: string
           script: return 'ghcr.io/${{ github.repository }}'.toLowerCase()
+      - name: Deploy with scp
+        run: scp -r infra/ ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ env.DEPLOY_PATH }}          
       - name: executing remote ssh commands to deploy
         uses: appleboy/ssh-action@v0.1.7
         with:
@@ -83,7 +85,7 @@ jobs:
           script: |
             mkdir -p ${{ env.DEPLOY_PATH  }}
             cd ${{ env.DEPLOY_PATH }}
-            docker pull ${{ steps.repo_slug_deploy.outputs.result }}:stage
+            # docker pull ${{ steps.repo_slug_deploy.outputs.result }}:stage
             # docker compose pull ${{ steps.repo_slug.outputs.result }}:stage
             # Очистка неиспользуемых контейнеров, образов, сетей
             # docker system prune --force
@@ -99,4 +101,4 @@ jobs:
             echo WEBHOOK_MODE=${{ secrets.WEBHOOK_MODE }} >> .env-stage
             echo WEBHOOK_URL=${{ secrets.WEBHOOK_URL }} >> .env-stage            
             # Установка приложения
-            # docker up -d
+            docker -f /infra/docker-compose-stage.yaml up -d -quiet-pull
