@@ -85,7 +85,7 @@ jobs:
             # docker pull ${{ steps.repo_slug_deploy.outputs.result }}:stage
             # docker compose pull ${{ steps.repo_slug.outputs.result }}:stage
             # Очистка неиспользуемых контейнеров, образов, сетей
-            # docker system prune --force
+            docker system prune --force
             # docker rm -f mssp
             touch .env
             # Django environment variables
