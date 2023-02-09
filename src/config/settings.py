@@ -14,13 +14,13 @@ sys.path.append(str(BASE_DIR / "apps"))
 # else:
 #     dotenv_path = Path(BASE_DIR.parent / ".env_local")
 
-# env = environ.Env()
+env = environ.Env()
 # with dotenv_path.open() as file:
 #     environ.Env.read_env(file)
-# if env("SECRET_KEY"):
-#     SECRET_KEY = env("SECRET_KEY")
-# else:
-#     SECRET_KEY = str(uuid.uuid1())
+if env("SECRET_KEY"):
+    SECRET_KEY = env("SECRET_KEY")
+else:
+    SECRET_KEY = str(uuid.uuid1())
 
 DEBUG = env.bool("DJANGO_DEBUG", default=True)
 
