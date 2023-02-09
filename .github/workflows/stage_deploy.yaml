@@ -71,7 +71,7 @@ jobs:
         with:
           result-encoding: string
           script: return 'ghcr.io/${{ github.repository }}'.toLowerCase()
-      - name: Create SSH key
+      - name: Create SSH key && Copy infra
         # (SSH_KNOWN_HOSTS=ssh-keyscan -H сервер, SSH_PRIVATE_KEY - ключ с ПК, которому разрешен вход)
         run: |
           mkdir -p ~/.ssh
@@ -80,10 +80,8 @@ jobs:
           chmod 644 ~/.ssh/known_hosts
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa          
-      - name: Create folder for application
-        run: ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} mkdir -p ${{ env.DEPLOY_PATH }}
-      - name: Copy infra
-        run: scp -r infra ${{ secrets.USERNAME }}@$${{ secrets.HOST }}:{{ env.DEPLOY_PATH }}/infra/
+          ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} mkdir -p ${{ env.DEPLOY_PATH }}
+          scp -r infra ${{ secrets.USERNAME }}@$${{ secrets.HOST }}:{{ env.DEPLOY_PATH }}
       - name: executing remote ssh commands to deploy
         uses: appleboy/ssh-action@v0.1.7
         with:
