@@ -83,8 +83,8 @@ jobs:
           script: |
             # mkdir ${{ env.DEPLOY_FOLDER }}
             cd ${{ env.DEPLOY_PATH }}
-            # docker pull ${{ steps.repo_slug_deploy.outputs.result }}:stage
-            docker compose pull ${{ steps.repo_slug.outputs.result }}:stage
+            docker pull ${{ steps.repo_slug_deploy.outputs.result }}:stage
+            # docker compose pull ${{ steps.repo_slug.outputs.result }}:stage
             # Очистка неиспользуемых контейнеров, образов, сетей
             docker system prune --force
             docker compose rm -f mssp
