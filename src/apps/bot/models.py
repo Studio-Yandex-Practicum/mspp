@@ -54,8 +54,6 @@ class AgeLimit(BaseModel):
 
     from_age = models.PositiveSmallIntegerField(
         verbose_name="нижняя граница",
-        null=True,
-        blank=True,
     )
     to_age = models.PositiveSmallIntegerField(
         verbose_name="верхняя граница",
@@ -70,20 +68,12 @@ class AgeLimit(BaseModel):
         constraints = [
             models.UniqueConstraint(
                 fields=("from_age", "to_age"),
-                name="диапазон возрастов должен быть уникальным",
+                name="возрастное ограничение должно быть уникальным",
             ),
             models.UniqueConstraint(
                 fields=("from_age",),
-                name=("значение нижней границы, при не указанном верхнем, " "должно быть уникальным"),
+                name="значение нижней границы, при не указанной верхней, должно быть уникальным",
                 condition=models.Q(to_age__isnull=True),
-            ),
-            models.UniqueConstraint(
-                fields=("to_age",),
-                name=("значение верхней границы, при не указанном нижнем, " "должно быть уникальным"),
-                condition=models.Q(from_age__isnull=True),
-            ),
-            models.CheckConstraint(
-                check=~models.Q(from_age=None, to_age=None), name="нужно указать хотя бы одно значение"
             ),
             models.CheckConstraint(
                 check=models.Q(from_age__lte=models.F("to_age")), name="нижняя граница не может быть больше верхней"
@@ -91,9 +81,7 @@ class AgeLimit(BaseModel):
         ]
 
     def __str__(self):
-        result = []
-        if self.from_age is not None:
-            result.append(f"от {self.from_age}")
+        result = [f"От {self.from_age}"]
         if self.to_age is not None:
             result.append(f"до {self.to_age}")
         return " ".join(result)

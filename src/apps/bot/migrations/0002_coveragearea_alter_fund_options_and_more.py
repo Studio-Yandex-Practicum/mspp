@@ -29,74 +29,6 @@ class Migration(migrations.Migration):
                 "verbose_name_plural": "зоны охвата",
             },
         ),
-        migrations.AlterModelOptions(
-            name="fund",
-            options={"ordering": ("name",), "verbose_name": "фонд", "verbose_name_plural": "фонды"},
-        ),
-        migrations.RenameModel(
-            old_name="limitation",
-            new_name="AgeLimit",
-        ),
-        migrations.AlterModelOptions(
-            name="agelimit",
-            options={
-                "ordering": ("from_age", "to_age"),
-                "verbose_name": "возрастное ограничение",
-                "verbose_name_plural": "возрастные ограничения",
-            },
-        ),
-        migrations.RemoveField(
-            model_name="fund",
-            name="city",
-        ),
-        migrations.RenameField(
-            model_name="fund",
-            old_name="limitation",
-            new_name="age_limit",
-        ),
-        migrations.AlterField(
-            model_name="fund",
-            name="age_limit",
-            field=models.ForeignKey(
-                default=1,
-                on_delete=django.db.models.deletion.PROTECT,
-                to="bot.agelimit",
-                verbose_name="возрастные ограничения",
-            ),
-            preserve_default=False,
-        ),
-        migrations.AddField(
-            model_name="fund",
-            name="description",
-            field=models.TextField(default="Описание", verbose_name="описание"),
-            preserve_default=False,
-        ),
-        migrations.AlterField(
-            model_name="fund",
-            name="name",
-            field=models.CharField(max_length=256, verbose_name="название"),
-        ),
-        migrations.AlterField(
-            model_name="agelimit",
-            name="from_age",
-            field=models.PositiveSmallIntegerField(blank=True, null=True, verbose_name="нижняя граница"),
-        ),
-        migrations.AlterField(
-            model_name="agelimit",
-            name="to_age",
-            field=models.PositiveSmallIntegerField(blank=True, null=True, verbose_name="верхняя граница"),
-        ),
-        migrations.AddConstraint(
-            model_name="agelimit",
-            constraint=models.UniqueConstraint(fields=("from_age", "to_age"), name="Unique age limit"),
-        ),
-        migrations.AddConstraint(
-            model_name="agelimit",
-            constraint=models.CheckConstraint(
-                check=models.Q(("from_age", None), ("to_age", None), _negated=True),
-                name="Нужно указать хотя бы одно значение",
-            ),
-        ),
         migrations.AddField(
             model_name="coveragearea",
             name="parent",
@@ -109,11 +41,89 @@ class Migration(migrations.Migration):
                 verbose_name="родительская зона охвата",
             ),
         ),
+        migrations.AlterModelOptions(
+            name="fund",
+            options={"ordering": ("name",), "verbose_name": "фонд", "verbose_name_plural": "фонды"},
+        ),
+        migrations.RemoveField(
+            model_name="fund",
+            name="city",
+        ),
+        migrations.RenameField(
+            model_name="fund",
+            old_name="limitation",
+            new_name="age_limit",
+        ),
+        migrations.RenameModel(
+            old_name="limitation",
+            new_name="AgeLimit",
+        ),
+        migrations.AlterField(
+            model_name="fund",
+            name="age_limit",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="bot.agelimit",
+                verbose_name="возрастные ограничения",
+            ),
+            preserve_default=False,
+        ),
+        migrations.AlterField(
+            model_name="fund",
+            name="name",
+            field=models.CharField(max_length=256, verbose_name="название"),
+        ),
         migrations.AddField(
             model_name="fund",
             name="coverage_area",
             field=mptt.fields.TreeManyToManyField(
                 related_name="funds", to="bot.coveragearea", verbose_name="зоны охвата"
+            ),
+        ),
+        migrations.AddField(
+            model_name="fund",
+            name="description",
+            field=models.TextField(default="Описание", verbose_name="описание"),
+            preserve_default=False,
+        ),
+        migrations.AlterModelOptions(
+            name="agelimit",
+            options={
+                "ordering": ("from_age", "to_age"),
+                "verbose_name": "возрастное ограничение",
+                "verbose_name_plural": "возрастные ограничения",
+            },
+        ),
+        migrations.AlterField(
+            model_name="agelimit",
+            name="from_age",
+            field=models.PositiveSmallIntegerField(verbose_name="нижняя граница"),
+        ),
+        migrations.AlterField(
+            model_name="agelimit",
+            name="to_age",
+            field=models.PositiveSmallIntegerField(blank=True, null=True, verbose_name="верхняя граница"),
+        ),
+        migrations.AddConstraint(
+            model_name="agelimit",
+            constraint=models.UniqueConstraint(
+                fields=("from_age", "to_age"), name="возрастное ограничение должно быть уникальным"
+            ),
+        ),
+        migrations.AddConstraint(
+            model_name="agelimit",
+            constraint=models.UniqueConstraint(
+                condition=models.Q(("to_age__isnull", True)),
+                fields=("from_age",),
+                name="значение нижней границы, при не указанной верхней, должно быть уникальным",
+            ),
+        ),
+        migrations.AddConstraint(
+            model_name="agelimit",
+            constraint=models.CheckConstraint(
+                check=models.Q(("from_age__lte", models.F("to_age"))),
+                name="нижняя граница не может быть больше верхней",
             ),
         ),
         migrations.DeleteModel(
