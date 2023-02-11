@@ -80,8 +80,9 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             mkdir -p ${{ env.DEPLOY_PATH  }}
-            cd ${{ env.DEPLOY_PATH }}
+            
             scp -r infra ${{ secrets.USERNAME }}@$${{ secrets.HOST }}:{{ env.DEPLOY_PATH }}/infra/
+            cd ${{ env.DEPLOY_PATH }}
             # docker pull ${{ steps.repo_slug_deploy.outputs.result }}:stage
             # docker compose pull ${{ steps.repo_slug.outputs.result }}:stage
             # Очистка неиспользуемых контейнеров, образов, сетей
