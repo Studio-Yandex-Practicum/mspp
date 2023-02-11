@@ -24,7 +24,6 @@ platformdirs==3.0.0 ; python_version >= "3.10" and python_version < "4.0"
 pre-commit==3.0.4 ; python_version >= "3.10" and python_version < "4.0"
 pyasn1-modules==0.2.8 ; python_version >= "3.10" and python_version < "4.0"
 pyasn1==0.4.8 ; python_version >= "3.10" and python_version < "4.0"
-
 pycodestyle==2.10.0 ; python_version >= "3.10" and python_version < "4.0"
 pyflakes==3.0.1 ; python_version >= "3.10" and python_version < "4.0"
 python-decouple==3.7 ; python_version >= "3.10" and python_version < "4.0"
