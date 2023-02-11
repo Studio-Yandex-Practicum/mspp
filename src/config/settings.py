@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "mptt",
     "bot.apps.BotConfig",
+    "core",
 ]
 
 MIDDLEWARE = [
@@ -107,6 +108,30 @@ STATIC_ROOT = BASE_DIR / "static"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# Telegram
 TELEGRAM_TOKEN = env("TELEGRAM_TOKEN")
 WEBHOOK_MODE = env.bool("WEBHOOK_MODE", default=False)
 WEBHOOK_URL = env("WEBHOOK_URL", default=environ.Env.NOTSET if WEBHOOK_MODE else "")
+
+# Google
+LOGGING_LEVEL = env("LOGGING_LEVEL")
+CREDENTIALS_TYPE = env("CREDENTIALS_TYPE")
+SPREADSHEETS_URL = "https://docs.google.com/spreadsheets/d/{0}"
+SPREADSHEET_ID = env("SPREADSHEET_ID")
+SCOPES = ("https://www.googleapis.com/auth/spreadsheets",)
+
+EMAIL_USER = env("EMAIL")
+
+match CREDENTIALS_TYPE:
+    case "json":
+        JSON_INFO = env("CREDENTIALS_JSON_PATH")
+    case "env":
+        PRIVATE_KEY = env.str("PRIVATE_KEY", multiline=True)
+        ENV_INFO = {
+            "project_id": env("PROJECT_ID"),
+            "private_key_id": env("PRIVATE_KEY_ID"),
+            "private_key": PRIVATE_KEY,
+            "client_email": env("CLIENT_EMAIL"),
+            "client_id": env("CLIENT_ID"),
+            "client_x509_cert_url": env("CLIENT_X509_CERT_URL"),
+        }
