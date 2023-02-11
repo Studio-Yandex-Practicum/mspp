@@ -109,4 +109,4 @@ jobs:
             echo WEBHOOK_URL=${{ secrets.WEBHOOK_URL }} >> .env-stage            
             # Установка приложения
             cd infra/
-            docker compose -f docker-compose-stage.yaml up -d
+            docker compose -f docker-compose-stage.yml up -d
