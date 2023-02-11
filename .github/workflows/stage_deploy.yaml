@@ -88,7 +88,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |          
-            mkdir -p ${{ env.DEPLOY_PATH  }}
+            # mkdir -p ${{ env.DEPLOY_PATH  }}
             cd ${{ env.DEPLOY_PATH }}           
             # scp -r infra ${{ secrets.USERNAME }}@$${{ secrets.HOST }}:{{ env.DEPLOY_PATH }}/infra/
 
