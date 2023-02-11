@@ -37,4 +37,4 @@ sqlparse==0.4.3 ; python_version >= "3.10" and python_version < "4.0"
 tomli==2.0.1 ; python_version >= "3.10" and python_full_version < "3.11.0a7"
 tzdata==2022.7 ; python_version >= "3.10" and python_version < "4.0" and sys_platform == "win32"
 uvicorn==0.20.0 ; python_version >= "3.10" and python_version < "4.0"
-virtualenv==20.17.1 ; python_version >= "3.10" and python_version < "4.0"
+virtualenv==20.17.1
