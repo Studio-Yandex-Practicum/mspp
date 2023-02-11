@@ -80,16 +80,8 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           source: "infra"
           target: ${{ env.DEPLOY_PATH }}
-          run: mkdir -p ${{ env.DEPLOY_PATH  }}
-      - name: executing remote ssh commands to deploy
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            # mkdir -p ${{ env.DEPLOY_PATH  }}
+            mkdir -p ${{ env.DEPLOY_PATH  }}
             cd ${{ env.DEPLOY_PATH }}           
             # scp -r infra ${{ secrets.USERNAME }}@$${{ secrets.HOST }}:{{ env.DEPLOY_PATH }}/infra/
 
