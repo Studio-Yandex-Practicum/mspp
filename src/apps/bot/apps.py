@@ -10,4 +10,4 @@ class BotConfig(AppConfig):
     name = "bot"
 
     def ready(self) -> None:
-        asyncio.ensure_future(start_bot(), loop=asyncio.get_running_loop())
+        asyncio.ensure_future(start_bot(), loop=asyncio.get_event_loop())

@@ -51,9 +51,9 @@ WEBHOOK_URL=https://example.com
 
 <details>
   <summary>Локальный запуск webhook</summary>
-  
+
   Для локального запуска бота в режиме webhook можно использовать приложение [ngrok](https://ngrok.com/)
-  
+
   1. [Скачать](https://ngrok.com/download) и установить ngrok<br>
   2. [Зарегистрировать](https://dashboard.ngrok.com/signup) учетную запись<br>
   3. [Авторизоваться](https://dashboard.ngrok.com/login)
@@ -75,7 +75,19 @@ WEBHOOK_URL=https://example.com
     ```bash
     cd src
     ```
-2. Запустите проект
+2. Скопируйте статические файлы
+    ```bash
+    python manage.py collectstatic
+    ```
+3. Примените миграции
+    ```bash
+    python manage.py migrate
+    ```
+4. Создайте суперпользователя
+    ```bash
+    python manage.py createsuperuser
+    ```
+5. Запустите проект
     ```bash
     uvicorn config.asgi:application
     ```
