@@ -1,0 +1,41 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:15.2
+    container_name: postgres_local
+    restart: always
+    volumes:
+      - postgres_data_local:/var/lib/postgresql/data
+    env_file:
+      - ../.env_local
+
+  backend:
+    image: mspp
+    build: ..
+    container_name: backend_local
+    restart: always
+    depends_on:
+      - postgres
+    volumes:
+      - ./.data:/.data
+      - static_value_local:/app/static/
+    env_file:
+      - ../.env_local
+
+  nginx:
+    image: nginx:1.23.3-alpine
+    container_name: nginx_local
+    depends_on:
+      - backend
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx_local.conf:/etc/nginx/conf.d/default.conf
+      - static_value_local:/var/html/static/
+
+volumes:
+  postgres_data_local:
+    name: postgres_data_local
+  static_value_local:
+    name: static_value_local

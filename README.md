@@ -70,29 +70,59 @@ WEBHOOK_URL=https://example.com
 </details>
 
 
-## Запуск
-1. Перейдите в директорию src
-    ```bash
-    cd src
-    ```
-2. Скопируйте статические файлы
-    ```bash
-    python manage.py collectstatic
-    ```
-3. Примените миграции
-    ```bash
-    python manage.py migrate
-    ```
-4. Создайте суперпользователя
-    ```bash
-    python manage.py createsuperuser
-    ```
-5. Запустите проект
-    ```bash
-    uvicorn config.asgi:application
-    ```
+## Локальный запуск
 
-### Авторы:
+<details>
+  <summary>Запуск в docker'е</summary>
+
+  ---
+  [Установить](https://docs.docker.com/engine/install/) docker и docker compose<br>
+  Добавить TELEGRAM_TOKEN в .env_local<br>
+
+  - Запустить локально<br>
+  `docker compose -f infra/docker-compose_local.yml up` - с выводом в консоль<br>
+  `docker compose -f infra/docker-compose_local.yml up -d` - в тихом режиме<br>
+  `docker compose -f infra/docker-compose_local.yml up --build` - пересобрать после внесения изменений<br>
+  `docker compose -f infra/docker-compose_local.yml up -d --build` - пересобрать в тихом режиме<br>
+
+  - Создать миграции<br>
+  `docker compose -f infra/docker-compose_local.yml exec backend python manage.py migrate`<br>
+
+  - Создать суперпользователя<br>
+  `docker compose -f infra/docker-compose_local.yml exec backend python manage.py createsuperuser`<br>
+
+  - Собрать статику<br>
+  `docker compose -f infra/docker-compose_local.yml exec backend python manage.py collectstatic --no-input`<br>
+
+  - Остановить<br>
+  `docker compose -f infra/docker-compose_local.yml down` - остановить и удалить контейнеры<br>
+  `docker compose -f infra/docker-compose_local.yml down -v` - остановить и удалить все кроме образов<br>
+
+  - Удалить volumes<br>
+  `docker volume rm postgres_data_local` - БД<br>
+  `docker volume rm static_value_local` - статика<br>
+
+  - Удалить образы<br>
+  `docker image rm mspp` - образ приложения<br>
+  `docker image rm postgres:15.2` - postgres<br>
+  `docker image rm nginx:1.23.3-alpine` - nginx<br>
+  ---
+</details>
+<details>
+  <summary>Запуск uvicorn</summary>
+
+  ---
+  1. Перевести БД на sqlite3
+  2. Перейдите в директорию src `cd src`
+  3. Скопируйте статические файлы `python manage.py collectstatic`
+  4. Примените миграции `python manage.py migrate`
+  5. Создайте суперпользователя `python manage.py createsuperuser`
+  6. Запустите проект `uvicorn config.asgi:application`
+  ---
+</details>
+
+
+## Авторы:
 
 [Anton Zelinsky](https://github.com/AntonZelinsky)<br>
 [kr0t](https://github.com/kr0t)<br>
