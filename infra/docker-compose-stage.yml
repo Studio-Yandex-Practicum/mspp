@@ -12,7 +12,7 @@ services:
       - ./.env-stage
 
   nginx:
-    image: nginx:latest
+    image: nginx:1.23.3
     container_name: nginx_stage
     ports:
       - 80:80
