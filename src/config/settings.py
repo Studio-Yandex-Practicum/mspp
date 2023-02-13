@@ -9,14 +9,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.append(str(BASE_DIR / "apps"))
 
 
-# if os.path.exists(BASE_DIR.parent / ".env"):
-#     dotenv_path = Path(BASE_DIR.parent / ".env")
-# else:
-#     dotenv_path = Path(BASE_DIR.parent / ".env_local")
+if os.path.exists(BASE_DIR.parent / ".env"):
+    dotenv_path = Path(BASE_DIR.parent / ".env")
+else:
+    dotenv_path = Path(BASE_DIR.parent / ".env_local")
 
 env = environ.Env()
-# with dotenv_path.open() as file:
-#     environ.Env.read_env(file)
+with dotenv_path.open() as file:
+    environ.Env.read_env(file)
 if env("SECRET_KEY"):
     SECRET_KEY = env("SECRET_KEY")
 else:
