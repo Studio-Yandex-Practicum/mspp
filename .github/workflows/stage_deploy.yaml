@@ -19,7 +19,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: mssp
-  DEPLOY_PATH: "/MSPP"
+  DEPLOY_PATH: /MSPP
 
 defaults:
   run:
@@ -38,7 +38,7 @@ jobs:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
-          registry: ghcr.io
+          registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Sanitize repo slug
@@ -81,7 +81,7 @@ jobs:
           source: "infra"
           target: ${{ env.DEPLOY_PATH }}
       - name: executing remote ssh commands to deploy
-        uses: appleboy/ssh-action@@master
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
