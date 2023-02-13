@@ -52,7 +52,7 @@ jobs:
         with:
           context: "{{defaultContext}}"
           push: true
-          tags: ${{ steps.repo_slug.outputs.result }}:stage  
+          tags: ${{ steps.repo_slug.outputs.result }}:stage
 
   deploy:
     name: Deploy changes on server
@@ -87,16 +87,10 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
-          script: |          
-            # mkdir -p ${{ env.DEPLOY_PATH  }}
-            cd ${{ env.DEPLOY_PATH }}           
-            # scp -r infra ${{ secrets.USERNAME }}@$${{ secrets.HOST }}:{{ env.DEPLOY_PATH }}/infra/
-
-            # docker pull ${{ steps.repo_slug_deploy.outputs.result }}:stage
-            # docker compose pull ${{ steps.repo_slug.outputs.result }}:stage
+          script: |
+            cd ${{ env.DEPLOY_PATH }}
             # Очистка неиспользуемых контейнеров, образов, сетей
             docker system prune --force
-            # docker rm -f mssp
             touch .env-stage
             # Django environment variables
             echo SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> .env-stage
@@ -106,7 +100,7 @@ jobs:
             echo GOOGLE_PRIVATE_KEY=${{ secrets.GOOGLE_PRIVATE_KEY }} >> .env-stage
             # Secrets variables for webhook:
             echo WEBHOOK_MODE=${{ secrets.WEBHOOK_MODE }} >> .env-stage
-            echo WEBHOOK_URL=${{ secrets.WEBHOOK_URL }} >> .env-stage            
+            echo WEBHOOK_URL=${{ secrets.WEBHOOK_URL }} >> .env-stage
             # Установка приложения
             cd infra/
             docker compose -f docker-compose-stage.yml up -d
