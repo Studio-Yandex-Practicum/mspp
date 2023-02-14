@@ -1,3 +1,4 @@
+import logging
 import os
 import sys
 import uuid
@@ -109,6 +110,9 @@ STATIC_ROOT = BASE_DIR / "static"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Telegram
+LOGGING_LEVEL = logging.env("LOGGING_LEVEL")
+FORMATTER = logging.Formatter("%(asctime)s — %(name)s — %(levelname)s — %(message)s")
+LOG_FILE_BOT = ".data/bot.log"
 TELEGRAM_TOKEN = env("TELEGRAM_TOKEN")
 WEBHOOK_MODE = env.bool("WEBHOOK_MODE", default=False)
 WEBHOOK_URL = env("WEBHOOK_URL", default=environ.Env.NOTSET if WEBHOOK_MODE else "")
@@ -121,6 +125,13 @@ SPREADSHEET_ID = env("SPREADSHEET_ID")
 SCOPES = ("https://www.googleapis.com/auth/spreadsheets",)
 
 EMAIL_USER = env("EMAIL")
+
+logging.basicConfig(
+    level=logging.LOGGING_LEVEL,
+    filename=".data/system.log",
+    filemode="w",
+    format="%(asctime)s %(levelname)s %(message)s",
+)
 
 match CREDENTIALS_TYPE:
     case "json":
