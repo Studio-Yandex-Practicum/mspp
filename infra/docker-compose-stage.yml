@@ -18,7 +18,7 @@ services:
       - 80:80
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      - static_value_prod:/var/html/static/
+      - static_value_stage:/var/html/static/
 
     restart: always
     depends_on:
