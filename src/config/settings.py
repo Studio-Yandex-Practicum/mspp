@@ -127,7 +127,7 @@ EMAIL_USER = env("EMAIL")
 
 logging.basicConfig(
     level=LOGGING_LEVEL,
-    filename=".data/system.log",
+    filename=str(BASE_DIR / ".data/system.log"),
     filemode="w",
     format="%(asctime)s %(levelname)s %(message)s",
 )
