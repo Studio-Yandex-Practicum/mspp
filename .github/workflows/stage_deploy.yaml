@@ -101,7 +101,7 @@ jobs:
           script: |
             cd ${{ env.DEPLOY_PATH }}
             # Очистка неиспользуемых контейнеров, образов, сетей
-            docker system prune --force
+            sudo docker system prune --force
             touch .env-stage
             # Django environment variables
             echo SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> .env-stage
@@ -114,4 +114,4 @@ jobs:
             echo WEBHOOK_URL=${{ secrets.WEBHOOK_URL }} >> .env-stage
             # Установка приложения
             cd infra/
-            docker compose -f docker-compose-stage.yml up -d
+            sudo docker compose -f docker-compose-stage.yml up -d
