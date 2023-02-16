@@ -7,7 +7,7 @@ services:
     restart: always
     volumes:
       - ./.data:/.data
-      - static_value:/app/static/
+      - static_value_stage:/app/static/
     env_file:
       - ./.env-stage
 
