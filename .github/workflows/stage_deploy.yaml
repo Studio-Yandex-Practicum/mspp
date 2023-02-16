@@ -64,7 +64,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: develop
+          ref: feature/modify_ci_cd
       - name: Sanitize repo slug
         uses: actions/github-script@v6
         id: repo_slug_deploy
@@ -90,7 +90,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           source: "infra"
-          target: ${{ env.DEPLOY_PATH }}/infra
+          target: ${{ env.DEPLOY_PATH }}
       - name: executing remote ssh commands to deploy
         uses: appleboy/ssh-action@master
         with:
