@@ -112,6 +112,6 @@ jobs:
             # Secrets variables for webhook:
             echo WEBHOOK_MODE=${{ secrets.WEBHOOK_MODE }} >> .env-stage
             echo WEBHOOK_URL=${{ secrets.WEBHOOK_URL }} >> .env-stage
-            # Установка приложения
+            # Установка приложения +
             cd infra/
             sudo docker compose -f docker-compose-stage.yml up -d
