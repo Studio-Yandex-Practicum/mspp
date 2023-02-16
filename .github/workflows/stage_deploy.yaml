@@ -90,7 +90,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           source: "infra/"
-          target: ${{ env.DEPLOY_PATH }}/infra/
+          target: ${{ env.DEPLOY_PATH }}/
       - name: executing remote ssh commands to deploy
         uses: appleboy/ssh-action@master
         with:
