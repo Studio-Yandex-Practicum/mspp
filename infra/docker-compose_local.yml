@@ -10,7 +10,6 @@ services:
       - ../.env_local
 
   backend:
-    image: mspp
     build: ..
     container_name: backend_local
     restart: always

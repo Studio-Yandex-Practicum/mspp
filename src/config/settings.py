@@ -117,17 +117,12 @@ SPREADSHEET_ID = env("SPREADSHEET_ID", default="_")
 SCOPES = ("https://www.googleapis.com/auth/spreadsheets",)
 
 EMAIL_USER = env("EMAIL", default="example@mail.com")
-
-match CREDENTIALS_TYPE:
-    case "json":
-        JSON_INFO = env("CREDENTIALS_JSON_PATH")
-    case "env":
-        PRIVATE_KEY = env.str("PRIVATE_KEY", multiline=True, default="_")
-        ENV_INFO = {
-            "project_id": env("PROJECT_ID", default="_"),
-            "private_key_id": env("PRIVATE_KEY_ID", default="_"),
-            "private_key": PRIVATE_KEY,
-            "client_email": env("CLIENT_EMAIL", default="_"),
-            "client_id": env("CLIENT_ID", default="_"),
-            "client_x509_cert_url": env("CLIENT_X509_CERT_URL", default="_"),
-        }
+PRIVATE_KEY = env.str("PRIVATE_KEY", multiline=True, default="_")
+ENV_INFO = {
+    "project_id": env("PROJECT_ID", default="_"),
+    "private_key_id": env("PRIVATE_KEY_ID", default="_"),
+    "private_key": PRIVATE_KEY,
+    "client_email": env("CLIENT_EMAIL", default="_"),
+    "client_id": env("CLIENT_ID", default="_"),
+    "client_x509_cert_url": env("CLIENT_X509_CERT_URL", default="_"),
+}
