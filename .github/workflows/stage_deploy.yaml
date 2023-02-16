@@ -71,6 +71,17 @@ jobs:
         with:
           result-encoding: string
           script: return 'ghcr.io/${{ github.repository }}'.toLowerCase()
+      - name: Create directory for deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY}}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          script: |
+            sudo mkdir -p ${{ env.DEPLOY_PATH }}
+            sudo chmod 777 ${{ env.DEPLOY_PATH }}
+            
       - name: copy file via ssh
         uses: appleboy/scp-action@master
         with:
