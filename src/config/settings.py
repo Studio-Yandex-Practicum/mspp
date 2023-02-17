@@ -111,8 +111,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Telegram
 LOGGING_LEVEL = logging.env("LOGGING_LEVEL", default="DEBUG")
+LOGGING_FILENAME = BASE_DIR / ".data/system.log"
+LOGGING_FILENAME_BOT = BASE_DIR / ".data/bot.log"
 FORMATTER = logging.Formatter("%(asctime)s — %(name)s — %(levelname)s — %(message)s")
-LOG_FILE_BOT = ".data/bot.log"
 TELEGRAM_TOKEN = env("TELEGRAM_TOKEN")
 WEBHOOK_MODE = env.bool("WEBHOOK_MODE", default=False)
 WEBHOOK_URL = env("WEBHOOK_URL", default=environ.Env.NOTSET if WEBHOOK_MODE else "")
@@ -127,7 +128,7 @@ EMAIL_USER = env("EMAIL")
 
 logging.basicConfig(
     level=LOGGING_LEVEL,
-    filename=str(BASE_DIR / ".data/system.log"),
+    filename=LOGGING_FILENAME,
     filemode="w",
     format="%(asctime)s %(levelname)s %(message)s",
 )

@@ -1,11 +1,11 @@
 import logging
 
-from django.conf import FORMATTER, LOG_FILE_BOT, LOGGING_LEVEL
+from django.conf import FORMATTER, LOGGING_FILENAME_BOT, LOGGING_LEVEL
 
 logger = logging.getLogger(__name__)
 logger.setLevel(LOGGING_LEVEL)
 
-filelog = logging.FileHandler(LOG_FILE_BOT)
+filelog = logging.FileHandler(LOGGING_FILENAME_BOT)
 filelog.setLevel(LOGGING_LEVEL)
 
 console = logging.StreamHandler()
