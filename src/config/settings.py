@@ -132,3 +132,10 @@ ENV_INFO = {
     "client_id": env("CLIENT_ID", default="_"),
     "client_x509_cert_url": env("CLIENT_X509_CERT_URL", default="_"),
 }
+
+logging.basicConfig(
+    level=LOGGING_LEVEL,
+    filename=LOGGING_FILENAME,
+    filemode="w",
+    format="%(asctime)s %(levelname)s %(message)s",
+)
