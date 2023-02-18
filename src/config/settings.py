@@ -72,7 +72,7 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 
-DB_DIR = BASE_DIR / ".data"
+DB_DIR = BASE_DIR.parent / ".data"
 DB_DIR.mkdir(exist_ok=True)
 DATABASES = {
     "default": {
@@ -111,8 +111,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Telegram
 LOGGING_LEVEL = logging.env("LOGGING_LEVEL", default="DEBUG")
-LOGGING_FILENAME = BASE_DIR.parent / ".data/system.log"
-LOGGING_FILENAME_BOT = BASE_DIR.parent / ".data/bot.log"
+LOG_DIR = BASE_DIR.parent / ".logs"
+LOGGING_FILENAME = LOG_DIR / "system.log"
+LOGGING_FILENAME_BOT = LOG_DIR / "bot.log"
 FORMATTER = logging.Formatter("%(asctime)s — %(name)s — %(levelname)s — %(message)s")
 TELEGRAM_TOKEN = env("TELEGRAM_TOKEN")
 WEBHOOK_MODE = env.bool("WEBHOOK_MODE", default=False)
