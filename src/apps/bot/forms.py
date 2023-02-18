@@ -11,7 +11,7 @@ COVERAGE_ERROR_MESSAGE = (
 
 class FundAdminForm(forms.ModelForm):
     def clean(self):
-        coverages = list(self.cleaned_data["coverage_area"])
+        coverages = list(self.cleaned_data.get("coverage_area", []))
         not_valid_ancestors = {
             ancestor.name for ancestor in coverages for coverage in coverages if ancestor.is_ancestor_of(coverage)
         }

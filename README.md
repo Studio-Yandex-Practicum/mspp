@@ -122,7 +122,12 @@ WEBHOOK_URL=https://example.com
 </details>
 
 
-## Авторы:
+## Команда для заполнения базы тестовыми данными
+```bash
+python manage.py fill_data
+```
+
+### Авторы:
 
 [Anton Zelinsky](https://github.com/AntonZelinsky)<br>
 [kr0t](https://github.com/kr0t)<br>

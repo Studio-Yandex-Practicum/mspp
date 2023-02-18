@@ -1,3 +1,4 @@
+import logging
 import sys
 from pathlib import Path
 
@@ -105,6 +106,11 @@ STATIC_ROOT = BASE_DIR / "static"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Telegram
+LOGGING_LEVEL = logging.env("LOGGING_LEVEL", default="DEBUG")
+LOG_DIR = BASE_DIR.parent / ".logs"
+LOGGING_FILENAME = LOG_DIR / "system.log"
+LOGGING_FILENAME_BOT = LOG_DIR / "bot.log"
+FORMATTER = logging.Formatter("%(asctime)s — %(name)s — %(levelname)s — %(message)s")
 TELEGRAM_TOKEN = env("TELEGRAM_TOKEN")
 WEBHOOK_MODE = env.bool("WEBHOOK_MODE", default=False)
 WEBHOOK_URL = env("WEBHOOK_URL", default=environ.Env.NOTSET if WEBHOOK_MODE else "")
