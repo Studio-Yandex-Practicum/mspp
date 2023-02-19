@@ -117,7 +117,7 @@ WEBHOOK_URL = env("WEBHOOK_URL", default=environ.Env.NOTSET if WEBHOOK_MODE else
 
 # Google
 CREDENTIALS_TYPE = env("CREDENTIALS_TYPE", default="env")
-SPREADSHEETS_URL = "https://docs.google.com/spreadsheets /d/{0}"
+SPREADSHEETS_URL = "https://docs.google.com/spreadsheets/d/{0}"
 SPREADSHEET_ID = env("SPREADSHEET_ID", default="_")
 SCOPES = ("https://www.googleapis.com/auth/spreadsheets",)
 
