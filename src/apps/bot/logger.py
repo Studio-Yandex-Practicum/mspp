@@ -1,6 +1,5 @@
 import logging
 
-# from django.conf import FORMATTER, LOGGING_FILENAME_BOT, LOGGING_LEVEL
 from django.conf import settings
 
 logger = logging.getLogger(__name__)
