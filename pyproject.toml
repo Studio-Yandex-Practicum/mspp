@@ -38,6 +38,7 @@ uvicorn = "^0.20.0"
 python-environ = "^0.4.54"
 django-mptt = "^0.14.0"
 aiogoogle = "^5.1.0"
+psycopg2-binary = "^2.9.5"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.0.1"

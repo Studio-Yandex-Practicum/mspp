@@ -1,31 +1,23 @@
 import logging
-import os
 import sys
-import uuid
 from pathlib import Path
 
 import environ
+from django.core.management.utils import get_random_secret_key
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.append(str(BASE_DIR / "apps"))
 
-
-if os.path.exists(BASE_DIR.parent / ".env"):
-    dotenv_path = Path(BASE_DIR.parent / ".env")
-else:
-    dotenv_path = Path(BASE_DIR.parent / ".env_local")
-
 env = environ.Env()
-with dotenv_path.open() as file:
-    environ.Env.read_env(file)
-if env("SECRET_KEY"):
-    SECRET_KEY = env("SECRET_KEY")
-else:
-    SECRET_KEY = str(uuid.uuid1())
+
+SECRET_KEY = env("SECRET_KEY", default=get_random_secret_key())
 
 DEBUG = env.bool("DEBUG", default=True)
 
 ALLOWED_HOSTS = list(map(str.strip, env.list("ALLOWED_HOSTS", default=["*"])))
+CSRF_TRUSTED_ORIGINS = list(
+    map(str.strip, env.list("CSRF_TRUSTED_ORIGINS", default=["http://127.0.0.1", "http://localhost"]))
+)
 
 # Application definition
 
@@ -72,12 +64,16 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 
-DB_DIR = BASE_DIR.parent / ".data"
-DB_DIR.mkdir(exist_ok=True)
+# Use PostgreSQL
+# ------------------------------------------------------------------------------
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": DB_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": env("POSTGRES_DB", default="mspp"),
+        "USER": env("POSTGRES_USER", default="mspp"),
+        "PASSWORD": env("POSTGRES_PASSWORD", default="pg_password"),
+        "HOST": env("POSTGRES_HOST", default="postgres"),
+        "PORT": env("POSTGRES_PORT", default="5432"),
     }
 }
 
@@ -120,12 +116,22 @@ WEBHOOK_MODE = env.bool("WEBHOOK_MODE", default=False)
 WEBHOOK_URL = env("WEBHOOK_URL", default=environ.Env.NOTSET if WEBHOOK_MODE else "")
 
 # Google
-CREDENTIALS_TYPE = env("CREDENTIALS_TYPE")
+LOGGING_LEVEL = env("LOGGING_LEVEL", default="DEBUG")
+CREDENTIALS_TYPE = env("CREDENTIALS_TYPE", default="env")
 SPREADSHEETS_URL = "https://docs.google.com/spreadsheets/d/{0}"
-SPREADSHEET_ID = env("SPREADSHEET_ID")
+SPREADSHEET_ID = env("SPREADSHEET_ID", default="_")
 SCOPES = ("https://www.googleapis.com/auth/spreadsheets",)
 
-EMAIL_USER = env("EMAIL")
+EMAIL_USER = env("EMAIL", default="example@mail.com")
+PRIVATE_KEY = env.str("PRIVATE_KEY", multiline=True, default="_")
+ENV_INFO = {
+    "project_id": env("PROJECT_ID", default="_"),
+    "private_key_id": env("PRIVATE_KEY_ID", default="_"),
+    "private_key": PRIVATE_KEY,
+    "client_email": env("CLIENT_EMAIL", default="_"),
+    "client_id": env("CLIENT_ID", default="_"),
+    "client_x509_cert_url": env("CLIENT_X509_CERT_URL", default="_"),
+}
 
 logging.basicConfig(
     level=LOGGING_LEVEL,
@@ -133,17 +139,3 @@ logging.basicConfig(
     filemode="w",
     format="%(asctime)s %(levelname)s %(message)s",
 )
-
-match CREDENTIALS_TYPE:
-    case "json":
-        JSON_INFO = env("CREDENTIALS_JSON_PATH")
-    case "env":
-        PRIVATE_KEY = env.str("PRIVATE_KEY", multiline=True)
-        ENV_INFO = {
-            "project_id": env("PROJECT_ID"),
-            "private_key_id": env("PRIVATE_KEY_ID"),
-            "private_key": PRIVATE_KEY,
-            "client_email": env("CLIENT_EMAIL"),
-            "client_id": env("CLIENT_ID"),
-            "client_x509_cert_url": env("CLIENT_X509_CERT_URL"),
-        }

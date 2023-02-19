@@ -147,3 +147,4 @@ static/
 
 .vscode/
 *.code-workspace
+Makefile
