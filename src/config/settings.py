@@ -106,7 +106,7 @@ STATIC_ROOT = BASE_DIR / "static"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Telegram
-# LOGGING_LEVEL = logging.env("LOGGING_LEVEL", default="DEBUG")
+LOGGING_LEVEL = env("LOGGING_LEVEL", default="DEBUG")
 LOG_DIR = BASE_DIR / ".logs"
 LOGGING_FILENAME = LOG_DIR / "system.log"
 LOGGING_FILENAME_BOT = LOG_DIR / "bot.log"
@@ -116,9 +116,8 @@ WEBHOOK_MODE = env.bool("WEBHOOK_MODE", default=False)
 WEBHOOK_URL = env("WEBHOOK_URL", default=environ.Env.NOTSET if WEBHOOK_MODE else "")
 
 # Google
-LOGGING_LEVEL = env("LOGGING_LEVEL", default="DEBUG")
 CREDENTIALS_TYPE = env("CREDENTIALS_TYPE", default="env")
-SPREADSHEETS_URL = "https://docs.google.com/spreadsheets/d/{0}"
+SPREADSHEETS_URL = "https://docs.google.com/spreadsheets /d/{0}"
 SPREADSHEET_ID = env("SPREADSHEET_ID", default="_")
 SCOPES = ("https://www.googleapis.com/auth/spreadsheets",)
 
