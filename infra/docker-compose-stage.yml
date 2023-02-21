@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-    postgres:
+  postgres:
     image: postgres:15.2
     container_name: postgres_stage
     restart: always
