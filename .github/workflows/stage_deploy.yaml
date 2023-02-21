@@ -112,6 +112,12 @@ jobs:
             # Secrets variables for webhook:
             echo WEBHOOK_MODE=${{ secrets.WEBHOOK_MODE }} >> .env-stage
             echo WEBHOOK_URL=${{ secrets.WEBHOOK_URL }} >> .env-stage
+            # Secrets variables for POSTGRES
+            echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env-stage
+            echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env-stage
+            echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env-stage
+            echo POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} >> .env-stage
+            echo POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} >> .env-stage
             # Установка приложения +
             cp .env-stage infra/.env-stage
             sudo docker compose -f infra/docker-compose-stage.yml up -d
