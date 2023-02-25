@@ -5,6 +5,10 @@ concurrency:
   cancel-in-progress: true
 
 on:
+  push:
+    branches:
+      - develop
+      - 'feature/**'
   pull_request:
     branches:
       - develop
@@ -14,7 +18,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: mssp_bot
+  IMAGE_NAME: mssp
   DEPLOY_PATH: /MSPP
 
 defaults:
@@ -29,34 +33,26 @@ jobs:
       contents: read
       packages: write
     steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v2
-        with:
-          ref: develop
-      -
-        name: Docker login
-        uses: docker/login-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      -
-        name: Set variables
-        run: |
-          echo REP_OWNER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
-      -
-        name: Build and push
-        uses: docker/build-push-action@v2
+      - name: Sanitize repo slug
+        uses: actions/github-script@v6
+        id: repo_slug
         with:
-          context: .
-          file: Dockerfile_stage
-          labels: runnumber=${GITHUB_RUN_ID}
+          result-encoding: string
+          script: return 'ghcr.io/${{ github.repository }}'.toLowerCase()
+      - name: Push Stage to GitHub Container Registry
+        uses: docker/build-push-action@v4
+        with:
+          context: "{{defaultContext}}"
           push: true
-          tags: |
-            ${{ env.REGISTRY }}/${{ env.REP_OWNER }}/${{ env.IMAGE_NAME }}:stage,
-            ${{ env.REGISTRY }}/${{ env.REP_OWNER }}/${{ env.IMAGE_NAME }}:latest,
-            ${{ env.REGISTRY }}/${{ env.REP_OWNER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          tags: ${{ steps.repo_slug.outputs.result }}:stage
 
   deploy:
     name: Deploy changes on server
@@ -69,9 +65,32 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: develop
-      -
-        name: Create folder for application
-        run: ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} mkdir -p ${{ env.DEPLOY_PATH }}
+      - name: Sanitize repo slug
+        uses: actions/github-script@v6
+        id: repo_slug_deploy
+        with:
+          result-encoding: string
+          script: return 'ghcr.io/${{ github.repository }}'.toLowerCase()
+      - name: Create directory for deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          script: |
+            sudo mkdir -p ${{ env.DEPLOY_PATH }}/infra
+            sudo chmod 777 ${{ env.DEPLOY_PATH }}
+            sudo chmod 777 ${{ env.DEPLOY_PATH }}/infra
+      - name: copy file via ssh
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          source: "infra/docker-compose-stage.yml, infra/nginx.conf"
+          target: ${{ env.DEPLOY_PATH }}
       - name: executing remote ssh commands to deploy
         uses: appleboy/ssh-action@master
         with:
@@ -82,14 +101,23 @@ jobs:
           script: |
             cd ${{ env.DEPLOY_PATH }}
             # Очистка неиспользуемых контейнеров, образов, сетей
-            docker system prune --force
-            sudo docker-compose rm -f mssp
-            touch .env
+            sudo docker system prune --force
+            touch .env-stage
             # Django environment variables
-            echo DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> .env-stage
-            echo DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }} >> .env-stage
+            echo SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> .env-stage
+            echo ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }} >> .env-stage
             # Secrets variables for google sheets in Django:
             echo GOOGLE_PRIVATE_KEY_ID=${{ secrets.GOOGLE_PRIVATE_KEY_ID }} >> .env-stage
             echo GOOGLE_PRIVATE_KEY=${{ secrets.GOOGLE_PRIVATE_KEY }} >> .env-stage
-            # Установка приложения
-            sudo docker-compose up -d
+            # Secrets variables for webhook:
+            echo WEBHOOK_MODE=${{ secrets.WEBHOOK_MODE }} >> .env-stage
+            echo WEBHOOK_URL=${{ secrets.WEBHOOK_URL }} >> .env-stage
+            # Secrets variables for POSTGRES
+            echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env-stage
+            echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env-stage
+            echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env-stage
+            echo POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} >> .env-stage
+            echo POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} >> .env-stage
+            # Установка приложения +
+            cp .env-stage infra/.env-stage
+            sudo docker compose -f infra/docker-compose-stage.yml up -d

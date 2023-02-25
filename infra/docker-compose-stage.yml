@@ -1,0 +1,41 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:15.2
+    container_name: postgres_stage
+    restart: always
+    volumes:
+      - postgres_data_stage:/var/lib/postgresql/data
+    env_file:
+      - ./.env-stage
+
+  backend:
+    image: "ghcr.io/studio-yandex-practicum/mspp:stage"
+    container_name: backend_stage
+    restart: always
+    depends_on:
+      - postgres
+    volumes:
+      - ./.data:/.data
+      - static_value_stage:/app/static/
+    env_file:
+      - ./.env-stage
+
+  nginx:
+    image: nginx:1.23.3-alpine
+    container_name: nginx_stage
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - static_value_stage:/var/html/static/
+    restart: always
+    depends_on:
+      - backend
+
+
+volumes:
+  postgres_data_stage:
+    name: postgres_data_stage
+  static_value_stage:
+    name: static_value_stage
