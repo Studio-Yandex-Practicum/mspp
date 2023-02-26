@@ -73,14 +73,17 @@ async def location(update: Update, context: ContextTypes.DEFAULT_TYPE):
         del context.user_data[CITY]
     if FUND in context.user_data:
         del context.user_data[FUND]
-    print("start user_data:", context.user_data)  # FIXME: удалить
     text = "В каком ты городе?"
     regions_buttons = [
-        [InlineKeyboardButton("Другой город", callback_data="other_city")],
-        [InlineKeyboardButton("Я не в России", callback_data="other_country")],
+        [InlineKeyboardButton(region.name, callback_data=region.name)]
+        async for region in CoverageArea.objects.filter(level=1)
     ]
-    async for region in CoverageArea.objects._mptt_filter(level=1):
-        regions_buttons.insert(0, [InlineKeyboardButton(region.name, callback_data=region.name)])
+    regions_buttons.extend(
+        (
+            [InlineKeyboardButton("Другой город", callback_data="other_city")],
+            [InlineKeyboardButton("Я не в России", callback_data="other_country")],
+        )
+    )
     keyboard = InlineKeyboardMarkup(regions_buttons)
     if update.message:
         await update.message.reply_html(text=text, reply_markup=keyboard)
