@@ -63,6 +63,8 @@ async def check_age(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def location(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    from .models import CoverageArea
+
     if COUNTRY in context.user_data:
         del context.user_data[COUNTRY]
     if REGION in context.user_data:
@@ -71,17 +73,18 @@ async def location(update: Update, context: ContextTypes.DEFAULT_TYPE):
         del context.user_data[CITY]
     if FUND in context.user_data:
         del context.user_data[FUND]
-    print("start user_data:", context.user_data)  # FIXME: удалить
     text = "В каком ты городе?"
-    keyboard = InlineKeyboardMarkup(
-        [
-            [InlineKeyboardButton("Москва", callback_data="Москва")],
-            [InlineKeyboardButton("Московская область", callback_data="Московская область")],
-            [InlineKeyboardButton("Санкт-Петербург", callback_data="Санкт-Петербург")],
+    regions_buttons = [
+        [InlineKeyboardButton(region.name, callback_data=region.name)]
+        async for region in CoverageArea.objects.filter(level=1)
+    ]
+    regions_buttons.extend(
+        (
             [InlineKeyboardButton("Другой город", callback_data="other_city")],
             [InlineKeyboardButton("Я не в России", callback_data="other_country")],
-        ]
+        )
     )
+    keyboard = InlineKeyboardMarkup(regions_buttons)
     if update.message:
         await update.message.reply_html(text=text, reply_markup=keyboard)
     else:
