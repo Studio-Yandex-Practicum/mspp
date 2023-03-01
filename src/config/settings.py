@@ -6,7 +6,7 @@ import environ
 from django.core.management.utils import get_random_secret_key
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-sys.path.append(str(BASE_DIR / "apps"))
+sys.path.append(str(BASE_DIR / "src/apps"))
 
 env = environ.Env()
 
@@ -107,7 +107,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Telegram
 LOGGING_LEVEL = env("LOGGING_LEVEL", default="DEBUG")
-LOG_DIR = BASE_DIR / "src/.logs"
+LOG_DIR = BASE_DIR / "src/logs"
 LOGGING_FILENAME = LOG_DIR / "system.log"
 LOGGING_FILENAME_BOT = LOG_DIR / "bot.log"
 FORMATTER = logging.Formatter("%(asctime)s — %(name)s — %(levelname)s — %(message)s")
