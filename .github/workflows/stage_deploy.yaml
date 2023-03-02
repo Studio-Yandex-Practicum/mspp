@@ -125,6 +125,7 @@ jobs:
             echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env-stage
             echo POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} >> .env-stage
             echo POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} >> .env-stage
+            echo TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }} >> .env-stage
             # Установка приложения +
-            cp .env-stage infra/.env-stage
+            mv .env-stage infra/.env-stage
             sudo docker compose -f infra/docker-compose-stage.yml up -d
