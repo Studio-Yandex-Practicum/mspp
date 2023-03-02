@@ -30,6 +30,8 @@ jobs:
   build-and-push-image-to-github-packages:
     name: Push Docker image to GitHub Packages
     runs-on: ubuntu-latest
+    environment:
+      name: stage_deploy
     permissions:
       contents: read
       packages: write
