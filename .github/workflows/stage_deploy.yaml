@@ -5,10 +5,15 @@ concurrency:
   cancel-in-progress: true
 
 on:
+  push:
+    branches:
+      - develop
+      - 'feature/**'
+      - 'fix/**'
   pull_request:
     branches:
       - develop
-    types: [ closed ]
+    types: [closed]
 
   workflow_dispatch:
 
@@ -61,6 +66,10 @@ jobs:
       name: stage_deploy
     needs: build-and-push-image-to-github-packages
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: develop
       - name: Sanitize repo slug
         uses: actions/github-script@v6
         id: repo_slug_deploy
