@@ -179,50 +179,44 @@ async def check_country(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def region(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    from .models import CoverageArea
+
     await update.callback_query.answer()
+    regions_buttons = [
+        [InlineKeyboardButton(region.name, callback_data=region.name)]
+        async for region in CoverageArea.objects.filter(level=1)
+    ]
+    regions_buttons.extend(
+        [
+            [
+                InlineKeyboardButton("Далее", callback_data="next"),
+                InlineKeyboardButton("Назад", callback_data="prev"),
+            ],
+            [InlineKeyboardButton("Нет моего региона", callback_data="no_fund")],
+        ]
+    )
     await update.callback_query.edit_message_text(
         "Выбери регион",
-        reply_markup=InlineKeyboardMarkup(
-            [
-                [InlineKeyboardButton("Регион 1", callback_data="Регион 1")],
-                [InlineKeyboardButton("Регион 2", callback_data="Регион 2")],
-                [InlineKeyboardButton("Регион 3", callback_data="Регион 3")],
-                [InlineKeyboardButton("Регион 4", callback_data="Регион 4")],
-                [InlineKeyboardButton("Регион 5", callback_data="Регион 5")],
-                [InlineKeyboardButton("Регион 6 (без городов)", callback_data="Регион 6")],
-                [InlineKeyboardButton("Регион 7 (без городов)", callback_data="Регион 7")],
-                [InlineKeyboardButton("Регион 8 (без городов)", callback_data="Регион 8")],
-                [InlineKeyboardButton("Регион 9 (без городов)", callback_data="Регион 9")],
-                [InlineKeyboardButton("Регион 10 (без городов)", callback_data="Регион 10")],
-                # TODO: добавить пагинацию
-                [
-                    InlineKeyboardButton("Далее", callback_data="next"),
-                    InlineKeyboardButton("Назад", callback_data="prev"),
-                ],
-                [InlineKeyboardButton("Нет моего региона", callback_data="no_fund")],
-            ]
-        ),
+        reply_markup=InlineKeyboardMarkup(regions_buttons),
     )
     return REGION
 
 
 async def check_region(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data[REGION] = update.callback_query.data
-    if update.callback_query.data in (
-        "Регион 1",
-        "Регион 2",
-        "Регион 3",
-        "Регион 4",
-        "Регион 5",
-    ):
+    if update.callback_query.data not in ("Москва", "Санкт-Петербург"):
         return await city(update, context)
-    if update.callback_query.data in ("Регион 6", "Регион 7", "Регион 8", "Регион 9", "Регион 10"):
-        return await fund(update, context)
-    return ConversationHandler.END
+    return await fund(update, context)
 
 
 async def city(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    from .models import CoverageArea
+
+    print("gay")
     await update.callback_query.answer()
+    async for city in CoverageArea.objects.filter(name=context.user_data[REGION]):
+        async for child in CoverageArea.objects.filter(parent_id=city.id):
+            print(child.name)
     await update.callback_query.edit_message_text(
         "Выбери город",
         reply_markup=InlineKeyboardMarkup(
