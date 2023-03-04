@@ -102,10 +102,9 @@ async def check_location(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context.user_data[REGION] = update.callback_query.data
         context.user_data[CITY] = update.callback_query.data
         return await fund(update, context)
-    if update.callback_query.data == "Московская область":
+    else:
         context.user_data[REGION] = update.callback_query.data
         return await city(update, context)
-    return ConversationHandler.END
 
 
 async def no_fund(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -181,7 +180,6 @@ async def check_country(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def region(update: Update, context: ContextTypes.DEFAULT_TYPE):
     from .models import CoverageArea
 
-    await update.callback_query.answer()
     regions_buttons = [
         [InlineKeyboardButton(region.name, callback_data=region.name)]
         async for region in CoverageArea.objects.filter(level=1)
@@ -195,6 +193,7 @@ async def region(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton("Нет моего региона", callback_data="no_fund")],
         ]
     )
+    await update.callback_query.answer()
     await update.callback_query.edit_message_text(
         "Выбери регион",
         reply_markup=InlineKeyboardMarkup(regions_buttons),
@@ -212,30 +211,13 @@ async def check_region(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def city(update: Update, context: ContextTypes.DEFAULT_TYPE):
     from .models import CoverageArea
 
-    print("gay")
+    city = await CoverageArea.objects.aget(parent__name=context.user_data[REGION])
     await update.callback_query.answer()
-    async for city in CoverageArea.objects.filter(name=context.user_data[REGION]):
-        async for child in CoverageArea.objects.filter(parent_id=city.id):
-            print(child.name)
     await update.callback_query.edit_message_text(
         "Выбери город",
         reply_markup=InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton("Город 1", callback_data="Город 1")],
-                [InlineKeyboardButton("Город 2", callback_data="Город 2")],
-                [InlineKeyboardButton("Город 3", callback_data="Город 3")],
-                [InlineKeyboardButton("Город 4", callback_data="Город 4")],
-                [InlineKeyboardButton("Город 5", callback_data="Город 5")],
-                [InlineKeyboardButton("Город 6", callback_data="Город 6")],
-                [InlineKeyboardButton("Город 7", callback_data="Город 7")],
-                [InlineKeyboardButton("Город 8", callback_data="Город 8")],
-                [InlineKeyboardButton("Город 9", callback_data="Город 9")],
-                [InlineKeyboardButton("Город 10", callback_data="Город 10")],
-                # TODO: добавить пагинацию
-                [
-                    InlineKeyboardButton("Далее", callback_data="next"),
-                    InlineKeyboardButton("Назад", callback_data="prev"),
-                ],
+                [InlineKeyboardButton(city.name, callback_data=city.name)],
                 [InlineKeyboardButton("Нет моего города", callback_data="no_fund")],
             ]
         ),
@@ -244,19 +226,13 @@ async def city(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def check_city(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    from .models import CoverageArea
+
     context.user_data[CITY] = update.callback_query.data
-    if update.callback_query.data in (
-        "Город 1",
-        "Город 2",
-        "Город 3",
-        "Город 4",
-        "Город 5",
-        "Город 6",
-        "Город 7",
-        "Город 8",
-        "Город 9",
-        "Город 10",
-    ):
+    region_from_mtpp = await CoverageArea.objects.aget(name=context.user_data[REGION])
+    city_from_mtpp = await CoverageArea.objects.aget(name=context.user_data[CITY])
+    print(city_from_mtpp.parent_id)
+    if region_from_mtpp.id == city_from_mtpp.parent_id:
         return await fund(update, context)
     return ConversationHandler.END
 
