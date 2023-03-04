@@ -139,9 +139,8 @@ async def new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def read_new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    print("finish user_data:", context.user_data)  # FIXME: удалить
     data = json.loads(update.effective_message.web_app_data.data)
-    print("web_app data:", data)  # FIXME: удалить
+    print(data)  # FIXME удалить
     # TODO: передать данные из формы в google таблицу
     await update.message.reply_html(
         "Спасибо! Я передал твою заявку. Поcтараемся запустить проект в "
@@ -231,7 +230,6 @@ async def check_city(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data[CITY] = update.callback_query.data
     region_from_mtpp = await CoverageArea.objects.aget(name=context.user_data[REGION])
     city_from_mtpp = await CoverageArea.objects.aget(name=context.user_data[CITY])
-    print(city_from_mtpp.parent_id)
     if region_from_mtpp.id == city_from_mtpp.parent_id:
         return await fund(update, context)
     return ConversationHandler.END
@@ -283,7 +281,6 @@ async def check_fund(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def fund_has_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    print("finish user_data:", context.user_data)  # FIXME: удалить
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
         "У этого фонда есть своя анкета, заполни ее на сайте фонда по ссылке " f"{context.user_data[FUND][URL]}"
@@ -315,7 +312,6 @@ async def fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def read_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    print("finish user_data:", context.user_data)  # FIXME: удалить
     data = json.loads(update.effective_message.web_app_data.data)
     print("web_app data:", data)  # FIXME: удалить
     # TODO: передать данные из формы в google таблицу
