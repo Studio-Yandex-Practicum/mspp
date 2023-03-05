@@ -139,8 +139,7 @@ async def new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def read_new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    data = json.loads(update.effective_message.web_app_data.data)
-    print(data)  # FIXME удалить
+    json.loads(update.effective_message.web_app_data.data)
     # TODO: передать данные из формы в google таблицу
     await update.message.reply_html(
         "Спасибо! Я передал твою заявку. Поcтараемся запустить проект в "
