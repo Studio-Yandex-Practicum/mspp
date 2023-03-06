@@ -16,8 +16,7 @@ services:
     depends_on:
       - postgres
     volumes:
-      - ./src/.data:/src/.data
-      - ./src/logs:/src/logs
+      - ./logs:/logs
       - static_value_local:/app/static/
     env_file:
       - ../.env_local
