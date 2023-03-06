@@ -1,3 +1,5 @@
+![Stage Deploy workflow](https://github.com/Studio-Yandex-Practicum/mspp/actions/workflows/stage_deploy.yml/badge.svg)
+(https://github.com/Studio-Yandex-Practicum/mspp/actions)
 # mspp
 
 ## Описание
@@ -9,11 +11,44 @@
 - [Django](https://www.djangoproject.com/): 4.1.5
 
 
+## Шаблон наполнения env-файла
 
-### Шаблон наполнения env-файла:
-```
+<details>
+  <summary>env_example</summary>
 
-```
+  - Обязательно<br>
+  `TELEGRAM_TOKEN`<br>
+  `PostgreSQL environment variables`<br>
+  - Остальное опционально.<br>
+    - Django<br>
+    `ALLOWED_HOSTS=[]`<br>
+    `CSRF_TRUSTED_ORIGINS=[]`<br>
+    `DEBUG=True`<br>
+    `SECRET_KEY=""`<br>
+    - Telegram<br>
+    `TELEGRAM_TOKEN=`<br>
+    `WEBHOOK_MODE=False`<br>
+    `WEBHOOK_URL=`<br>
+    - Google<br>
+    `LOGGING_LEVEL="DEBUG"`<br>
+    `EMAIL="example@mail.com"`<br>
+    - ID Google таблицы для добавления данных<br>
+    `SPREADSHEET_ID=""`<br>
+    - Данные сервисного аккаунта<br>
+    `PROJECT_ID=""`<br>
+    `PRIVATE_KEY_ID=""`<br>
+    `PRIVATE_KEY=""`<br>
+    `CLIENT_EMAIL=""`<br>
+    `CLIENT_ID=""`<br>
+    `CLIENT_X509_CERT_URL=""`<br>
+    - PostgreSQL environment variables<br>
+    `POSTGRES_DB=mspp`<br>
+    `POSTGRES_USER=mspp`<br>
+    `POSTGRES_PASSWORD=pg_password`<br>
+    `POSTGRES_HOST=postgres`<br>
+    `POSTGRES_PORT=5432`<br>
+  ---
+</details>
 
 ## Установка
 1. Зависимости и пакеты управляются через **poetry**. Убедитесь, что **poetry** [установлен](https://python-poetry.org/docs/#osx--linux--bashonwindows-install-instructions) на вашем компьютере и ознакомьтесь с [документацией](https://python-poetry.org/docs/cli/).
@@ -79,7 +114,7 @@ WEBHOOK_URL=https://example.com
   [Установить](https://docs.docker.com/engine/install/) docker и docker compose<br>
   Добавить TELEGRAM_TOKEN в .env_local<br>
 
-  - Запустить локально<br>
+ - Запустить локально<br>
   `docker compose -f infra/docker-compose_local.yml up` - с выводом в консоль<br>
   `docker compose -f infra/docker-compose_local.yml up -d` - в тихом режиме<br>
   `docker compose -f infra/docker-compose_local.yml up --build` - пересобрать после внесения изменений<br>
