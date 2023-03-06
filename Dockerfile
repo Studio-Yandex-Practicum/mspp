@@ -4,6 +4,7 @@ WORKDIR /app
 
 COPY /requirements requirements/
 
+RUN mkdir -p logs
 RUN python -m pip install --upgrade pip
 RUN pip install -r ./requirements/development.txt --no-cache-dir
 

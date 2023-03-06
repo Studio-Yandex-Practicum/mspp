@@ -6,8 +6,7 @@ services:
     container_name: backend_production
     restart: always
     volumes:
-      - ./.data:/.data
-      - ./.logs:/.logs
+      - ./logs:/logs
       - static_value:/app/static/
     env_file:
       - ./.env

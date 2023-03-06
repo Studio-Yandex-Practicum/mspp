@@ -16,7 +16,7 @@ services:
     depends_on:
       - postgres
     volumes:
-      - ./.data:/.data
+      - ./logs:/logs
       - static_value_stage:/app/static/
     env_file:
       - ./.env-stage
