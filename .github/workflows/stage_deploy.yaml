@@ -107,25 +107,31 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             cd ${{ env.DEPLOY_PATH }}
-            # Очистка неиспользуемых контейнеров, образов, сетей
             sudo docker system prune --force
             touch .env-stage
-            # Django environment variables
+
             echo SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> .env-stage
             echo ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }} >> .env-stage
-            # Secrets variables for google sheets in Django:
+
             echo GOOGLE_PRIVATE_KEY_ID=${{ secrets.GOOGLE_PRIVATE_KEY_ID }} >> .env-stage
             echo GOOGLE_PRIVATE_KEY=${{ secrets.GOOGLE_PRIVATE_KEY }} >> .env-stage
-            # Secrets variables for webhook:
+
             echo WEBHOOK_MODE=${{ secrets.WEBHOOK_MODE }} >> .env-stage
             echo WEBHOOK_URL=${{ secrets.WEBHOOK_URL }} >> .env-stage
-            # Secrets variables for POSTGRES
+
             echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env-stage
             echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env-stage
             echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env-stage
             echo POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} >> .env-stage
             echo POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} >> .env-stage
             echo TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }} >> .env-stage
-            # Установка приложения +
+
             mv .env-stage infra/.env-stage
-            sudo docker compose -f infra/docker-compose-stage.yml up -d
+
+            sudo docker compose -f infra/docker-compose-stage.yml stop
+            sudo docker compose -f infra/docker-compose-stage.yml rm -f
+            sudo docker rmi $(sudo docker images -qa)
+            sudo docker compose -f infra/docker-compose-stage.yml up -d --quiet-pull
+
+            sudo docker compose -f infra/docker-compose-stage.yml exec backend python manage.py migrate
+            sudo docker compose -f infra/docker-compose-stage.yml exec backend python manage.py fill_data
