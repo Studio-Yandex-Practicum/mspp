@@ -1,5 +1,4 @@
-[![Stage Deploy workflow](https://github.com/Studio-Yandex-Practicum/mspp/actions/workflows/stage_deploy.yaml/badge.svg)]
-(https://github.com/Studio-Yandex-Practicum/mspp/actions)
+[![MSPP Actions Status](https://github.com/Studio-Yandex-Practicum/mspp/actions/workflows/stage_deploy.yaml/badge.svg)](https://github.com/Studio-Yandex-Practicum/mspp/actions)
 # mspp
 
 ## Описание
