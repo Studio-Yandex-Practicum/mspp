@@ -70,8 +70,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          ref: develop
       - name: Sanitize repo slug
         uses: actions/github-script@v6
         id: repo_slug_deploy
