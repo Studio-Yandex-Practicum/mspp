@@ -1,4 +1,4 @@
-![Stage Deploy workflow](https://github.com/Studio-Yandex-Practicum/mspp/actions/workflows/stage_deploy.yml/badge.svg)
+[![Stage Deploy workflow](https://github.com/Studio-Yandex-Practicum/mspp/actions/workflows/stage_deploy.yaml/badge.svg)]
 (https://github.com/Studio-Yandex-Practicum/mspp/actions)
 # mspp
 
