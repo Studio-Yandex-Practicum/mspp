@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   postgres:
     image: postgres:15.2
@@ -11,7 +10,7 @@ services:
     volumes:
       - postgres_data_stage:/var/lib/postgresql/data
     env_file:
-      - ./.env
+      - .env
 
   backend:
     image: "ghcr.io/studio-yandex-practicum/mspp:stage"
@@ -23,7 +22,7 @@ services:
       - ./logs:/logs
       - static_value_stage:/app/static/
     env_file:
-      - ./.env
+      - .env
 
   nginx:
     image: nginx:1.23.3-alpine
