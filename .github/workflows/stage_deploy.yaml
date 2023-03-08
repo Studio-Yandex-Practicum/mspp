@@ -93,7 +93,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
-          source: "docker-compose.staging.yml"
+          source: "infra/docker-compose.staging.yml"
           target: ${{ env.DEPLOY_PATH }}
       - name: executing remote ssh commands to deploy
         uses: appleboy/ssh-action@master
@@ -121,10 +121,10 @@ jobs:
             echo POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} >> .env
             echo TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }} >> .env
 
-            sudo docker compose -f docker-compose.staging.yml stop
-            sudo docker compose -f docker-compose.staging.yml rm -f
+            sudo docker compose -f infra/docker-compose.staging.yml stop
+            sudo docker compose -f infra/docker-compose.staging.yml rm -f
             sudo docker rmi $(sudo docker images -qa)
-            sudo docker compose -f docker-compose.staging.yml up -d --quiet-pull
+            sudo docker compose -f infra/docker-compose.staging.yml up -d --quiet-pull
 
-            sudo docker compose -f docker-compose.staging.yml exec backend python manage.py migrate
-            sudo docker compose -f docker-compose.staging.yml exec backend python manage.py fill_data
+            sudo docker compose -f infra/docker-compose.staging.yml exec backend python manage.py migrate
+            sudo docker compose -f infra/docker-compose.staging.yml exec backend python manage.py fill_data
