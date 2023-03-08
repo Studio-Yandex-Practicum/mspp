@@ -104,10 +104,8 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             cd ${{ env.DEPLOY_PATH }}
-            sudo docker system prune --force
-            touch .env
 
-            echo SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> .env
+            echo SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} > .env
             echo ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }} >> .env
 
             echo GOOGLE_PRIVATE_KEY_ID=${{ secrets.GOOGLE_PRIVATE_KEY_ID }} >> .env
@@ -123,10 +121,10 @@ jobs:
             echo POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} >> .env
             echo TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }} >> .env
 
-            sudo docker compose -f docker-compose-stage.yml stop
-            sudo docker compose -f docker-compose-stage.yml rm -f
+            sudo docker compose -f docker-compose.staging.yml stop
+            sudo docker compose -f docker-compose.staging.yml rm -f
             sudo docker rmi $(sudo docker images -qa)
-            sudo docker compose -f docker-compose-stage.yml up -d --quiet-pull
+            sudo docker compose -f docker-compose.staging.yml up -d --quiet-pull
 
-            sudo docker compose -f docker-compose-stage.yml exec backend python manage.py migrate
-            sudo docker compose -f docker-compose-stage.yml exec backend python manage.py fill_data
+            sudo docker compose -f docker-compose.staging.yml exec backend python manage.py migrate
+            sudo docker compose -f docker-compose.staging.yml exec backend python manage.py fill_data
