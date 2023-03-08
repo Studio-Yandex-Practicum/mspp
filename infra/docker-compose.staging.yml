@@ -16,6 +16,7 @@ services:
     image: "ghcr.io/studio-yandex-practicum/mspp:stage"
     container_name: backend_stage
     restart: always
+
     depends_on:
       - postgres
     volumes:
@@ -23,6 +24,10 @@ services:
       - static_value_stage:/app/static/
     env_file:
       - .env
+    expose:
+      - "8000"
+    ports:
+      - "8000:8000"
 
   nginx:
     image: nginx:1.23.3-alpine
