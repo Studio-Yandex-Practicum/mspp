@@ -104,22 +104,23 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             cd ${{ env.DEPLOY_PATH }}
+            cat > infra/.env <<- EOM
+            SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
+            ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }} 
 
-            echo SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} > infra/.env
-            echo ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }} >> infra/.env
+            GOOGLE_PRIVATE_KEY_ID=${{ secrets.GOOGLE_PRIVATE_KEY_ID }} 
+            GOOGLE_PRIVATE_KEY=${{ secrets.GOOGLE_PRIVATE_KEY }} 
 
-            echo GOOGLE_PRIVATE_KEY_ID=${{ secrets.GOOGLE_PRIVATE_KEY_ID }} >> infra/.env
-            echo GOOGLE_PRIVATE_KEY=${{ secrets.GOOGLE_PRIVATE_KEY }} >> infra/.env
+            WEBHOOK_MODE=${{ secrets.WEBHOOK_MODE }} 
+            WEBHOOK_URL=${{ secrets.WEBHOOK_URL }} 
 
-            echo WEBHOOK_MODE=${{ secrets.WEBHOOK_MODE }} >> infra/.env
-            echo WEBHOOK_URL=${{ secrets.WEBHOOK_URL }} >> infra/.env
-
-            echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> infra/.env
-            echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> infra/.env
-            echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> infra/.env
-            echo POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} >> infra/.env
-            echo POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} >> infra/.env
-            echo TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }} >> infra/.env
+            POSTGRES_DB=${{ secrets.POSTGRES_DB }} 
+            POSTGRES_USER=${{ secrets.POSTGRES_USER }} 
+            POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} 
+            POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} 
+            POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} 
+            TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }} 
+            EOM
 
             sudo docker compose -f infra/docker-compose.staging.yml stop
             sudo docker compose -f infra/docker-compose.staging.yml rm -f
