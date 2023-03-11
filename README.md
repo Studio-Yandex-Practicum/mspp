@@ -1,5 +1,4 @@
-![Stage Deploy workflow](https://github.com/Studio-Yandex-Practicum/mspp/actions/workflows/stage_deploy.yml/badge.svg)
-(https://github.com/Studio-Yandex-Practicum/mspp/actions)
+[![MSPP Actions Status](https://github.com/Studio-Yandex-Practicum/mspp/actions/workflows/stage_deploy.yaml/badge.svg)](https://github.com/Studio-Yandex-Practicum/mspp/actions)
 # mspp
 
 ## Описание
@@ -144,14 +143,15 @@ WEBHOOK_URL=https://example.com
   ---
 </details>
 <details>
-  <summary>Запуск uvicorn</summary>
+  <summary>Запуск только контейнера базы данных для более удобной разработки</summary>
 
   ---
-  1. Перейдите в директорию src `cd src`
-  2. Скопируйте статические файлы `python manage.py collectstatic`
-  3. Примените миграции `python manage.py migrate`
-  4. Создайте суперпользователя `python manage.py createsuperuser`
-  5. Запустите проект `uvicorn config.asgi:application`
+  1. docker compose -f infra/docker-compose_db_launch.yml up -d --build
+  2. Перейдите в директорию src `cd src`
+  3. Скопируйте статические файлы `python manage.py collectstatic`
+  4. Примените миграции `python manage.py migrate`
+  5. Создайте суперпользователя `python manage.py createsuperuser`
+  6. Запустите проект `uvicorn config.asgi:application`
   ---
 </details>
 
