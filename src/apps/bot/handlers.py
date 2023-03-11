@@ -235,27 +235,25 @@ async def check_city(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def fund(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    from .models import Fund
+
     if CITY not in context.user_data:
         context.user_data[CITY] = update.callback_query.data
     if FUND in context.user_data:
         del context.user_data[FUND]
+    fund_list = [
+        [InlineKeyboardButton("Почитать про фонды", callback_data="info")],
+        # TODO пагинация?
+    ]
+    async for fund in Fund.objects.filter(coverage_area__name=context.user_data[CITY]):
+        fund_list.append([InlineKeyboardButton(fund.name, callback_data=fund.name)])
+    fund_list.append(
+        [InlineKeyboardButton("Изменить город?", callback_data="change_city")],
+    )
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
         "Фонды, доступные в твоем городе",
-        reply_markup=InlineKeyboardMarkup(
-            [
-                [InlineKeyboardButton("Почитать про фонды", callback_data="info")],
-                [InlineKeyboardButton("Арифметика добра", callback_data="Арифметика добра")],
-                [InlineKeyboardButton("Фонд 2", callback_data="Фонд 2")],
-                [InlineKeyboardButton("Фонд 3", callback_data="Фонд 3")],
-                [InlineKeyboardButton("Фонд 4", callback_data="Фонд 4")],
-                [InlineKeyboardButton("Фонд 5", callback_data="Фонд 5")],
-                [InlineKeyboardButton("Фонд 6", callback_data="Фонд 6")],
-                [InlineKeyboardButton("Фонд 7", callback_data="Фонд 7")],
-                # TODO: пагинация?
-                [InlineKeyboardButton("Изменить город?", callback_data="change_city")],
-            ]
-        ),
+        reply_markup=InlineKeyboardMarkup(fund_list),
     )
     return FUND
 
