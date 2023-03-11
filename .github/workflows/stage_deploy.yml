@@ -1,4 +1,4 @@
-name: Stage Deploy
+name: Stage_Deploy
 
 concurrency:
   group: stage_deploy
