@@ -10,6 +10,7 @@ on:
       - develop
       - 'feature/**'
       - 'fix/**'
+      - 'refactoring/**'
   pull_request:
     branches:
       - develop
