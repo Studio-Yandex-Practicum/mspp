@@ -5,6 +5,8 @@ from pathlib import Path
 import environ
 from django.core.management.utils import get_random_secret_key
 
+from src.apps.bot.logger import create_log_directory
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.append(str(BASE_DIR / "apps"))
 
@@ -132,6 +134,7 @@ ENV_INFO = {
     "client_x509_cert_url": env("CLIENT_X509_CERT_URL", default="_"),
 }
 
+create_log_directory(LOG_DIR)
 logging.basicConfig(
     level=LOGGING_LEVEL,
     filename=LOGGING_FILENAME,
