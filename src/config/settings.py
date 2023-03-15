@@ -77,6 +77,7 @@ DATABASES = {
     }
 }
 
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -111,7 +112,7 @@ LOG_DIR = BASE_DIR / "logs"
 LOGGING_FILENAME = LOG_DIR / "system.log"
 LOGGING_FILENAME_BOT = LOG_DIR / "bot.log"
 FORMATTER = logging.Formatter("%(asctime)s — %(name)s — %(levelname)s — %(message)s")
-TELEGRAM_TOKEN = env("TELEGRAM_TOKEN")
+TELEGRAM_TOKEN = env("TELEGRAM_TOKEN", default="")
 WEBHOOK_MODE = env.bool("WEBHOOK_MODE", default=False)
 WEBHOOK_URL = env("WEBHOOK_URL", default=environ.Env.NOTSET if WEBHOOK_MODE else "")
 

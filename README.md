@@ -1,4 +1,5 @@
 [![MSPP Actions Status](https://github.com/Studio-Yandex-Practicum/mspp/actions/workflows/stage_deploy.yaml/badge.svg)](https://github.com/Studio-Yandex-Practicum/mspp/actions)
+
 # mspp
 
 ## Описание
@@ -12,40 +13,40 @@
 
 ## Шаблон наполнения env-файла
 
-<details>
-  <summary>env_example</summary>
 
-  - Обязательно<br>
-  `TELEGRAM_TOKEN`<br>
-  `PostgreSQL environment variables`<br>
-  - Остальное опционально.<br>
-    - Django<br>
-    `ALLOWED_HOSTS=[]`<br>
-    `CSRF_TRUSTED_ORIGINS=[]`<br>
-    `DEBUG=True`<br>
-    `SECRET_KEY=""`<br>
-    - Telegram<br>
-    `TELEGRAM_TOKEN=`<br>
-    `WEBHOOK_MODE=False`<br>
-    `WEBHOOK_URL=`<br>
-    - Google<br>
-    `LOGGING_LEVEL="DEBUG"`<br>
-    `EMAIL="example@mail.com"`<br>
-    - ID Google таблицы для добавления данных<br>
-    `SPREADSHEET_ID=""`<br>
-    - Данные сервисного аккаунта<br>
-    `PROJECT_ID=""`<br>
-    `PRIVATE_KEY_ID=""`<br>
-    `PRIVATE_KEY=""`<br>
-    `CLIENT_EMAIL=""`<br>
-    `CLIENT_ID=""`<br>
-    `CLIENT_X509_CERT_URL=""`<br>
-    - PostgreSQL environment variables<br>
-    `POSTGRES_DB=mspp`<br>
-    `POSTGRES_USER=mspp`<br>
-    `POSTGRES_PASSWORD=pg_password`<br>
-    `POSTGRES_HOST=postgres`<br>
-    `POSTGRES_PORT=5432`<br>
+  `env_example`
+
+- Обязательно<br>
+`TELEGRAM_TOKEN`<br>
+`PostgreSQL environment variables`<br>
+- Остальное опционально.<br>
+  - Django<br>
+  `ALLOWED_HOSTS=[]`<br>
+  `CSRF_TRUSTED_ORIGINS=[]`<br>
+  `DEBUG=True`<br>
+  `SECRET_KEY=""`<br>
+  - Telegram<br>
+  `TELEGRAM_TOKEN=`<br>
+  `WEBHOOK_MODE=False`<br>
+  `WEBHOOK_URL=`<br>
+  - Google<br>
+  `LOGGING_LEVEL="DEBUG"`<br>
+  `EMAIL="example@mail.com"`<br>
+  - ID Google таблицы для добавления данных<br>
+  `SPREADSHEET_ID=""`<br>
+  - Данные сервисного аккаунта<br>
+  `PROJECT_ID=""`<br>
+  `PRIVATE_KEY_ID=""`<br>
+  `PRIVATE_KEY=""`<br>
+  `CLIENT_EMAIL=""`<br>
+  `CLIENT_ID=""`<br>
+  `CLIENT_X509_CERT_URL=""`<br>
+  - PostgreSQL environment variables<br>
+  `POSTGRES_DB=mspp`<br>
+  `POSTGRES_USER=mspp`<br>
+  `POSTGRES_PASSWORD=pg_password`<br>
+  `POSTGRES_HOST=postgres`<br>
+  `POSTGRES_PORT=5432`<br>
   ---
 </details>
 
@@ -83,8 +84,8 @@ WEBHOOK_MODE=True
 WEBHOOK_URL=https://example.com
 ```
 
-<details>
-  <summary>Локальный запуск webhook</summary>
+
+#### Локальный запуск webhook
 
   Для локального запуска бота в режиме webhook можно использовать приложение [ngrok](https://ngrok.com/)
 
@@ -101,20 +102,18 @@ WEBHOOK_URL=https://example.com
   ngrok http 8000
   ```
   7. Из ngrok cкопировать url из поля `Forwarding` в константу `WEBHOOK_URL` файла .env
-</details>
 
+<br>
 
 ## Локальный запуск
 
-<details>
-  <summary>Запуск в docker'е</summary>
+### Запуск в docker'е
 
-  ---
-  [Установить](https://docs.docker.com/engine/install/) docker и docker compose<br>
-  Добавить TELEGRAM_TOKEN в .env_local<br>
+  [Установить](https://docs.docker.com/engine/install/) docker и docker compose
+  Добавить TELEGRAM_TOKEN в .env_local
 
  - Запустить локально<br>
-  `docker compose -f infra/docker-compose_local.yml up` - с выводом в консоль<br>
+  `docker compose -f infra/docker-compose_local.yml up` - с выводом в консоль
   `docker compose -f infra/docker-compose_local.yml up -d` - в тихом режиме<br>
   `docker compose -f infra/docker-compose_local.yml up --build` - пересобрать после внесения изменений<br>
   `docker compose -f infra/docker-compose_local.yml up -d --build` - пересобрать в тихом режиме<br>
@@ -140,19 +139,21 @@ WEBHOOK_URL=https://example.com
   `docker image rm mspp` - образ приложения<br>
   `docker image rm postgres:15.2` - postgres<br>
   `docker image rm nginx:1.23.3-alpine` - nginx<br>
-  ---
-</details>
-<details>
-  <summary>Запуск uvicorn</summary>
+<br>
 
-  ---
-  1. Перейдите в директорию src `cd src`
-  2. Скопируйте статические файлы `python manage.py collectstatic`
-  3. Примените миграции `python manage.py migrate`
-  4. Создайте суперпользователя `python manage.py createsuperuser`
-  5. Запустите проект `uvicorn config.asgi:application`
-  ---
-</details>
+###  Запуск контейнера DB, запуск приложения локально для более удобной разработки
+
+<br>
+
+  1. Запустите контейнер DB `docker compose -f infra/docker-compose_db_launch.yml up -d --build`
+  2. Перейдите в директорию src `cd src`
+  3. Скопируйте статические файлы `python manage.py collectstatic`
+  4. Примените миграции `python manage.py migrate`
+  5. Создайте суперпользователя `python manage.py createsuperuser`
+  6. Запустите проект `python manage.py startserver`
+
+
+<br>
 
 
 ## Команда для заполнения базы тестовыми данными
