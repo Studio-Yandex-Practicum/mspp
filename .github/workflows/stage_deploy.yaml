@@ -107,20 +107,23 @@ jobs:
             cd ${{ env.DEPLOY_PATH }}
             cat > infra/.env <<- EOM
             SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
-            ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }} 
+            ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }}
+            DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }}
+            DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
+            DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL }}
 
-            GOOGLE_PRIVATE_KEY_ID=${{ secrets.GOOGLE_PRIVATE_KEY_ID }} 
-            GOOGLE_PRIVATE_KEY=${{ secrets.GOOGLE_PRIVATE_KEY }} 
+            GOOGLE_PRIVATE_KEY_ID=${{ secrets.GOOGLE_PRIVATE_KEY_ID }}
+            GOOGLE_PRIVATE_KEY=${{ secrets.GOOGLE_PRIVATE_KEY }}
 
-            WEBHOOK_MODE=${{ secrets.WEBHOOK_MODE }} 
-            WEBHOOK_URL=${{ secrets.WEBHOOK_URL }} 
+            WEBHOOK_MODE=${{ secrets.WEBHOOK_MODE }}
+            WEBHOOK_URL=${{ secrets.WEBHOOK_URL }}
 
-            POSTGRES_DB=${{ secrets.POSTGRES_DB }} 
-            POSTGRES_USER=${{ secrets.POSTGRES_USER }} 
-            POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} 
-            POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} 
-            POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} 
-            TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }} 
+            POSTGRES_DB=${{ secrets.POSTGRES_DB }}
+            POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+            POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+            POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}
+            POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}
+            TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }}
             EOM
 
             sudo docker compose -f infra/docker-compose.staging.yml stop
@@ -130,3 +133,5 @@ jobs:
 
             sudo docker compose -f infra/docker-compose.staging.yml exec backend python manage.py migrate
             sudo docker compose -f infra/docker-compose.staging.yml exec backend python manage.py fill_data
+            sudo docker compose -f infra/docker-compose.staging.yml exec backend python manage.py collectstatic --no-input
+            sudo docker compose -f infra/docker-compose.staging.yml exec backend python manage.py createsuperuser --noinput
