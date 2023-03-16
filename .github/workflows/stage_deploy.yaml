@@ -133,5 +133,5 @@ jobs:
 
             sudo docker compose -f infra/docker-compose.staging.yml exec backend python manage.py migrate
             sudo docker compose -f infra/docker-compose.staging.yml exec backend python manage.py fill_data
-            sudo docker compose -f infra/docker-compose_local.yml exec backend python manage.py collectstatic --no-input
-            sudo docker compose -f infra/docker-compose_local.yml exec backend python manage.py createsuperuser --noinput
+            sudo docker compose -f infra/docker-compose.staging.yml exec backend python manage.py collectstatic --no-input
+            sudo docker compose -f infra/docker-compose.staging.yml exec backend python manage.py createsuperuser --noinput
