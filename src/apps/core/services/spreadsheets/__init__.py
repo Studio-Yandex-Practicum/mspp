@@ -1,1 +1,1 @@
-from .runner import send_to_google_sheets  # noqa
+from .spreadsheets import AsyncGoogleFormSubmitter  # noqa

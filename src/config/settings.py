@@ -117,10 +117,18 @@ WEBHOOK_MODE = env.bool("WEBHOOK_MODE", default=False)
 WEBHOOK_URL = env("WEBHOOK_URL", default=environ.Env.NOTSET if WEBHOOK_MODE else "")
 
 # Google
-CREDENTIALS_TYPE = env("CREDENTIALS_TYPE", default="env")
-SPREADSHEETS_URL = "https://docs.google.com/spreadsheets/d/{0}"
-SPREADSHEET_ID = env("SPREADSHEET_ID", default="_")
-SCOPES = ("https://www.googleapis.com/auth/spreadsheets",)
+GOOGLE_FORM_ID = "_"
+GOOGLE_FORM_FIELDS = {
+    "surname ": "_",
+    "first_name": "_",
+    "patronymic": "_",
+    "age": "_",
+    "region": "_",
+    "job": "_",
+    "email": "_",
+    "phone": "_",
+    "fund_name": "_",
+}
 
 EMAIL_USER = env("EMAIL", default="example@mail.com")
 PRIVATE_KEY = env.str("PRIVATE_KEY", multiline=True, default="_")
