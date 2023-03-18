@@ -105,7 +105,7 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             cd ${{ env.DEPLOY_PATH }}
-            cat > infra/.env <<- EOM
+            sudo cat > infra/.env <<- EOM
             SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
             ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }}
             DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }}
