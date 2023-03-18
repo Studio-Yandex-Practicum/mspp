@@ -21,7 +21,8 @@ class AsyncGoogleFormSubmitter:
         async with aiohttp.ClientSession() as session:
             async with session.post(self.form_url, data=payload) as response:
                 logger.info(
-                    f"Отправленная форма {self.form_url} со статусом {response.status}/n" f"С данными {payload}"
+                    f"Отправленная форма {self.form_url} со статусом {response.status}./n"
+                    f"С данными {payload}"
                 )
 
                 return response.status == HTTPStatus.OK
