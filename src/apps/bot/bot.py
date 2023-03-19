@@ -2,7 +2,7 @@ from urllib.parse import urljoin
 
 from telegram.ext import Application
 
-import src.config.settings as settings
+import config.settings as settings
 
 from .handlers import HANDLERS
 from .logger import logger
