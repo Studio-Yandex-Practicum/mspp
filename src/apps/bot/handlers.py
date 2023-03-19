@@ -18,6 +18,8 @@ from telegram.ext import (
     filters,
 )
 
+from .models import CoverageArea, Fund
+
 AGE = "age"
 LOCATION = "location"
 COUNTRY = "country"
@@ -63,8 +65,6 @@ async def check_age(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def location(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    from .models import CoverageArea
-
     if COUNTRY in context.user_data:
         del context.user_data[COUNTRY]
     if REGION in context.user_data:
@@ -176,8 +176,6 @@ async def check_country(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def region(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    from .models import CoverageArea
-
     regions_buttons = [
         [InlineKeyboardButton(region.name, callback_data=region.name)]
         async for region in CoverageArea.objects.filter(level=1)
@@ -207,8 +205,6 @@ async def check_region(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def city(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    from .models import CoverageArea
-
     city = await CoverageArea.objects.aget(parent__name=context.user_data[REGION])
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
@@ -224,8 +220,6 @@ async def city(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def check_city(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    from .models import CoverageArea
-
     context.user_data[CITY] = update.callback_query.data
     region_from_mtpp = await CoverageArea.objects.aget(name=context.user_data[REGION])
     city_from_mtpp = await CoverageArea.objects.aget(name=context.user_data[CITY])
@@ -235,8 +229,6 @@ async def check_city(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def fund(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    from .models import Fund
-
     if CITY not in context.user_data:
         context.user_data[CITY] = update.callback_query.data
     if FUND in context.user_data:
