@@ -1,6 +1,8 @@
 import logging
+import os
 import sys
 from pathlib import Path
+from urllib.parse import urljoin
 
 import environ
 from django.core.management.utils import get_random_secret_key
@@ -19,8 +21,12 @@ CSRF_TRUSTED_ORIGINS = list(
     map(str.strip, env.list("CSRF_TRUSTED_ORIGINS", default=["http://127.0.0.1", "http://localhost"]))
 )
 
-# Application definition
+# домен, на котором развернуто приложение
+APPLICATION_URL = env("APPLICATION_URL", default='localhost')
+RELATIVE_URL = "bot/registration/"
+WEBAPP_URL = env("WEBAPP_URL", default=urljoin(APPLICATION_URL, RELATIVE_URL))
 
+# Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -48,7 +54,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, 'templates')],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -139,3 +145,5 @@ logging.basicConfig(
     filemode="w",
     format="%(asctime)s %(levelname)s %(message)s",
 )
+
+USER_DATA = None

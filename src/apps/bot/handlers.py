@@ -18,6 +18,7 @@ from telegram.ext import (
     filters,
 )
 
+from config import settings
 from .models import CoverageArea, Fund
 
 AGE = "age"
@@ -239,7 +240,7 @@ async def fund(update: Update, context: ContextTypes.DEFAULT_TYPE):
     async for fund in Fund.objects.filter(
         coverage_area__name=context.user_data[CITY],
         age_limit__from_age__lte=context.user_data[AGE],
-        age_limit__to_age__gte=context.user_data[AGE],
+        # age_limit__to_age__gte=context.user_data[AGE],
     ):
         fund_list.append([InlineKeyboardButton(fund.name, callback_data=fund.name)])
     fund_list.append(
@@ -281,6 +282,7 @@ async def fund_has_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    settings.USER_DATA = context.user_data
     await update.callback_query.answer()
     await update.callback_query.delete_message()
     await context.bot.send_message(
@@ -289,14 +291,7 @@ async def fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=ReplyKeyboardMarkup.from_button(
             KeyboardButton(
                 "Заполнить анкету",
-                # TODO: заменить на веб-приложение с формой
-                # Данные для подстановки в форму:
-                # context.user_data[AGE] - возраст
-                # context.user_data[COUNTRY] - страна
-                # context.user_data[REGION] - регион, если есть
-                # context.user_data[CITY] - город, если есть
-                # context.user_data[FUND][NAME] - название фонда
-                web_app=WebAppInfo(url="https://python-telegram-bot.org/static/webappbot"),
+                web_app=WebAppInfo(url=settings.WEBAPP_URL),
             )
         ),
     )
@@ -305,14 +300,33 @@ async def fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def read_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
     data = json.loads(update.effective_message.web_app_data.data)
-    print("web_app data:", data)  # FIXME: удалить
-    # TODO: передать данные из формы в google таблицу
-    await update.message.reply_html(
-        "Спасибо! Я передал твою заявку. Фонд свяжется с тобой, чтобы "
-        "уточнить детали и пригласить на собеседование.",
-        reply_markup=ReplyKeyboardRemove(),
-    )
-    return ConversationHandler.END
+    KEY_ERROR_MESSAGE = "***"
+    data = json.loads(update.effective_message.web_app_data.data)
+    context.user_data["surname"] = data.get("surname", KEY_ERROR_MESSAGE)
+    context.user_data["name"] = data.get("name", KEY_ERROR_MESSAGE)
+    context.user_data["patronimic"] = data.get("patronimic", KEY_ERROR_MESSAGE)
+    context.user_data["email"] = data.get("email", KEY_ERROR_MESSAGE)
+    context.user_data["phone"] = data.get("phone_number", KEY_ERROR_MESSAGE)
+    context.user_data["occupation"] = data.get("occupation", KEY_ERROR_MESSAGE)
+
+    # send_to google(update, context)
+
+    text = "Спасибо, твои данные были отправлены:\n\n"
+    if settings.DEBUG:
+        data = context.user_data
+        text += (
+            f"Фамилия:      {data.get('surname', KEY_ERROR_MESSAGE)}\n"
+            f"Имя:          {data.get('name', KEY_ERROR_MESSAGE)}\n"
+            f"Отчество:     {data.get('patronimic', KEY_ERROR_MESSAGE)}\n"
+            f"Возраст:      {data.get(AGE, KEY_ERROR_MESSAGE)}\n"
+            f"Регион:       {data.get(REGION, 'Нет региона')}\n"
+            f"Город:        {data.get(CITY, 'Нет города')}\n"
+            f"Профессия:    {data.get('occupation', KEY_ERROR_MESSAGE)}\n"
+            f"E-mail:       {data.get('email', KEY_ERROR_MESSAGE)}\n"
+            f"Телефон:      {data.get('phone', KEY_ERROR_MESSAGE)}\n"
+            f"Фонд:         {data.get(FUND, KEY_ERROR_MESSAGE).get('name', KEY_ERROR_MESSAGE)}\n\n"
+        )
+    await update.message.reply_html(text, reply_markup=ReplyKeyboardRemove())
 
 
 async def fund_info(update: Update, context: ContextTypes.DEFAULT_TYPE):
