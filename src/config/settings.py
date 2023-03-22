@@ -146,4 +146,4 @@ logging.basicConfig(
     format="%(asctime)s %(levelname)s %(message)s",
 )
 
-USER_DATA = None
+USER_DATA = {}
