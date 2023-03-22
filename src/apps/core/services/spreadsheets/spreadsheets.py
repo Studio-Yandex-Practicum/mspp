@@ -18,14 +18,11 @@ class AsyncGoogleFormSubmitter:
 
     async def submit_form(self, data: dict) -> bool:
         """Отправка формы."""
-        # Передаются только data ключи совпадающие с ключами в form_fields
         payload = {f"entry.{self.form_fields[key]}": data[key] for key in self.form_fields.keys() & data.keys()}
 
-        # Отправляем POST-запрос на сервер с помощью aiohttp
         async with aiohttp.ClientSession() as session:
             async with session.post(self.form_url, data=payload) as response:
                 logger.info(f"Отправленная форма {self.form_url} со статусом {response.status}.\nС данными {payload}")
-
                 return response.status == HTTPStatus.OK
 
 
