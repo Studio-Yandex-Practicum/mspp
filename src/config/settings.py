@@ -22,7 +22,7 @@ CSRF_TRUSTED_ORIGINS = list(
 )
 
 # домен, на котором развернуто приложение
-APPLICATION_URL = env("APPLICATION_URL", default='130.193.48.219 ')
+APPLICATION_URL = env("APPLICATION_URL", default='130.193.48.219')
 RELATIVE_URL = "bot/registration/"
 WEBAPP_URL = env("WEBAPP_URL", default=urljoin(APPLICATION_URL, RELATIVE_URL))
 
