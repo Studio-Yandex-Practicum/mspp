@@ -18,6 +18,8 @@ from telegram.ext import (
     filters,
 )
 
+from apps.core.services.spreadsheets import AsyncGoogleFormSubmitter
+
 from .models import CoverageArea, Fund
 
 AGE = "age"
@@ -305,8 +307,24 @@ async def fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def read_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
     data = json.loads(update.effective_message.web_app_data.data)
-    print("web_app data:", data)  # FIXME: удалить
-    # TODO: передать данные из формы в google таблицу
+    google_form = AsyncGoogleFormSubmitter()
+
+    form_data = {
+        "surname": data.get("surname", ""),
+        "first_name": data.get("name", ""),
+        "patronymic": data.get("patronimic", ""),
+        "age": context.user_data.get("age", ""),
+        "country": context.user_data.get("country", ""),
+        "region": context.user_data.get("region", ""),
+        "city": context.user_data.get("city", ""),
+        "job": data.get("occupation", ""),
+        "email": data.get("email", ""),
+        "phone": data.get("phone_number", ""),
+        "fund_name": context.user_data.get("fund", {}).get("name", ""),
+    }
+
+    await google_form.submit_form(form_data)
+
     await update.message.reply_html(
         "Спасибо! Я передал твою заявку. Фонд свяжется с тобой, чтобы "
         "уточнить детали и пригласить на собеседование.",
