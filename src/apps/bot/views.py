@@ -1,6 +1,6 @@
 import json
 
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpRequest, HttpResponse
 from django.views import View
 from django.shortcuts import render
 from telegram import Update
@@ -26,13 +26,25 @@ class BotWebhookView(View):
         logger.error(error, exc_info=True)
 
 
-def registration_form(request):
+def rendering(
+    request: HttpRequest,
+    template_name: str,
+    user_data_keys: tuple[str],
+) -> HttpResponse:
     ERROR = "Такого поля нет в Контексте"
-    template_name = 'registration.html'
-    context = {
-        "age": s.USER_DATA.get("age", ERROR),
-        "region": s.USER_DATA.get("region", ERROR),
-        "city": s.USER_DATA.get("city", ERROR),
-        "fund": s.USER_DATA.get("fund", {}).get("name", ERROR),
-    }
+    context = {}
+    for key in user_data_keys:
+        context[key] = s.USER_DATA.get(key, ERROR)
     return render(request, template_name, context)
+
+
+def registration_new_fund(request: HttpRequest) -> HttpResponse:
+    template_name = 'registration_new_fund.html'
+    user_data_keys = ("age",)
+    return rendering(request, template_name, user_data_keys)
+
+
+def registration_new_user(request: HttpRequest) -> HttpResponse:
+    template_name = 'registration_new_user.html'
+    user_data_keys = ("age", "region", "city", "fund")
+    return rendering(request, template_name, user_data_keys)
