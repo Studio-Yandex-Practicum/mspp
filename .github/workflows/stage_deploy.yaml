@@ -95,7 +95,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           source: "infra/docker-compose.staging.yml, infra/nginx.conf"
-          rm: true
           overwrite: true
           target: ${{ env.DEPLOY_PATH }}
       - name: executing remote ssh commands to deploy
