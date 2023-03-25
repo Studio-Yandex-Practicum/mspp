@@ -36,7 +36,7 @@ services:
       - NET_ADMIN
     environment:
       - TZ=Europe/Moscow
-      - URL={SWAG_URL}
+      - URL=msppbot.duckdns.org
       - VALIDATION=http
     env_file:
       - .env
