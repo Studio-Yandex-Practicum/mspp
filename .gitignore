@@ -131,7 +131,7 @@ dmypy.json
 # Media and Static Django
 /media
 /staticfiles
-static/
+/static
 
 # Logs Django
 /logs
@@ -148,3 +148,4 @@ static/
 .vscode/
 *.code-workspace
 Makefile
+
