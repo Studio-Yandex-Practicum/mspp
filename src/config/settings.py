@@ -128,6 +128,22 @@ SPREADSHEETS_URL = "https://docs.google.com/spreadsheets/d/{0}"
 SPREADSHEET_ID = env("SPREADSHEET_ID", default="_")
 SCOPES = ("https://www.googleapis.com/auth/spreadsheets",)
 
+GOOGLE_FORM_URL = "https://docs.google.com/forms/u/0/d/e/{0}/formResponse"
+GOOGLE_FORM_ID = "1FAIpQLSdyfRyOfDfB3X75eEQoTOgBA8bGfe68Lthy-03EdwnnE_U9QA"
+GOOGLE_FORM_FIELDS = {
+    "surname": "50190039",
+    "first_name": "1395634080",
+    "patronymic": "864793007",
+    "age": "905514263",
+    "country": "16057190",
+    "region": "1475908288",
+    "city": "969207866",
+    "job": "1848219250",
+    "email": "894713360",
+    "phone": "1686121456",
+    "fund_name": "802736698",
+}
+
 EMAIL_USER = env("EMAIL", default="example@mail.com")
 PRIVATE_KEY = env.str("PRIVATE_KEY", multiline=True, default="_")
 ENV_INFO = {
