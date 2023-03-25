@@ -29,7 +29,6 @@ services:
     ports:
       - "8000:8000"
 
-
   swag:
     image: linuxserver/swag:2.4.0
     container_name: swag
@@ -51,7 +50,6 @@ services:
     restart: unless-stopped
     depends_on:
       - backend
-
 
 volumes:
   postgres_data_stage:
