@@ -108,7 +108,7 @@ jobs:
             cd ${{ env.DEPLOY_PATH }}
             sudo cat > infra/.env <<- EOM
             SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
-            ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }}
+            ALLOWED_HOSTS=msppbot.duckdns.org
             DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }}
             DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
             DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL }}
