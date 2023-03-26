@@ -1,11 +1,29 @@
 import asyncio
+from http import HTTPStatus
 from typing import Any
 
+import aiohttp
 from aiogoogle import Aiogoogle, HTTPError
 from django.conf import settings
 
 from .auth import creds
 from .logger import logger
+
+
+class AsyncGoogleFormSubmitter:
+    def __init__(self, form_id: str = settings.GOOGLE_FORM_ID, form_fields: dict = settings.GOOGLE_FORM_FIELDS):
+        """Инициализация URL и полей формы."""
+        self.form_url = settings.GOOGLE_FORM_URL.format(form_id)
+        self.form_fields = form_fields
+
+    async def submit_form(self, data: dict) -> bool:
+        """Отправка формы."""
+        payload = {f"entry.{self.form_fields[key]}": data[key] for key in self.form_fields.keys() & data.keys()}
+
+        async with aiohttp.ClientSession() as session:
+            async with session.post(self.form_url, data=payload) as response:
+                logger.info(f"Отправленная форма {self.form_url} со статусом {response.status}.\nС данными {payload}")
+                return response.status == HTTPStatus.OK
 
 
 async def send(
@@ -17,7 +35,6 @@ async def send(
     Args:
         spreadsheetid (str): ID Google таблицы
         table_values (list[list[Any]]): Значения колонок
-
     Raises:
         HTTPError: Не удалось отправить сроку в таблицу
     """
@@ -48,7 +65,6 @@ def sender(
     Args:
         table_values (list[list[Any]]): Значения колонок
         spreadsheetid (str): ID Google таблицы. Defaults to settings.SPREADSHEET_ID.
-
     Raises:
         HTTPError: Не удалось отправить сроку в таблицу
     """
