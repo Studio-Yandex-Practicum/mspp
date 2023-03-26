@@ -98,7 +98,10 @@ async def check_location(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data[COUNTRY] = "Россия"
     if await Fund.objects.filter(coverage_area__name=update.callback_query.data).aexists():
         return await fund(update, context)
-    return await city(update, context)
+    elif await CoverageArea.objects.filter(parent__name=update.callback_query.data).aexists():
+        context.user_data[REGION] = update.callback_query.data
+        return await city(update, context)
+    return await no_fund(update, context)
 
 
 async def no_fund(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -193,9 +196,11 @@ async def region(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def check_region(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data[REGION] = update.callback_query.data
-    if await Fund.objects.filter(coverage_area__name=update.callback_query.data).exists():
+    if await Fund.objects.filter(coverage_area__name=update.callback_query.data).aexists():
         return await fund(update, context)
-    return await city(update, context)
+    elif await CoverageArea.objects.filter(parent__name=update.callback_query.data).aexists():
+        return await city(update, context)
+    return await no_fund(update, context)
 
 
 async def city(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -217,9 +222,12 @@ async def check_city(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data[CITY] = update.callback_query.data
     region_from_mtpp = await CoverageArea.objects.aget(name=context.user_data[REGION])
     city_from_mtpp = await CoverageArea.objects.aget(name=context.user_data[CITY])
-    if region_from_mtpp.id == city_from_mtpp.parent_id:
+    if (
+        region_from_mtpp.id == city_from_mtpp.parent_id
+        and await Fund.objects.filter(coverage_area__name=update.callback_query.data).aexists()
+    ):
         return await fund(update, context)
-    return ConversationHandler.END
+    return no_fund(update, context)
 
 
 async def fund(update: Update, context: ContextTypes.DEFAULT_TYPE):
