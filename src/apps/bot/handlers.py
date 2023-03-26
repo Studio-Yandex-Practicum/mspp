@@ -94,17 +94,9 @@ async def location(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def check_location(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data[COUNTRY] = "Россия"
-    if update.callback_query.data == "Москва":
-        context.user_data[REGION] = "Московская область"
-        context.user_data[CITY] = update.callback_query.data
+    if await Fund.objects.filter(coverage_area__name=update.callback_query.data).aexists():
         return await fund(update, context)
-    if update.callback_query.data == "Санкт-Петербург":
-        context.user_data[REGION] = update.callback_query.data
-        context.user_data[CITY] = update.callback_query.data
-        return await fund(update, context)
-    else:
-        context.user_data[REGION] = update.callback_query.data
-        return await city(update, context)
+    return await city(update, context)
 
 
 async def no_fund(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -199,9 +191,9 @@ async def region(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def check_region(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data[REGION] = update.callback_query.data
-    if update.callback_query.data not in ("Москва", "Санкт-Петербург"):
-        return await city(update, context)
-    return await fund(update, context)
+    if await Fund.objects.filter(coverage_area__name=update.callback_query.data).exists():
+        return await fund(update, context)
+    return await city(update, context)
 
 
 async def city(update: Update, context: ContextTypes.DEFAULT_TYPE):
