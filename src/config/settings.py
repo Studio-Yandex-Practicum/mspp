@@ -15,7 +15,7 @@ SECRET_KEY = env("SECRET_KEY", default=get_random_secret_key())
 
 DEBUG = env.bool("DEBUG", default=True)
 
-ALLOWED_HOSTS = ["http://msppbot.duckdns.org", "https://130.193.48.219"]
+ALLOWED_HOSTS = ["msppbot.duckdns.org", "https://130.193.48.219"]
 # list(map(str.strip, env.list("ALLOWED_HOSTS", default=["*"])))
 CSRF_TRUSTED_ORIGINS = list(
     map(str.strip, env.list(
@@ -24,7 +24,7 @@ CSRF_TRUSTED_ORIGINS = list(
             "http://127.0.0.1",
             "http://localhost",
             "https://130.193.48.219",
-            "http://msppbot.duckdns.org",
+            "msppbot.duckdns.org",
         ])))
 
 # домен, на котором развернуто приложение
