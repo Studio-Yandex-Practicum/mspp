@@ -134,7 +134,7 @@ async def new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 # TODO: заменить на веб-приложение с формой
                 # Данные для подстановки в форму:
                 # context.user_data[AGE] - возраст
-                web_app=WebAppInfo(url="https://python-telegram-bot.org/static/webappbot"),
+                web_app=WebAppInfo(url="https://130.193.48.219/registration/new-fund/"),
             )
         ),
     )
@@ -284,16 +284,16 @@ async def fund_has_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    settings.USER_DATA = context.user_data
     await update.callback_query.answer()
     await update.callback_query.delete_message()
+    settings.USER_DATA = context.user_data
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="Нажмите на кнопку ниже, чтобы заполнить анкету",
         reply_markup=ReplyKeyboardMarkup.from_button(
             KeyboardButton(
                 "Заполнить анкету",
-                web_app=WebAppInfo(url=settings.WEBAPP_URL),
+                web_app=WebAppInfo(url="https://130.193.48.219/registration/new-user/"),
             )
         ),
     )

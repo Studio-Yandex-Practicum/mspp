@@ -1,0 +1,29 @@
+{% extends 'registration/base.html' %}
+{% block title %}Регистрация нового фонда{% endblock %} 
+{% block content %} 
+    <form class="form row" name="registration_new_fund">
+        <div class="form-title">
+          <p id="formtitle">Пожалуйста, заполните данную форму.</p>
+        </div>
+        {% include "registration/includes/surname_field.html" %}
+        {% include "registration/includes/name_field.html" %}
+ 
+        <div class="input-field col s12">
+          <input id="location" name="location" type="text" class="validate" minlength="2" maximumlength="100" required>
+          <label for="location">Город и Регион</label>
+          <span class="helper-text location"></span>
+        </div>
+
+        {% include "registration/includes/email_field.html" %}
+        {% include "registration/includes/phone_field.html" %}             
+  
+        <div class="input-field col s12">
+          <input id="fund" name="fund" type="text" class="validate" minlength="2" maximumlength="100" required>
+          <label for="fund">Фонд</label>
+          <span class="helper-text fund"></span>
+        </div>   
+
+<!-- PREFILLED fields - DISABLED -->   
+        {% include "registration/includes/age_field.html" %}   
+      </form>    
+{% endblock %}

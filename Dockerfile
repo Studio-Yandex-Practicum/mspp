@@ -10,4 +10,7 @@ RUN pip install -r ./requirements/development.txt --no-cache-dir
 
 COPY ./src .
 
-CMD ["uvicorn", "config.asgi:application", "--host", "0.0.0.0", "--port", "8000"]
+RUN chmod +x start.sh
+
+CMD ["./start.sh"]
+# CMD ["uvicorn", "config.asgi:application", "--host", "0.0.0.0", "--port", "8000"]

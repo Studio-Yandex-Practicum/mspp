@@ -1,5 +1,4 @@
 import logging
-import os
 import sys
 from pathlib import Path
 from urllib.parse import urljoin
@@ -18,7 +17,9 @@ DEBUG = env.bool("DEBUG", default=True)
 
 ALLOWED_HOSTS = list(map(str.strip, env.list("ALLOWED_HOSTS", default=["*"])))
 CSRF_TRUSTED_ORIGINS = list(
-    map(str.strip, env.list("CSRF_TRUSTED_ORIGINS", default=["http://127.0.0.1", "http://localhost"]))
+    map(str.strip, env.list(
+        "CSRF_TRUSTED_ORIGINS",
+        default=["http://127.0.0.1", "http://localhost", "https://130.193.48.219"],))
 )
 
 # домен, на котором развернуто приложение
@@ -37,6 +38,7 @@ INSTALLED_APPS = [
     "mptt",
     "bot.apps.BotConfig",
     "core",
+    "registration",
 ]
 
 MIDDLEWARE = [
@@ -54,7 +56,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, 'templates')],
+        "DIRS": [],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -107,7 +109,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = "/static/"
+STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "static"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
