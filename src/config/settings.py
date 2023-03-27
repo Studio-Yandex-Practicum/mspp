@@ -1,8 +1,14 @@
+import os
 import sys
 from pathlib import Path
 
 import environ
 from django.core.management.utils import get_random_secret_key
+
+
+def create_log_directory(directory):
+    os.makedirs(directory, exist_ok=True)
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.append(str(BASE_DIR / "apps"))
@@ -88,7 +94,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LOG_DIR = BASE_DIR / "logs"
-
+create_log_directory(LOG_DIR)
 
 LOGGING = {
     "version": 1,
@@ -128,7 +134,7 @@ STATIC_ROOT = BASE_DIR / "static"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-TELEGRAM_TOKEN = env("TELEGRAM_TOKEN", default="")
+TELEGRAM_TOKEN = env("TELEGRAM_TOKEN")
 WEBHOOK_MODE = env.bool("WEBHOOK_MODE", default=False)
 WEBHOOK_URL = env("WEBHOOK_URL", default=environ.Env.NOTSET if WEBHOOK_MODE else "")
 
