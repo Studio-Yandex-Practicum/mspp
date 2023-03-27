@@ -1,4 +1,5 @@
 import asyncio
+import logging
 from http import HTTPStatus
 from typing import Any
 
@@ -7,7 +8,8 @@ from aiogoogle import Aiogoogle, HTTPError
 from django.conf import settings
 
 from .auth import creds
-from .logger import logger
+
+logger = logging.getLogger(__name__)
 
 
 class AsyncGoogleFormSubmitter:
