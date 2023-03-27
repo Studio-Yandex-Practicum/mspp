@@ -1,11 +1,13 @@
 import json
+import logging
 
 from django.http import JsonResponse
 from django.views import View
 from telegram import Update
 
 from .bot import bot_app
-from .logger import logger
+
+logger = logging.getLogger(__name__)
 
 
 class BotWebhookView(View):

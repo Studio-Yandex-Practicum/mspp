@@ -1,4 +1,3 @@
-import logging
 import sys
 from pathlib import Path
 
@@ -18,8 +17,6 @@ ALLOWED_HOSTS = list(map(str.strip, env.list("ALLOWED_HOSTS", default=["*"])))
 CSRF_TRUSTED_ORIGINS = list(
     map(str.strip, env.list("CSRF_TRUSTED_ORIGINS", default=["http://127.0.0.1", "http://localhost"]))
 )
-
-# Application definition
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -63,9 +60,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-
-# Use PostgreSQL
-# ------------------------------------------------------------------------------
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
@@ -73,7 +67,7 @@ DATABASES = {
         "USER": env("POSTGRES_USER", default="mspp"),
         "PASSWORD": env("POSTGRES_PASSWORD", default="pg_password"),
         "HOST": env("POSTGRES_HOST", default="localhost"),
-        "PORT": env("POSTGRES_PORT", default="5432"),
+        "PORT": env("POSTGRES_PORT", default="9999"),
     }
 }
 
@@ -93,6 +87,34 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOG_DIR = BASE_DIR / "logs"
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "common_file": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": "logs/app.log",
+            "backupCount": 10,
+            "formatter": "verbose",
+        }
+    },
+    "loggers": {
+        "": {
+            "level": "WARNING",
+            "handlers": ["common_file"],
+        }
+    },
+    "formatters": {
+        "verbose": {
+            "format": "{name} {levelname} {asctime} {process:d} {message}",
+            "style": "{",
+        }
+    },
+}
+
 LANGUAGE_CODE = "ru-ru"
 
 TIME_ZONE = "Europe/Moscow"
@@ -106,17 +128,11 @@ STATIC_ROOT = BASE_DIR / "static"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Telegram
-LOGGING_LEVEL = env("LOGGING_LEVEL", default="DEBUG")
-LOG_DIR = BASE_DIR / "logs"
-LOGGING_FILENAME = LOG_DIR / "system.log"
-LOGGING_FILENAME_BOT = LOG_DIR / "bot.log"
-FORMATTER = logging.Formatter("%(asctime)s — %(name)s — %(levelname)s — %(message)s")
-TELEGRAM_TOKEN = env("TELEGRAM_TOKEN", default="")
+TELEGRAM_TOKEN = env("TELEGRAM_TOKEN", default="411649639:AAFovvJPVI3CpuTsWRkiNdE46yxsLzQQaSU")
 WEBHOOK_MODE = env.bool("WEBHOOK_MODE", default=False)
 WEBHOOK_URL = env("WEBHOOK_URL", default=environ.Env.NOTSET if WEBHOOK_MODE else "")
 
-# Google
+# Google Spreadsheets Variables
 CREDENTIALS_TYPE = env("CREDENTIALS_TYPE", default="env")
 SPREADSHEETS_URL = "https://docs.google.com/spreadsheets/d/{0}"
 SPREADSHEET_ID = env("SPREADSHEET_ID", default="_")
@@ -132,10 +148,3 @@ ENV_INFO = {
     "client_id": env("CLIENT_ID", default="_"),
     "client_x509_cert_url": env("CLIENT_X509_CERT_URL", default="_"),
 }
-
-logging.basicConfig(
-    level=LOGGING_LEVEL,
-    filename=LOGGING_FILENAME,
-    filemode="w",
-    format="%(asctime)s %(levelname)s %(message)s",
-)
