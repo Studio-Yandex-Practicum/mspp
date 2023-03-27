@@ -1,13 +1,8 @@
-import os
 import sys
 from pathlib import Path
 
 import environ
 from django.core.management.utils import get_random_secret_key
-
-
-def create_log_directory(directory):
-    os.makedirs(directory, exist_ok=True)
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -94,7 +89,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LOG_DIR = BASE_DIR / "logs"
-create_log_directory(LOG_DIR)
+Path.mkdir(LOG_DIR, exist_ok=True)
 
 LOGGING = {
     "version": 1,
