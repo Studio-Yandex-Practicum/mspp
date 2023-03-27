@@ -1,4 +1,5 @@
 import json
+import logging
 
 from telegram import (
     InlineKeyboardButton,
@@ -32,8 +33,11 @@ NEW_FUND = "new_fund"
 NAME = "name"
 URL = "URL"
 
+logger = logging.getLogger(__name__)
+
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    logger.info("Start steps")
     await update.message.reply_html(
         text=(
             "Привет! Я бот проекта ЗНАЧИМ. Я помогу тебе встать на путь "
