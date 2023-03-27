@@ -15,9 +15,9 @@ SECRET_KEY = env("SECRET_KEY", default=get_random_secret_key())
 DEBUG = env.bool("DEBUG", default=True)
 
 # домен, на котором развернуто приложение
-APPLICATION_URL = env("APPLICATION_URL", default="msppbot.duckdns.org/")
+APPLICATION_URL = env("APPLICATION_URL", default="msppbot.duckdns.org")
 # WEBAPP_URL_USER = "https://msppbot.duckdns.org/registration/new-user/"
-WEBAPP_URL_USER = APPLICATION_URL + "registration/new-user/"
+WEBAPP_URL_USER = APPLICATION_URL + "/registration/new-user/"
 WEBAPP_URL_NEW_FUND = "https://msppbot.duckdns.org/registration/new-fund/"
 # WEBAPP_URL_NEW_FUND = APPLICATION_URL / "registration/new-fund/"
 # env("WEBAPP_URL", default=urljoin(APPLICATION_URL, RELATIVE_URL))
