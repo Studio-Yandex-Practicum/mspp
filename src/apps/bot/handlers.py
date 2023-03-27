@@ -243,12 +243,16 @@ async def fund(update: Update, context: ContextTypes.DEFAULT_TYPE):
     fund_list = [
         [InlineKeyboardButton("Почитать про фонды", callback_data="info")],
     ]
-    async for fund in Fund.objects.filter(
-        coverage_area__name=context.user_data[CITY],
-        age_limit__from_age__lte=context.user_data[AGE],
-        age_limit__to_age__gte=context.user_data[AGE],
-    ):
-        fund_list.append([InlineKeyboardButton(fund.name, callback_data=fund.name)])
+    fund_list.extend(
+        [
+            [InlineKeyboardButton(fund.name, callback_data=fund.name)]
+            async for fund in Fund.objects.filter(
+                coverage_area__name=context.user_data[CITY],
+                age_limit__from_age__lte=context.user_data[AGE],
+                age_limit__to_age__gte=context.user_data[AGE],
+            )
+        ]
+    )
     fund_list.append(
         [InlineKeyboardButton("Изменить город?", callback_data="change_city")],
     )
