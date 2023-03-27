@@ -19,8 +19,12 @@ ALLOWED_HOSTS = list(map(str.strip, env.list("ALLOWED_HOSTS", default=["*"])))
 CSRF_TRUSTED_ORIGINS = list(
     map(str.strip, env.list(
         "CSRF_TRUSTED_ORIGINS",
-        default=["http://127.0.0.1", "http://localhost", "https://130.193.48.219"],))
-)
+        default=[
+            "http://127.0.0.1",
+            "http://localhost",
+            "https://130.193.48.219",
+            "http://msppbot.duckdns.org",
+        ])))
 
 # домен, на котором развернуто приложение
 APPLICATION_URL = env("APPLICATION_URL", default='130.193.48.219')

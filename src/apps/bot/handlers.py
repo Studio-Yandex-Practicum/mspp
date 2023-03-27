@@ -134,7 +134,7 @@ async def new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 # TODO: заменить на веб-приложение с формой
                 # Данные для подстановки в форму:
                 # context.user_data[AGE] - возраст
-                web_app=WebAppInfo(url="https://130.193.48.219/registration/new-fund/"),
+                web_app=WebAppInfo(url="https://msppbot.duckdns.org/registration/new-fund/"),
             )
         ),
     )
@@ -293,7 +293,7 @@ async def fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=ReplyKeyboardMarkup.from_button(
             KeyboardButton(
                 "Заполнить анкету",
-                web_app=WebAppInfo(url="https://130.193.48.219/registration/new-user/"),
+                web_app=WebAppInfo(url="https://msppbot.duckdns.org/registration/new-user/"),
             )
         ),
     )
