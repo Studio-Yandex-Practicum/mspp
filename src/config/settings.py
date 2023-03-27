@@ -1,7 +1,6 @@
 import logging
 import sys
 from pathlib import Path
-from urllib.parse import urljoin
 
 import environ
 from django.core.management.utils import get_random_secret_key
@@ -15,7 +14,15 @@ SECRET_KEY = env("SECRET_KEY", default=get_random_secret_key())
 
 DEBUG = env.bool("DEBUG", default=True)
 
-ALLOWED_HOSTS = ["msppbot.duckdns.org", "https://130.193.48.219"]
+# домен, на котором развернуто приложение
+APPLICATION_URL = env("APPLICATION_URL", default="msppbot.duckdns.org")
+# WEBAPP_URL_USER = "https://msppbot.duckdns.org/registration/new-user/"
+WEBAPP_URL_USER = APPLICATION_URL / "registration/new-user/"
+WEBAPP_URL_NEW_FUND = "https://msppbot.duckdns.org/registration/new-fund/"
+# WEBAPP_URL_NEW_FUND = APPLICATION_URL / "registration/new-fund/"
+# env("WEBAPP_URL", default=urljoin(APPLICATION_URL, RELATIVE_URL))
+
+ALLOWED_HOSTS = [APPLICATION_URL, "https://130.193.48.219"]
 # list(map(str.strip, env.list("ALLOWED_HOSTS", default=["*"])))
 CSRF_TRUSTED_ORIGINS = list(
     map(str.strip, env.list(
@@ -24,13 +31,8 @@ CSRF_TRUSTED_ORIGINS = list(
             "http://127.0.0.1",
             "http://localhost",
             "https://130.193.48.219",
-            "msppbot.duckdns.org",
+            APPLICATION_URL,
         ])))
-
-# домен, на котором развернуто приложение
-APPLICATION_URL = env("APPLICATION_URL", default='130.193.48.219')
-RELATIVE_URL = "bot/registration/"
-WEBAPP_URL = env("WEBAPP_URL", default=urljoin(APPLICATION_URL, RELATIVE_URL))
 
 # Application definition
 INSTALLED_APPS = [

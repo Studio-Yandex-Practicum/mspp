@@ -122,31 +122,51 @@ async def no_fund(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return NEW_FUND
 
 
-async def new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def _webapp(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+    url: str = "https://flaskrenderer.alexpro2022.repl.co/",
+) -> None:
     await update.callback_query.answer()
     await update.callback_query.delete_message()
+    settings.USER_DATA = context.user_data
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="Нажмите на кнопку ниже, чтобы заполнить анкету",
         reply_markup=ReplyKeyboardMarkup.from_button(
             KeyboardButton(
                 "Заполнить анкету",
-                # TODO: заменить на веб-приложение с формой
-                # Данные для подстановки в форму:
-                # context.user_data[AGE] - возраст
-                web_app=WebAppInfo(url="https://msppbot.duckdns.org/registration/new-fund/"),
-            )
-        ),
-    )
+                web_app=WebAppInfo(url=url),
+            )))
+
+
+async def new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await _webapp(update, context, settings.WEBAPP_URL_NEW_FUND)
     return NEW_FUND
 
 
+async def fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await _webapp(update, context, settings.WEBAPP_URL_USER)
+    return FUND
+
+
 async def read_new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    json.loads(update.effective_message.web_app_data.data)
+    data = json.loads(update.effective_message.web_app_data.data)
     # TODO: передать данные из формы в google таблицу
     await update.message.reply_html(
         "Спасибо! Я передал твою заявку. Поcтараемся запустить проект в "
         "твоем городе как можно скорее и обязательно свяжемся с тобой.",
+        reply_markup=ReplyKeyboardRemove(),
+    )
+    return ConversationHandler.END
+
+
+async def read_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    data = json.loads(update.effective_message.web_app_data.data)
+    # TODO: передать данные из формы в google таблицу
+    await update.message.reply_html(
+        "Спасибо! Я передал твою заявку. Фонд свяжется с тобой, чтобы "
+        "уточнить детали и пригласить на собеседование.",
         reply_markup=ReplyKeyboardRemove(),
     )
     return ConversationHandler.END
@@ -279,35 +299,6 @@ async def fund_has_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
         "У этого фонда есть своя анкета, заполни ее на сайте фонда по ссылке " f"{context.user_data[FUND][URL]}"
-    )
-    return ConversationHandler.END
-
-
-async def fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.callback_query.answer()
-    await update.callback_query.delete_message()
-    settings.USER_DATA = context.user_data
-    await context.bot.send_message(
-        chat_id=update.effective_chat.id,
-        text="Нажмите на кнопку ниже, чтобы заполнить анкету",
-        reply_markup=ReplyKeyboardMarkup.from_button(
-            KeyboardButton(
-                "Заполнить анкету",
-                web_app=WebAppInfo(url="https://msppbot.duckdns.org/registration/new-user/"),
-            )
-        ),
-    )
-    return FUND
-
-
-async def read_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    data = json.loads(update.effective_message.web_app_data.data)
-    print("web_app data:", data)  # FIXME: удалить
-    # TODO: передать данные из формы в google таблицу
-    await update.message.reply_html(
-        "Спасибо! Я передал твою заявку. Фонд свяжется с тобой, чтобы "
-        "уточнить детали и пригласить на собеседование.",
-        reply_markup=ReplyKeyboardRemove(),
     )
     return ConversationHandler.END
 
