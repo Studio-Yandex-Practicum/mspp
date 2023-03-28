@@ -31,7 +31,7 @@ services:
 
   swag:
     image: linuxserver/swag:2.4.0
-    container_name: swag
+    container_name: swag_stage
     cap_add:
       - NET_ADMIN
     environment:
@@ -42,11 +42,16 @@ services:
       - .env
     volumes:
       - /MSPP/nginx_logs:/config/log/nginx/
-      - ./swag_nginx.conf:/config/nginx/site-confs/default
-      - static_value_stage:/config/stage/static/
+      - type: bind
+        source: ./swag_nginx.conf
+        target: /config/nginx/site-confs/default.conf
+      - static_value_stage:/var/html/static/
+    expose:
+      - "80"
+      - "443"
     ports:
-      - 443:443
-      - 80:80
+      - "443:443"
+      - "80:80"
     restart: unless-stopped
     depends_on:
       - backend
