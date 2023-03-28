@@ -123,7 +123,7 @@ async def no_fund(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await webapp(update, context)  # , settings.WEBAPP_URL_NEW_FUND)
+    await webapp(update, context, settings.WEBAPP_URL_NEW_FUND)
     return NEW_FUND
 
 
