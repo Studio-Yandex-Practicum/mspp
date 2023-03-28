@@ -1,7 +1,7 @@
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 
-from apps.bot import handlers
+USER_DATA = {}
 
 
 def rendering(
@@ -12,7 +12,7 @@ def rendering(
     ERROR = "Такого поля нет в Контексте"
     context = {}
     for key in user_data_keys:
-        context[key] = handlers.USER_DATA.get(key, ERROR)
+        context[key] = USER_DATA.get(key, ERROR)
     return render(request, template_name, context)
 
 

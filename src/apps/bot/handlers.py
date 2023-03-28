@@ -18,7 +18,7 @@ from telegram.ext import (
 
 from apps.core.services.spreadsheets import AsyncGoogleFormSubmitter
 from apps.bot.models import CoverageArea, Fund
-from apps.bot.utils import webapp
+from apps.registration.utils import webapp
 from config import settings
 
 AGE = "age"
@@ -30,7 +30,6 @@ FUND = "fund"
 NEW_FUND = "new_fund"
 NAME = "name"
 URL = "URL"
-USER_DATA = {}
 
 logger = logging.getLogger(__name__)
 
@@ -124,7 +123,7 @@ async def no_fund(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await webapp(update, context, settings.WEBAPP_URL_NEW_FUND)
+    await webapp(update, context)  # , settings.WEBAPP_URL_NEW_FUND)
     return NEW_FUND
 
 
