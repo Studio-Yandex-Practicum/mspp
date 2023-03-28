@@ -1,13 +1,11 @@
 import json
+import logging
 
 from telegram import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
-    KeyboardButton,
-    ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
     Update,
-    WebAppInfo,
 )
 from telegram.ext import (
     CallbackQueryHandler,
@@ -19,9 +17,9 @@ from telegram.ext import (
 )
 
 from apps.core.services.spreadsheets import AsyncGoogleFormSubmitter
-
+from apps.bot.models import CoverageArea, Fund
+from apps.bot.utils import webapp
 from config import settings
-from .models import CoverageArea, Fund
 
 AGE = "age"
 LOCATION = "location"
@@ -32,6 +30,9 @@ FUND = "fund"
 NEW_FUND = "new_fund"
 NAME = "name"
 URL = "URL"
+USER_DATA = {}
+
+logger = logging.getLogger(__name__)
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -122,51 +123,17 @@ async def no_fund(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return NEW_FUND
 
 
-async def _webapp(
-    update: Update,
-    context: ContextTypes.DEFAULT_TYPE,
-    url: str = "https://flaskrenderer.alexpro2022.repl.co/",
-) -> None:
-    await update.callback_query.answer()
-    await update.callback_query.delete_message()
-    settings.USER_DATA = context.user_data
-    await context.bot.send_message(
-        chat_id=update.effective_chat.id,
-        text="Нажмите на кнопку ниже, чтобы заполнить анкету",
-        reply_markup=ReplyKeyboardMarkup.from_button(
-            KeyboardButton(
-                "Заполнить анкету",
-                web_app=WebAppInfo(url=url),
-            )))
-
-
 async def new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await _webapp(update, context, settings.WEBAPP_URL_NEW_FUND)
+    await webapp(update, context, settings.WEBAPP_URL_NEW_FUND)
     return NEW_FUND
 
 
-async def fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await _webapp(update, context, settings.WEBAPP_URL_USER)
-    return FUND
-
-
 async def read_new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    data = json.loads(update.effective_message.web_app_data.data)
+    json.loads(update.effective_message.web_app_data.data)
     # TODO: передать данные из формы в google таблицу
     await update.message.reply_html(
         "Спасибо! Я передал твою заявку. Поcтараемся запустить проект в "
         "твоем городе как можно скорее и обязательно свяжемся с тобой.",
-        reply_markup=ReplyKeyboardRemove(),
-    )
-    return ConversationHandler.END
-
-
-async def read_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    data = json.loads(update.effective_message.web_app_data.data)
-    # TODO: передать данные из формы в google таблицу
-    await update.message.reply_html(
-        "Спасибо! Я передал твою заявку. Фонд свяжется с тобой, чтобы "
-        "уточнить детали и пригласить на собеседование.",
         reply_markup=ReplyKeyboardRemove(),
     )
     return ConversationHandler.END
@@ -299,6 +266,39 @@ async def fund_has_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
         "У этого фонда есть своя анкета, заполни ее на сайте фонда по ссылке " f"{context.user_data[FUND][URL]}"
+    )
+    return ConversationHandler.END
+
+
+async def fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await webapp(update, context, settings.WEBAPP_URL_USER)
+    return FUND
+
+
+async def read_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    data = json.loads(update.effective_message.web_app_data.data)
+    google_form = AsyncGoogleFormSubmitter()
+
+    form_data = {
+        "surname": data.get("surname", ""),
+        "first_name": data.get("name", ""),
+        "patronymic": data.get("patronimic", ""),
+        "age": context.user_data.get("age", ""),
+        "country": context.user_data.get("country", ""),
+        "region": context.user_data.get("region", ""),
+        "city": context.user_data.get("city", ""),
+        "job": data.get("occupation", ""),
+        "email": data.get("email", ""),
+        "phone": data.get("phone_number", ""),
+        "fund_name": context.user_data.get("fund", {}).get("name", ""),
+    }
+
+    await google_form.submit_form(form_data)
+
+    await update.message.reply_html(
+        "Спасибо! Я передал твою заявку. Фонд свяжется с тобой, чтобы "
+        "уточнить детали и пригласить на собеседование.",
+        reply_markup=ReplyKeyboardRemove(),
     )
     return ConversationHandler.END
 

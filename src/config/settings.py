@@ -14,24 +14,22 @@ SECRET_KEY = env("SECRET_KEY", default=get_random_secret_key())
 
 DEBUG = env.bool("DEBUG", default=True)
 
-# домен, на котором развернуто приложение
-APPLICATION_URL = env("APPLICATION_URL", default="msppbot.duckdns.org")
-# WEBAPP_URL_USER = "https://msppbot.duckdns.org/registration/new-user/"
-WEBAPP_URL_USER = APPLICATION_URL + "/registration/new-user/"
-WEBAPP_URL_NEW_FUND = "https://msppbot.duckdns.org/registration/new-fund/"
-# WEBAPP_URL_NEW_FUND = APPLICATION_URL / "registration/new-fund/"
-# env("WEBAPP_URL", default=urljoin(APPLICATION_URL, RELATIVE_URL))
+DOMAIN = env("DOMAIN", default="msppbot.duckdns.org")
 
-ALLOWED_HOSTS = [APPLICATION_URL, "https://130.193.48.219"]
-# list(map(str.strip, env.list("ALLOWED_HOSTS", default=["*"])))
+WEBAPP_URL_USER = DOMAIN + "/registration/new-user/"
+WEBAPP_URL_NEW_FUND = DOMAIN + "/registration/new-fund/"
+
+ALLOWED_HOSTS = list(map(str.strip, env.list(
+    "__ALLOWED_HOSTS",  # env var disabled (__) while testing, it needs updating with DOMAIN
+    default=[DOMAIN, "https://130.193.48.219", "http://127.0.0.1", "localhost"]
+)))
+
 CSRF_TRUSTED_ORIGINS = list(
     map(str.strip, env.list(
         "CSRF_TRUSTED_ORIGINS",
         default=[
-            "http://127.0.0.1",
-            "http://localhost",
-            "https://130.193.48.219",
-            APPLICATION_URL,
+            "http://127.0.0.1", "http://localhost",
+            "https://130.193.48.219", DOMAIN,
         ])))
 
 # Application definition
@@ -129,6 +127,7 @@ LOGGING_FILENAME_BOT = LOG_DIR / "bot.log"
 FORMATTER = logging.Formatter("%(asctime)s — %(name)s — %(levelname)s — %(message)s")
 TELEGRAM_TOKEN = env("TELEGRAM_TOKEN", default="")
 WEBHOOK_MODE = env.bool("WEBHOOK_MODE", default=False)
+# Not sure if DOMAIN might be used below instead of WEBHOOK_URL
 WEBHOOK_URL = env("WEBHOOK_URL", default=environ.Env.NOTSET if WEBHOOK_MODE else "")
 
 # Google
@@ -170,5 +169,3 @@ logging.basicConfig(
     filemode="w",
     format="%(asctime)s %(levelname)s %(message)s",
 )
-
-USER_DATA = {}
