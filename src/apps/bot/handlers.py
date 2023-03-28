@@ -17,9 +17,9 @@ from telegram.ext import (
 )
 
 from apps.core.services.spreadsheets import AsyncGoogleFormSubmitter
-from apps.bot.models import CoverageArea, Fund
 from apps.registration.utils import webapp
 from config import settings
+from .models import CoverageArea, Fund
 
 AGE = "age"
 LOCATION = "location"
