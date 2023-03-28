@@ -170,5 +170,3 @@ logging.basicConfig(
     filemode="w",
     format="%(asctime)s %(levelname)s %(message)s",
 )
-
-USER_DATA = {}
