@@ -20,7 +20,7 @@ services:
     depends_on:
       - postgres
     volumes:
-      - ./logs:/logs
+      - ./logs:/app/logs
       - static_value_stage:/app/static/
     env_file:
       - .env
