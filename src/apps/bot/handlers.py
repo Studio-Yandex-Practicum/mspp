@@ -31,6 +31,7 @@ FUND = "fund"
 NEW_FUND = "new_fund"
 NAME = "name"
 URL = "URL"
+MAIN_DISPLAY_REGIONS = ("Москва", "Московская область", "Санкт-Петербург")
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -78,9 +79,7 @@ async def location(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = "В каком ты городе?"
     regions_buttons = [
         [InlineKeyboardButton(region.name, callback_data=region.name)]
-        async for region in CoverageArea.objects.filter(
-            name__in=("Москва", "Московская область", "Санкт-Петербург")
-        ).all()
+        async for region in CoverageArea.objects.filter(name__in=MAIN_DISPLAY_REGIONS).all()
     ]
     regions_buttons.extend(
         (
@@ -98,7 +97,7 @@ async def location(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def check_location(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data[COUNTRY] = "Россия"
-    if update.callback_query.data in ("Москва", "Московская область", "Санкт-Петербург"):
+    if update.callback_query.data in MAIN_DISPLAY_REGIONS:
         return await fund(update, context)
     return await region(update, context)
 
@@ -174,9 +173,7 @@ async def check_country(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def region(update: Update, context: ContextTypes.DEFAULT_TYPE):
     regions_buttons = [
         [InlineKeyboardButton(region.name, callback_data=region.name)]
-        async for region in CoverageArea.objects.filter(level=1).exclude(
-            name__in=("Москва", "Московская область", "Санкт-Петербург")
-        )
+        async for region in CoverageArea.objects.filter(level=1).exclude(name__in=MAIN_DISPLAY_REGIONS)
     ]
     regions_buttons.extend(
         [
