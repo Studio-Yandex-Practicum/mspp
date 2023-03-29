@@ -14,10 +14,7 @@ SECRET_KEY = env("SECRET_KEY", default=get_random_secret_key())
 
 DEBUG = env.bool("DEBUG", default=True)
 
-# домен, на котором развернуто приложение
 DOMAIN = env("DOMAIN", default="https://msppbot.duckdns.org")
-WEBAPP_URL_USER = DOMAIN + "/registration/new-user/"
-WEBAPP_URL_NEW_FUND = DOMAIN + "/registration/new-fund/"
 ALLOWED_HOSTS = list(map(str.strip, env.list(
     "ALLOWED_HOSTS",
     default=[DOMAIN, "https://130.193.48.219"]
@@ -32,7 +29,6 @@ CSRF_TRUSTED_ORIGINS = list(
             DOMAIN,
         ])))
 
-# Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -76,9 +72,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-
-# Use PostgreSQL
-# ------------------------------------------------------------------------------
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
@@ -89,7 +82,6 @@ DATABASES = {
         "PORT": env("POSTGRES_PORT", default="5432"),
     }
 }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -119,7 +111,6 @@ STATIC_ROOT = BASE_DIR / "static"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Telegram
 LOGGING_LEVEL = env("LOGGING_LEVEL", default="DEBUG")
 LOG_DIR = BASE_DIR / "logs"
 LOGGING_FILENAME = LOG_DIR / "system.log"
@@ -129,7 +120,6 @@ TELEGRAM_TOKEN = env("TELEGRAM_TOKEN", default="")
 WEBHOOK_MODE = env.bool("WEBHOOK_MODE", default=False)
 WEBHOOK_URL = env("WEBHOOK_URL", default=environ.Env.NOTSET if WEBHOOK_MODE else "")
 
-# Google
 CREDENTIALS_TYPE = env("CREDENTIALS_TYPE", default="env")
 SPREADSHEETS_URL = "https://docs.google.com/spreadsheets/d/{0}"
 SPREADSHEET_ID = env("SPREADSHEET_ID", default="_")

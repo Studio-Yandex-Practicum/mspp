@@ -1,6 +1,9 @@
 import json
 import logging
 
+from django.conf import settings
+from django.urls import reverse
+
 from telegram import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
@@ -18,7 +21,6 @@ from telegram.ext import (
 
 from apps.core.services.spreadsheets import AsyncGoogleFormSubmitter
 from apps.registration.utils import webapp
-from config import settings
 from .models import CoverageArea, Fund
 
 AGE = "age"
@@ -123,7 +125,8 @@ async def no_fund(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await webapp(update, context, settings.WEBAPP_URL_NEW_FUND)
+    WEBAPP_URL_NEW_FUND = f"{settings.DOMAIN}{reverse('registration_new_fund')}"
+    await webapp(update, context, WEBAPP_URL_NEW_FUND)
     return NEW_FUND
 
 
@@ -270,7 +273,8 @@ async def fund_has_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await webapp(update, context, settings.WEBAPP_URL_USER)
+    WEBAPP_URL_USER = f"{settings.DOMAIN}{reverse('registration_new_user')}"
+    await webapp(update, context, WEBAPP_URL_USER)
     return FUND
 
 
