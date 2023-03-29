@@ -3,6 +3,8 @@ services:
     image: postgres:15.2
     container_name: postgres_stage
     restart: always
+    ports:
+      - "9999:5432"
     volumes:
       - postgres_data_stage:/var/lib/postgresql/data
     env_file:
@@ -20,6 +22,8 @@ services:
       - static_value_stage:/app/static/
     env_file:
       - .env
+    ports:
+      - "8000:8000"
 
   nginx:
     image: nginx:1.23.3-alpine
