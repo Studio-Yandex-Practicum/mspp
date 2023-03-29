@@ -3,8 +3,6 @@ services:
     image: postgres:15.2
     container_name: postgres_stage
     restart: always
-    expose:
-      - "5432"
     ports:
       - "9999:5432"
     volumes:
@@ -24,8 +22,6 @@ services:
       - static_value_stage:/app/static/
     env_file:
       - .env
-    expose:
-      - "8000"
     ports:
       - "8000:8000"
 
