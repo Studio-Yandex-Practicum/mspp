@@ -4,6 +4,7 @@ import logging
 from django.conf import settings
 from django.urls import reverse
 
+
 from telegram import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
@@ -32,11 +33,15 @@ FUND = "fund"
 NEW_FUND = "new_fund"
 NAME = "name"
 URL = "URL"
+MAIN_DISPLAY_REGIONS = ("Москва", "Московская область", "Санкт-Петербург")
+
+logger = logging.getLogger(__name__)
 
 logger = logging.getLogger(__name__)
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    logger.info("Start steps")
     await update.message.reply_html(
         text=(
             "Привет! Я бот проекта ЗНАЧИМ. Я помогу тебе встать на путь "
@@ -81,7 +86,7 @@ async def location(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = "В каком ты городе?"
     regions_buttons = [
         [InlineKeyboardButton(region.name, callback_data=region.name)]
-        async for region in CoverageArea.objects.filter(level=1)
+        async for region in CoverageArea.objects.filter(name__in=MAIN_DISPLAY_REGIONS).all()
     ]
     regions_buttons.extend(
         (
@@ -99,17 +104,9 @@ async def location(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def check_location(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data[COUNTRY] = "Россия"
-    if update.callback_query.data == "Москва":
-        context.user_data[REGION] = "Московская область"
-        context.user_data[CITY] = update.callback_query.data
+    if update.callback_query.data in MAIN_DISPLAY_REGIONS:
         return await fund(update, context)
-    if update.callback_query.data == "Санкт-Петербург":
-        context.user_data[REGION] = update.callback_query.data
-        context.user_data[CITY] = update.callback_query.data
-        return await fund(update, context)
-    else:
-        context.user_data[REGION] = update.callback_query.data
-        return await city(update, context)
+    return await region(update, context)
 
 
 async def no_fund(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -170,7 +167,7 @@ async def check_country(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def region(update: Update, context: ContextTypes.DEFAULT_TYPE):
     regions_buttons = [
         [InlineKeyboardButton(region.name, callback_data=region.name)]
-        async for region in CoverageArea.objects.filter(level=1)
+        async for region in CoverageArea.objects.filter(level=1).exclude(name__in=MAIN_DISPLAY_REGIONS)
     ]
     regions_buttons.extend(
         [
@@ -191,23 +188,25 @@ async def region(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def check_region(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data[REGION] = update.callback_query.data
-    if update.callback_query.data not in ("Москва", "Санкт-Петербург"):
+    if await Fund.objects.filter(
+        coverage_area__name=update.callback_query.data,
+        age_limit__from_age__lte=context.user_data[AGE],
+        age_limit__to_age__gte=context.user_data[AGE],
+    ).aexists():
+        return await fund(update, context)
+    elif await CoverageArea.objects.filter(parent__name=update.callback_query.data).aexists():
         return await city(update, context)
-    return await fund(update, context)
+    return await no_fund(update, context)
 
 
 async def city(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    city = await CoverageArea.objects.aget(parent__name=context.user_data[REGION])
+    button_list = [
+        [InlineKeyboardButton(city.name, callback_data=city.name)]
+        async for city in CoverageArea.objects.filter(parent__name=context.user_data[REGION])
+    ]
+    button_list.append([InlineKeyboardButton("Нет моего города", callback_data="no_fund")])
     await update.callback_query.answer()
-    await update.callback_query.edit_message_text(
-        "Выбери город",
-        reply_markup=InlineKeyboardMarkup(
-            [
-                [InlineKeyboardButton(city.name, callback_data=city.name)],
-                [InlineKeyboardButton("Нет моего города", callback_data="no_fund")],
-            ]
-        ),
-    )
+    await update.callback_query.edit_message_text("Выбери город", reply_markup=InlineKeyboardMarkup(button_list))
     return CITY
 
 
@@ -215,9 +214,16 @@ async def check_city(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data[CITY] = update.callback_query.data
     region_from_mtpp = await CoverageArea.objects.aget(name=context.user_data[REGION])
     city_from_mtpp = await CoverageArea.objects.aget(name=context.user_data[CITY])
-    if region_from_mtpp.id == city_from_mtpp.parent_id:
+    if (
+        region_from_mtpp.id == city_from_mtpp.parent_id
+        and await Fund.objects.filter(
+            coverage_area__name=context.user_data[CITY],
+            age_limit__from_age__lte=context.user_data[AGE],
+            age_limit__to_age__gte=context.user_data[AGE],
+        ).aexists()
+    ):
         return await fund(update, context)
-    return ConversationHandler.END
+    return await no_fund(update, context)
 
 
 async def fund(update: Update, context: ContextTypes.DEFAULT_TYPE):
