@@ -1,7 +1,8 @@
+from django.conf import settings
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 
-USER_DATA = {}
+from . utils import UserData
 
 
 def rendering(
@@ -9,10 +10,12 @@ def rendering(
     template_name: str,
     user_data_keys: tuple[str],
 ) -> HttpResponse:
-    ERROR = "Такого поля нет в Контексте"
+    field_msg = ""
+    if settings.DEBUG:
+        field_msg = "Такого поля нет в Контексте"
     context = {}
     for key in user_data_keys:
-        context[key] = USER_DATA.get(key, ERROR)
+        context[key] = UserData.data.get(key, field_msg)
     return render(request, template_name, context)
 
 
