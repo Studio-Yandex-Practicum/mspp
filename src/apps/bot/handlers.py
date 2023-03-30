@@ -125,7 +125,7 @@ async def no_fund(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    WEBAPP_URL_NEW_FUND = f"{settings.DOMAIN}{reverse('registration_new_fund')}"
+    WEBAPP_URL_NEW_FUND = f"https://{settings.DOMAIN}{reverse('registration_new_fund')}"
     await webapp(update, context, WEBAPP_URL_NEW_FUND)
     return NEW_FUND
 
@@ -228,12 +228,16 @@ async def fund(update: Update, context: ContextTypes.DEFAULT_TYPE):
     fund_list = [
         [InlineKeyboardButton("Почитать про фонды", callback_data="info")],
     ]
-    async for fund in Fund.objects.filter(
-        coverage_area__name=context.user_data[CITY],
-        age_limit__from_age__lte=context.user_data[AGE],
-        # age_limit__to_age__gte=context.user_data[AGE],
-    ):
-        fund_list.append([InlineKeyboardButton(fund.name, callback_data=fund.name)])
+    fund_list.extend(
+        [
+            [InlineKeyboardButton(fund.name, callback_data=fund.name)]
+            async for fund in Fund.objects.filter(
+                coverage_area__name=context.user_data[CITY],
+                age_limit__from_age__lte=context.user_data[AGE],
+                age_limit__to_age__gte=context.user_data[AGE],
+            )
+        ]
+    )
     fund_list.append(
         [InlineKeyboardButton("Изменить город?", callback_data="change_city")],
     )
@@ -273,7 +277,7 @@ async def fund_has_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    WEBAPP_URL_USER = f"{settings.DOMAIN}{reverse('registration_new_user')}"
+    WEBAPP_URL_USER = f"https://{settings.DOMAIN}{reverse('registration_new_user')}"
     await webapp(update, context, WEBAPP_URL_USER)
     return FUND
 

@@ -12,5 +12,4 @@ COPY ./src .
 
 RUN chmod +x start.sh
 
-CMD ["./start.sh"]
-# CMD ["uvicorn", "config.asgi:application", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "config.asgi:application", "--host", "0.0.0.0", "--port", "8000"]
