@@ -42,13 +42,8 @@ services:
       - .env
     volumes:
       - /MSPP/nginx_logs:/var/log/nginx
-      - type: bind
-        source: ./swag_nginx.conf
-        target: /config/nginx/site-confs/default.conf
+      - ./swag_nginx.conf:/config/nginx/site-confs/default.conf
       - static_value_stage:/var/html/static/
-    expose:
-      - "80"
-      - "443"
     ports:
       - "443:443"
       - "80:80"
