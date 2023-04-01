@@ -25,19 +25,27 @@ services:
     ports:
       - "8000:8000"
 
-  nginx:
-    image: nginx:1.23.3-alpine
-    container_name: nginx_stage
-    ports:
-      - "80:80"
+  swag:
+    image: linuxserver/swag:2.4.0
+    container_name: swag_stage
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - TZ=Europe/Moscow
+      - URL=msppbot.duckdns.org
+      - VALIDATION=http
+    env_file:
+      - .env
     volumes:
       - /MSPP/nginx_logs:/var/log/nginx
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./swag_nginx.conf:/config/nginx/site-confs/default.conf
       - static_value_stage:/var/html/static/
-    restart: always
+    ports:
+      - "443:443"
+      - "80:80"
+    restart: unless-stopped
     depends_on:
       - backend
-
 
 volumes:
   postgres_data_stage:
