@@ -1,10 +1,13 @@
 // === ENTRYPOINT ===
+const inputElements = document.querySelectorAll(".validate");
+const fund = document.getElementById("fund");
 const tg = window.Telegram.WebApp;
 tg.ready();
 tg.expand();
 tg.MainButton.setText("Оформить заявку").show();
-const inputElements = document.querySelectorAll(".validate");
-
+if (!fund.required) {
+  tg.BackButton.show();
+}
 
 // === VALIDATION ===
 const errMsgTextInput = {
@@ -172,4 +175,10 @@ const handleSubmit = (inputs, tg) => {
   tg.close();
 };
 
+const handleBack = (tg) => {
+  tg.sendData(JSON.stringify({back: "back"}));
+  tg.close();
+};
+
+tg.BackButton.onClick(() => handleBack(tg));
 tg.MainButton.onClick(() => handleSubmit(inputElements, tg));

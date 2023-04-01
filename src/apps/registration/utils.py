@@ -7,10 +7,6 @@ from telegram import (
 from telegram.ext import ContextTypes
 
 
-class UserData:
-    data: dict = {}
-
-
 async def webapp(
     update: Update,
     context: ContextTypes.DEFAULT_TYPE,
@@ -20,7 +16,6 @@ async def webapp(
 ) -> None:
     await update.callback_query.answer()
     await update.callback_query.delete_message()
-    UserData.data = context.user_data
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=message_text,

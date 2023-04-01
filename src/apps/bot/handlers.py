@@ -122,7 +122,9 @@ async def no_fund(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    WEBAPP_URL_NEW_FUND = f"https://{settings.DOMAIN}{reverse('registration_new_fund')}"
+    age = context.user_data.get(AGE)
+    WEBAPP_URL_NEW_FUND = (
+        f"https://{settings.DOMAIN}{reverse('new_fund', args=[age])}")
     await webapp(update, context, WEBAPP_URL_NEW_FUND)
     return NEW_FUND
 
@@ -283,37 +285,44 @@ async def fund_has_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    WEBAPP_URL_USER = f"https://{settings.DOMAIN}{reverse('registration_new_user')}"
+    age = context.user_data.get(AGE)
+    region = context.user_data.get(REGION, ' ')
+    city = context.user_data.get(CITY, ' ')
+    fund = context.user_data.get(FUND).get("name")
+    WEBAPP_URL_USER = (
+        f"https://{settings.DOMAIN}"
+        f"{reverse('new_user', args=[age, region, city, fund])}")
     await webapp(update, context, WEBAPP_URL_USER)
     return FUND
 
 
 async def read_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
     data = json.loads(update.effective_message.web_app_data.data)
-    google_form = AsyncGoogleFormSubmitter()
-
-    form_data = {
-        "surname": data.get("surname", ""),
-        "first_name": data.get("name", ""),
-        "patronymic": data.get("patronimic", ""),
-        "age": context.user_data.get("age", ""),
-        "country": context.user_data.get("country", ""),
-        "region": context.user_data.get("region", ""),
-        "city": context.user_data.get("city", ""),
-        "job": data.get("occupation", ""),
-        "email": data.get("email", ""),
-        "phone": data.get("phone_number", ""),
-        "fund_name": context.user_data.get("fund", {}).get("name", ""),
-    }
-
-    await google_form.submit_form(form_data)
-
-    await update.message.reply_html(
-        "Спасибо! Я передал твою заявку. Фонд свяжется с тобой, чтобы "
-        "уточнить детали и пригласить на собеседование.",
-        reply_markup=ReplyKeyboardRemove(),
-    )
-    return ConversationHandler.END
+    back = data.get("back")
+    if back is not None:
+        await location(update, context)  # suppose to be a method fund, but it doesn't work
+    else:
+        google_form = AsyncGoogleFormSubmitter()
+        form_data = {
+            "surname": data.get("surname", ""),
+            "first_name": data.get("name", ""),
+            "patronymic": data.get("patronimic", ""),
+            "age": context.user_data.get("age", ""),
+            "country": context.user_data.get("country", ""),
+            "region": context.user_data.get("region", ""),
+            "city": context.user_data.get("city", ""),
+            "job": data.get("occupation", ""),
+            "email": data.get("email", ""),
+            "phone": data.get("phone_number", ""),
+            "fund_name": context.user_data.get("fund", {}).get("name", ""),
+        }
+        await google_form.submit_form(form_data)
+        await update.message.reply_html(
+            "Спасибо! Я передал твою заявку. Фонд свяжется с тобой, чтобы "
+            "уточнить детали и пригласить на собеседование.",
+            reply_markup=ReplyKeyboardRemove(),
+        )
+        return ConversationHandler.END
 
 
 async def fund_info(update: Update, context: ContextTypes.DEFAULT_TYPE):
