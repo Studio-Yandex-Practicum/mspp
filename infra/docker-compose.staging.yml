@@ -40,7 +40,7 @@ services:
       - /MSPP/nginx_logs:/var/log/nginx
       - ./swag_nginx.conf:/config/nginx/site-confs/default.conf
       - static_value_stage:/var/html/static/
-      - /etc/letsencrypt/live:certs
+      - certs:/etc/letsencrypt/live
     ports:
       - "443:443"
       - "80:80"
