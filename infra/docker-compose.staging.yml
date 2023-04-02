@@ -40,6 +40,7 @@ services:
       - /MSPP/nginx_logs:/var/log/nginx
       - ./swag_nginx.conf:/config/nginx/site-confs/default.conf
       - static_value_stage:/var/html/static/
+      - /etc/letsencrypt/live:certs
     ports:
       - "443:443"
       - "80:80"
@@ -49,6 +50,5 @@ services:
 
 volumes:
   postgres_data_stage:
-    name: postgres_data_stage
   static_value_stage:
-    name: static_value_stage
+  certs:
