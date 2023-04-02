@@ -13,14 +13,11 @@ env = environ.Env()
 SECRET_KEY = env("SECRET_KEY", default=get_random_secret_key())
 
 DEBUG = env.bool("DEBUG", default=True)
-DEFAULT_DOMAIN = "e283-188-170-73-218.eu.ngrok.io"
-DOMAIN = env("DOMAIN", default=DEFAULT_DOMAIN)
-# "msppbot.duckdns.org")
-ALLOWED_HOSTS = list(map(str.strip, env.list(
-    "ALLOWED_HOSTS", default=[DEFAULT_DOMAIN])))
-CSRF_TRUSTED_ORIGINS = list(map(str.strip, env.list(
-    "CSRF_TRUSTED_ORIGINS",
-    default=["http://127.0.0.1", "http://localhost", f"https://{DEFAULT_DOMAIN}"])))
+DOMAIN = env("DOMAIN", default="msppbot.duckdns.org")
+ALLOWED_HOSTS = list(map(str.strip, env.list("ALLOWED_HOSTS", default=["*"])))
+CSRF_TRUSTED_ORIGINS = list(
+    map(str.strip, env.list("CSRF_TRUSTED_ORIGINS", default=["http://127.0.0.1", "http://localhost"]))
+)
 
 INSTALLED_APPS = [
     "django.contrib.admin",
