@@ -34,14 +34,14 @@ services:
       - TZ=Europe/Moscow
       - URL=nikuma.duckdns.org
       - VALIDATION=http
-      - STAGING=true
+      # - STAGING=true
     env_file:
       - .env
     volumes:
       - /MSPP/nginx_logs:/var/log/nginx
       - ./swag_nginx.conf:/config/nginx/site-confs/default.conf
       - static_value_stage:/var/html/static/
-      - certs:/etc/letsencrypt/live
+      # - certs:/etc/letsencrypt/live
     ports:
       - "443:443"
       - "80:80"
@@ -52,4 +52,4 @@ services:
 volumes:
   postgres_data_stage:
   static_value_stage:
-  certs:
+  # certs:
