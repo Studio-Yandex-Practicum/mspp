@@ -34,6 +34,7 @@ services:
       - TZ=Europe/Moscow
       - URL=msppbot.duckdns.org
       - VALIDATION=http
+      - STAGING=true
     env_file:
       - .env
     volumes:
