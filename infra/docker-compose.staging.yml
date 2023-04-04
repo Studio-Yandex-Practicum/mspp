@@ -32,7 +32,7 @@ services:
       - NET_ADMIN
     environment:
       - TZ=Europe/Moscow
-      - URL=monstr.duckdns.org
+      - URL=kr0t.duckdns.org
       - VALIDATION=http
       - STAGING=true
     env_file:
