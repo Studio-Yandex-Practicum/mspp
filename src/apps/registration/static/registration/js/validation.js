@@ -187,7 +187,7 @@ const handleSubmit = (inputs, tg) => {
 };
 
 const handleBack = (tg) => {
-  tg.sendData(JSON.stringify({back: "get_fund"}));
+  tg.sendData(JSON.stringify({back: "back"}));
   tg.close();
 };
 
