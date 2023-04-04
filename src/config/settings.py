@@ -13,7 +13,7 @@ env = environ.Env()
 SECRET_KEY = env("SECRET_KEY", default=get_random_secret_key())
 
 DEBUG = env.bool("DEBUG", default=True)
-DOMAIN = env("WEBHOOK_URL", default="https://msppbot.duckdns.org")
+DOMAIN = env("DOMAIN", default="https://msppbot.duckdns.org")
 ALLOWED_HOSTS = list(map(str.strip, env.list("ALLOWED_HOSTS", default=["*"])))
 CSRF_TRUSTED_ORIGINS = list(
     map(str.strip, env.list("CSRF_TRUSTED_ORIGINS", default=["http://127.0.0.1", "http://localhost"]))
