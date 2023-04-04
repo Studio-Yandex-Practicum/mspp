@@ -37,8 +37,6 @@ MAIN_DISPLAY_REGIONS = ("Москва", "Московская область", "
 
 logger = logging.getLogger(__name__)
 
-logger = logging.getLogger(__name__)
-
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logger.info("Start steps")
@@ -123,9 +121,9 @@ async def no_fund(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
     age = context.user_data.get(AGE)
-    WEBAPP_URL_NEW_FUND = (
-        f"https://{settings.DOMAIN}{reverse('new_fund', args=[age])}")
-    await webapp(update, context, WEBAPP_URL_NEW_FUND)
+    webapp_url_new_fund = (
+        f"{settings.DOMAIN}{reverse('new_fund', args=[age])}")
+    await webapp(update, context, webapp_url_new_fund)
     return NEW_FUND
 
 
@@ -289,10 +287,10 @@ async def fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
     region = context.user_data.get(REGION, ' ')
     city = context.user_data.get(CITY, ' ')
     fund = context.user_data.get(FUND).get("name")
-    WEBAPP_URL_USER = (
-        f"https://{settings.DOMAIN}"
+    webapp_url_user = (
+        f"{settings.DOMAIN}"
         f"{reverse('new_user', args=[age, region, city, fund])}")
-    await webapp(update, context, WEBAPP_URL_USER)
+    await webapp(update, context, webapp_url_user)
     return FUND
 
 
