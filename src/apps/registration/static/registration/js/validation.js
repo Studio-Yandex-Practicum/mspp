@@ -23,7 +23,11 @@ const errMsg = {
   patronimic: errMsgTextInput,      
   occupation: errMsgTextInput,
   location: errMsgTextInput,   
-  fund: errMsgTextInput,             
+  fund: {
+    required: "Пожалуйста, укажите название фонда, допускаются любые буквы, цифры и знак пробела",
+    min: "Введите не менее 2 символов",
+    max: "Допускается ввод не более 100 символов",
+  },             
   email: {
     required: "Пожалуйста, укажите адрес электронной почты, допустимые символы [a-z 0-9 _ @ .]",
     min: "Введите не менее 5 символов",
@@ -32,7 +36,7 @@ const errMsg = {
   phone_number: {
     required: "Введите 10-значный телефонный номер (без +7 или 8, например 921345хххх)",
     min: "Вы ввели менее 10 цифр, продолжайте ввод номера",
-    max: "Вы ввели более 10 цифр, откорретируйте ввод номера",
+    max: "Вы ввели более 10 цифр, откорректируйте ввод номера",
   },
 };
   
@@ -61,12 +65,19 @@ const checkInputValidity = (element, errElement) => {
     not_allowed_simbols = /[^0-9]/;
     isCapitalize = false;
     break;
+   case "fund":
+    not_allowed_simbols = /[^А-Яа-я\w\s]/
+    isCapitalize = false;
+    break;
    default:
     not_allowed_simbols = /[^А-Яа-я]/;
     isCapitalize = true;    
   } 
   
-  newValue = newValue.trimStart().replace(not_allowed_simbols, "");
+  if (not_allowed_simbols) {
+    newValue = newValue.trimStart().replace(not_allowed_simbols, "");
+  }
+  
     
   if (!newValue) {
     setInvalid(element, errElement, "required");
@@ -176,9 +187,10 @@ const handleSubmit = (inputs, tg) => {
 };
 
 const handleBack = (tg) => {
-  tg.sendData(JSON.stringify({back: "back"}));
+  tg.sendData(JSON.stringify({back: "get_fund"}));
   tg.close();
 };
 
 tg.BackButton.onClick(() => handleBack(tg));
 tg.MainButton.onClick(() => handleSubmit(inputElements, tg));
+
