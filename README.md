@@ -17,7 +17,7 @@
    ```
 4. Создайте `.env` файл в корневой папке проекта и укажите необходимые переменные окружения, по примеру шаблона [.env_example](https://github.com/Studio-Yandex-Practicum/mspp/blob/develop/.env_example).
 
-### Локальный запуск
+### Локальный запуск в docker compose
 1. Активируйте виртуальное окружение и установите зависимости
     ```bash
     poetry shell
@@ -31,9 +31,8 @@
 
 3. Для запуска локальной версии приложения, состоящей из трех сервисов - backend (Django приложение), postgres (БД PostgreSQL) и nginx (веб-сервер), выполните следующую команду:
     ```bash
-    docker compose -f infra/docker-compose_local.yml up # с выводом в консоль
+    docker compose -f infra/docker-compose_local.yml up -d --build
     ```
-    Можно использовать дополнительные [параметры](https://docs.docker.com/engine/reference/commandline/compose_up/#options) запуска: флаг `-d` для запуска в тихом режиме и/или флаг `--build` для пересборки сервисов после внесения изменений.
 
 4. Для выполнения команд в контейнере backend, используйте следующий формат:
 
@@ -48,8 +47,7 @@
 5. Для остановки и удаления контейнеров используйте:
 
     `docker compose -f infra/docker-compose_local.yml down`
-    
-    Вы можете использовать флаг `-v`, чтобы остановить и удалить все кроме образов.
+
 
 6. Для удаления volumes используйте следующий формат команд:
     ```
@@ -57,20 +55,44 @@
     docker volume rm static_value_local # статика
     ```
 
-7.  Для удаления образов используйте следующий формат команд:
+7. Для удаления образов используйте следующий формат команд:
     ```
     docker image rm mspp # образ приложения
     docker image rm postgres:15.2 # postgres
     docker image rm nginx:1.23.3-alpine # nginx
     ```
 
-### Запуск контейнера DB, запуск приложения локально для более удобной разработки
-1. Запустите контейнер DB `docker compose -f infra/docker-compose_db_launch.yml up -d --build`
-2. Перейдите в директорию src `cd src`
-3. Скопируйте статические файлы `python manage.py collectstatic`
-4. Примените миграции `python manage.py migrate`
-5. Создайте суперпользователя `python manage.py createsuperuser`
-6. Запустите проект `python manage.py startserver`
+### Команда для запуска ДБ в docker compose
+   ```bash
+   docker compose -f infra/docker-compose_db_launch.yml up -d --build
+   ```
+
+### Локальный запуск приложения
+1. Перейдите в директорию `src` с помощью:
+   ```bash
+   cd src
+   ```
+
+2. Скопируйте статические файлы:
+   ```bash
+   python manage.py collectstatic
+   ```
+
+3. Примените миграции:
+   ```bash
+   python manage.py migrate
+   ```
+
+4. Создайте суперпользователя:
+   ```bash
+   python manage.py createsuperuser
+   ```
+
+5. Запустите проект:
+   ```bash
+   python manage.py startserver
+   ```
+
 
 ## Режим работы бота
 ### Polling
