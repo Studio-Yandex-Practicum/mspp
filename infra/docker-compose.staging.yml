@@ -41,7 +41,7 @@ services:
       - /MSPP/nginx_logs:/var/log/nginx
       - ./swag_nginx.conf:/config/nginx/site-confs/default.conf
       - static_value_stage:/var/html/static/
-      - certs:/config/keys
+      - swag_config:/config
     ports:
       - "443:443"
       - "80:80"
@@ -52,4 +52,4 @@ services:
 volumes:
   postgres_data_stage:
   static_value_stage:
-  certs:
+  swag_config:
