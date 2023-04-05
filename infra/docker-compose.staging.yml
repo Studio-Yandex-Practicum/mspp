@@ -32,7 +32,7 @@ services:
       - NET_ADMIN
     environment:
       - TZ=Europe/Moscow
-      - URL=msppbot.duckdns.org
+      - URL=monster.duckdns.org
       - VALIDATION=http
       # - STAGING=true
     env_file:
