@@ -90,7 +90,7 @@
 
 5. Запустите проект:
    ```bash
-   python manage.py startserver
+   python manage.py runserver
    ```
 
 
