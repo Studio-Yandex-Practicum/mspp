@@ -35,13 +35,13 @@ services:
       - URL=msppbot.duckdns.org
       - VALIDATION=http
       - CERTPROVIDER=zerossl
-      - EMAIL=yandex-practicum@yandex.ru
     env_file:
       - .env
     volumes:
       - /MSPP/nginx_logs:/var/log/nginx
       - ./swag_nginx.conf:/config/nginx/site-confs/default.conf
       - static_value_stage:/var/html/static/
+      - keys:/config/keys
     ports:
       - "443:443"
       - "80:80"
@@ -52,3 +52,4 @@ services:
 volumes:
   postgres_data_stage:
   static_value_stage:
+  keys:
