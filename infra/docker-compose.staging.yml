@@ -42,7 +42,6 @@ services:
       - /MSPP/nginx_logs:/var/log/nginx
       - ./swag_nginx.conf:/config/nginx/site-confs/default.conf
       - static_value_stage:/var/html/static/
-      - keys:/config/keys
     ports:
       - "443:443"
       - "80:80"
