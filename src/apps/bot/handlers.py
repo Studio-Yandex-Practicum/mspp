@@ -1,6 +1,7 @@
 import json
 import logging
 
+from django.conf import settings
 from django.urls import reverse
 from telegram import (
     InlineKeyboardButton,
@@ -118,7 +119,7 @@ async def no_fund(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
     webapp_url_new_fund = (
-        f"https://msppbot.duckdns.org"
+        f"{settings.WEBHOOK_URL}"
         f"{reverse('new_fund', args=[context.user_data.get(AGE)])}")
     await webapp(update, context, webapp_url_new_fund)
     return NEW_FUND
@@ -285,7 +286,7 @@ async def fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
     city = context.user_data.get(CITY, ' ')
     fund = context.user_data.get(FUND).get("name")
     webapp_url_user = (
-        f"https://msppbot.duckdns.org"
+        f"{settings.WEBHOOK_URL}"
         f"{reverse('new_user', args=[age, region, city, fund])}")
     await webapp(update, context, webapp_url_user)
     return FUND
