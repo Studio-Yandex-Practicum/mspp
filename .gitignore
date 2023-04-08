@@ -103,6 +103,7 @@ celerybeat.pid
 
 # Environments
 .env
+.env_local
 .venv
 env/
 venv/
@@ -131,7 +132,7 @@ dmypy.json
 # Media and Static Django
 /media
 /staticfiles
-static/
+/static
 
 # Logs Django
 /logs
@@ -148,3 +149,5 @@ static/
 .vscode/
 *.code-workspace
 Makefile
+
+.env_local

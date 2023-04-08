@@ -1,14 +1,13 @@
 import json
 import logging
 
+from django.conf import settings
+from django.urls import reverse
 from telegram import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
-    KeyboardButton,
-    ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
     Update,
-    WebAppInfo,
 )
 from telegram.ext import (
     CallbackQueryHandler,
@@ -20,7 +19,7 @@ from telegram.ext import (
 )
 
 from apps.core.services.spreadsheets import AsyncGoogleFormSubmitter
-
+from apps.registration.utils import webapp
 from .models import CoverageArea, Fund
 
 AGE = "age"
@@ -119,21 +118,10 @@ async def no_fund(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.callback_query.answer()
-    await update.callback_query.delete_message()
-    await context.bot.send_message(
-        chat_id=update.effective_chat.id,
-        text="Нажмите на кнопку ниже, чтобы заполнить анкету",
-        reply_markup=ReplyKeyboardMarkup.from_button(
-            KeyboardButton(
-                "Заполнить анкету",
-                # TODO: заменить на веб-приложение с формой
-                # Данные для подстановки в форму:
-                # context.user_data[AGE] - возраст
-                web_app=WebAppInfo(url="https://python-telegram-bot.org/static/webappbot"),
-            )
-        ),
-    )
+    webapp_url_new_fund = (
+        f"{settings.WEBHOOK_URL}"
+        f"{reverse('new_fund', args=[context.user_data.get(AGE)])}")
+    await webapp(update, context, webapp_url_new_fund)
     return NEW_FUND
 
 
@@ -293,32 +281,23 @@ async def fund_has_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.callback_query.answer()
-    await update.callback_query.delete_message()
-    await context.bot.send_message(
-        chat_id=update.effective_chat.id,
-        text="Нажмите на кнопку ниже, чтобы заполнить анкету",
-        reply_markup=ReplyKeyboardMarkup.from_button(
-            KeyboardButton(
-                "Заполнить анкету",
-                # TODO: заменить на веб-приложение с формой
-                # Данные для подстановки в форму:
-                # context.user_data[AGE] - возраст
-                # context.user_data[COUNTRY] - страна
-                # context.user_data[REGION] - регион, если есть
-                # context.user_data[CITY] - город, если есть
-                # context.user_data[FUND][NAME] - название фонда
-                web_app=WebAppInfo(url="https://python-telegram-bot.org/static/webappbot"),
-            )
-        ),
-    )
+    age = context.user_data.get(AGE)
+    region = context.user_data.get(REGION, ' ')
+    city = context.user_data.get(CITY, ' ')
+    fund = context.user_data.get(FUND).get("name")
+    webapp_url_user = (
+        f"{settings.WEBHOOK_URL}"
+        f"{reverse('new_user', args=[age, region, city, fund])}")
+    await webapp(update, context, webapp_url_user)
     return FUND
 
 
 async def read_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
     data = json.loads(update.effective_message.web_app_data.data)
+    back = data.get("back")
+    if back is not None:
+        return await location(update, context)  # must be a method fund, but it doesn't work - filtration problem
     google_form = AsyncGoogleFormSubmitter()
-
     form_data = {
         "surname": data.get("surname", ""),
         "first_name": data.get("name", ""),
@@ -332,9 +311,7 @@ async def read_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "phone": data.get("phone_number", ""),
         "fund_name": context.user_data.get("fund", {}).get("name", ""),
     }
-
     await google_form.submit_form(form_data)
-
     await update.message.reply_html(
         "Спасибо! Я передал твою заявку. Фонд свяжется с тобой, чтобы "
         "уточнить детали и пригласить на собеседование.",

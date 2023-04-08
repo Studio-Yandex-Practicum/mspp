@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     "mptt",
     "bot.apps.BotConfig",
     "core",
+    "registration",
 ]
 
 MIDDLEWARE = [

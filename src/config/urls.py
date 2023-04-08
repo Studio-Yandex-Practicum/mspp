@@ -7,6 +7,7 @@ from . import settings
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("bot/", include("bot.urls")),
+    path("registration/", include("registration.urls")),
 ]
 
 if settings.DEBUG:
