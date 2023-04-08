@@ -35,6 +35,7 @@ services:
       - URL=msppbot.duckdns.org
       - VALIDATION=http
       - CERTPROVIDER=zerossl
+      - EMAIL=yandex-practicum@yandex.ru
     env_file:
       - .env
     volumes:
