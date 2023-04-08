@@ -15,7 +15,7 @@
     ```bash
    pre-commit run --all-files
    ```
-4. Создайте `.env` файл в корневой папке проекта и укажите необходимые переменные окружения, по примеру шаблона [.env_example](https://github.com/Studio-Yandex-Practicum/mspp/blob/develop/.env_example).
+4. Создайте `.env` файл в папке mssp и укажите необходимые переменные окружения, по примеру шаблона [.env_example](https://github.com/Studio-Yandex-Practicum/mspp/blob/develop/.env_example).
 
 ### Локальный запуск в docker compose
 1. Активируйте виртуальное окружение и установите зависимости
@@ -62,7 +62,7 @@
     docker image rm nginx:1.23.3-alpine # nginx
     ```
 
-### Команда для запуска ДБ в docker compose
+### Команда для запуска БД в docker compose
    ```bash
    docker compose -f infra/docker-compose_db_launch.yml up -d --build
    ```
