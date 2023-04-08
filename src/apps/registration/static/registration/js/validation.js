@@ -94,7 +94,7 @@ const checkInputValidity = (element, errElement) => {
   else if (newValue.match(capsPattern)) {
     setInvalid(element, errElement, "capsPattern");
   }
-  else if (element.name == "email" && !newValue.match(/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/)) {
+  else if (element.name == "email" && !newValue.match(/^\w+[\.\w]*@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/)) {
     setInvalid(element, errElement, "required");
   } 
   else {
