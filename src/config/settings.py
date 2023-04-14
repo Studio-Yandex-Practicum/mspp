@@ -18,7 +18,7 @@ ALLOWED_HOSTS = list(map(str.strip, env.list("ALLOWED_HOSTS", default=["*"])))
 CSRF_TRUSTED_ORIGINS = list(
     map(str.strip, env.list("CSRF_TRUSTED_ORIGINS", default=["https://127.0.0.1", "https://localhost"]))
 )
-CSRF_TRUSTED_ORIGINS = [string.replace('http', 'https') for string in CSRF_TRUSTED_ORIGINS]
+CSRF_TRUSTED_ORIGINS = [string.replace('http', 'https').strip('/') for string in CSRF_TRUSTED_ORIGINS]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
