@@ -16,10 +16,9 @@ DEBUG = env.bool("DEBUG", default=True)
 
 ALLOWED_HOSTS = list(map(str.strip, env.list("ALLOWED_HOSTS", default=["*"])))
 CSRF_TRUSTED_ORIGINS = list(
-    map(str.strip, env.list("CSRF_TRUSTED_ORIGINS", default=["http://127.0.0.1", "http://localhost"]))
+    map(str.strip, env.list("CSRF_TRUSTED_ORIGINS", default=["https://127.0.0.1", "https://localhost"]))
 )
-
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+CSRF_TRUSTED_ORIGINS = [string.replace('http', 'https') for string in CSRF_TRUSTED_ORIGINS]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
