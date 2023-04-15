@@ -16,7 +16,7 @@ DEBUG = env.bool("DEBUG", default=True)
 
 ALLOWED_HOSTS = list(map(str.strip, env.list("ALLOWED_HOSTS", default=["*"])))
 CSRF_TRUSTED_ORIGINS = list(
-    map(str.strip, env.list("CSRF_TRUSTED_ORIGINS", default=["http://127.0.0.1", "http://localhost"]))
+    map(str.strip, env.list("CSRF_TRUSTED_ORIGINS", default=["https://127.0.0.1", "https://localhost"]))
 )
 
 INSTALLED_APPS = [
