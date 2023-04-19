@@ -2,13 +2,14 @@ import logging
 from urllib.parse import urljoin
 
 from django.conf import settings
-from telegram.ext import Application
+from telegram.ext import Application, PicklePersistence
 
 from .handlers import HANDLERS
 
 logger = logging.getLogger(__name__)
 
-bot_app = Application.builder().token(settings.TELEGRAM_TOKEN).build()
+persistance = PicklePersistence(filepath="persistance_file", update_interval=1)
+bot_app = Application.builder().token(settings.TELEGRAM_TOKEN).persistence(persistance).build()
 bot_app.add_handlers(HANDLERS)
 
 
