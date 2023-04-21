@@ -39,7 +39,6 @@
     `docker compose -f infra/docker-compose_local.yml exec backend [COMMAND]`
 
     Выполните следующие команды:
-    ```
     python manage.py migrate # Cоздать миграции
     python manage.py createsuperuser # Cоздать суперпользователя
     python manage.py collectstatic --no-input # Cобрать статику

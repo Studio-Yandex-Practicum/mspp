@@ -3,12 +3,7 @@ import logging
 
 from django.conf import settings
 from django.urls import reverse
-from telegram import (
-    InlineKeyboardButton,
-    InlineKeyboardMarkup,
-    ReplyKeyboardRemove,
-    Update,
-)
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.ext import (
     CallbackQueryHandler,
     CommandHandler,
@@ -19,7 +14,9 @@ from telegram.ext import (
 )
 
 from apps.core.services.spreadsheets import AsyncGoogleFormSubmitter
+from apps.core.services.spreadsheets.runner import send_to_google_sheets
 from apps.registration.utils import webapp
+
 from .models import CoverageArea, Fund
 
 AGE = "age"
@@ -118,9 +115,7 @@ async def no_fund(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    webapp_url_new_fund = (
-        f"{settings.WEBHOOK_URL}"
-        f"{reverse('new_fund', args=[context.user_data.get(AGE)])}")
+    webapp_url_new_fund = f"{settings.WEBHOOK_URL}" f"{reverse('new_fund', args=[context.user_data.get(AGE)])}"
     await webapp(update, context, webapp_url_new_fund)
     return NEW_FUND
 
@@ -128,6 +123,10 @@ async def new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def read_new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
     json.loads(update.effective_message.web_app_data.data)
     # TODO: передать данные из формы в google таблицу
+    data = json.loads(update.effective_message.web_app_data.data)
+    table_row = list(data.values())
+    values = [table_row]
+    await send_to_google_sheets(values, spreadsheetid=settings.SPREADSHEET_ID)
     await update.message.reply_html(
         "Спасибо! Я передал твою заявку. Поcтараемся запустить проект в "
         "твоем городе как можно скорее и обязательно свяжемся с тобой.",
@@ -282,12 +281,10 @@ async def fund_has_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
     age = context.user_data.get(AGE)
-    region = context.user_data.get(REGION, ' ')
-    city = context.user_data.get(CITY, ' ')
+    region = context.user_data.get(REGION, " ")
+    city = context.user_data.get(CITY, " ")
     fund = context.user_data.get(FUND).get("name")
-    webapp_url_user = (
-        f"{settings.WEBHOOK_URL}"
-        f"{reverse('new_user', args=[age, region, city, fund])}")
+    webapp_url_user = f"{settings.WEBHOOK_URL}" f"{reverse('new_user', args=[age, region, city, fund])}"
     await webapp(update, context, webapp_url_user)
     return FUND
 
