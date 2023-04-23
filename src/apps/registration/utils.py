@@ -1,9 +1,4 @@
-from telegram import (
-    KeyboardButton,
-    ReplyKeyboardMarkup,
-    Update,
-    WebAppInfo,
-)
+from telegram import KeyboardButton, ReplyKeyboardMarkup, Update, WebAppInfo
 from telegram.ext import ContextTypes
 
 
@@ -23,4 +18,6 @@ async def webapp(
             KeyboardButton(
                 button_text,
                 web_app=WebAppInfo(url=url),
-            )))
+            )
+        ),
+    )

@@ -122,7 +122,6 @@ async def new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def read_new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
     json.loads(update.effective_message.web_app_data.data)
-    # TODO: передать данные из формы в google таблицу
     data = json.loads(update.effective_message.web_app_data.data)
     table_row = list(data.values())
     values = [table_row]

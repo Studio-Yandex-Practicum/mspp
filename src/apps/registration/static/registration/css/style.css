@@ -29,7 +29,7 @@
     .form-title {
       text-align: center;
       color: var(--tg-theme-text-color) !important;
-    }    
+    }
 
     .input-field input[type="text"]:focus+label {
       color: var(--tg-theme-button-color) !important;

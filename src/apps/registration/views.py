@@ -3,7 +3,7 @@ from django.shortcuts import render
 
 
 def registration_new_fund(request: HttpRequest, age: str) -> HttpResponse:
-    template_name = 'registration/registration_new_fund.html'
+    template_name = "registration/registration_new_fund.html"
     context = {
         "age": age,
     }
@@ -17,7 +17,7 @@ def registration_new_user(
     city: str,
     fund: str,
 ) -> HttpResponse:
-    template_name = 'registration/registration_new_user.html'
+    template_name = "registration/registration_new_user.html"
     context = {
         "age": age,
         "region": region,
