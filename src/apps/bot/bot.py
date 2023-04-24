@@ -8,7 +8,7 @@ from .handlers import HANDLERS
 
 logger = logging.getLogger(__name__)
 
-persistance = PicklePersistence(filepath="persistance_file", update_interval=1)
+persistance = PicklePersistence(filepath="persistance_data/persistance_file", update_interval=1)
 bot_app = Application.builder().token(settings.TELEGRAM_TOKEN).persistence(persistance).build()
 bot_app.add_handlers(HANDLERS)
 
