@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.append(str(BASE_DIR / "apps"))
 
 env = environ.Env()
-env.read_env(".env")
+
 
 SECRET_KEY = env("SECRET_KEY", default=get_random_secret_key())
 
