@@ -7,10 +7,10 @@ from .views import (
 
 
 urlpatterns = [
-    path("new-fund/<str:age>/",
+    path("new-fund/",
          registration_new_fund,
          name="new_fund"),
-    path("new-user/<str:age>/<str:region>/<str:city>/<str:fund>/",
+    path("new-user/",
          registration_new_user,
          name="new_user"),
 ]

@@ -2,8 +2,10 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 
 
-def registration_new_fund(request: HttpRequest, age: str) -> HttpResponse:
+def registration_new_fund(request: HttpRequest) -> HttpResponse:
     template_name = 'registration/registration_new_fund.html'
+    if request.method == 'GET':
+        age = request.GET.get('age')
     context = {
         "age": age,
     }
@@ -11,13 +13,15 @@ def registration_new_fund(request: HttpRequest, age: str) -> HttpResponse:
 
 
 def registration_new_user(
-    request: HttpRequest,
-    age: str,
-    region: str,
-    city: str,
-    fund: str,
-) -> HttpResponse:
+    request: HttpRequest) -> HttpResponse:
     template_name = 'registration/registration_new_user.html'
+
+    if request.method == 'GET':
+        age = request.GET.get('age')
+        region = request.GET.get('region')
+        city = request.GET.get('city')
+        fund = request.GET.get('fund')
+
     context = {
         "age": age,
         "region": region,
