@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 from urllib.parse import urljoin
 
 from django.conf import settings
@@ -8,7 +9,8 @@ from .handlers import HANDLERS
 
 logger = logging.getLogger(__name__)
 
-persistance = PicklePersistence(filepath="persistance_data/persistance_file")
+Path(settings.PERSISTANCE_PATH.split("/")[0]).mkdir(exist_ok=True)
+persistance = PicklePersistence(filepath=settings.PERSISTANCE_PATH)
 bot_app = Application.builder().token(settings.TELEGRAM_TOKEN).persistence(persistance).build()
 bot_app.add_handlers(HANDLERS)
 

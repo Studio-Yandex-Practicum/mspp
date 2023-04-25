@@ -4,7 +4,6 @@ from pathlib import Path
 import environ
 from django.core.management.utils import get_random_secret_key
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.append(str(BASE_DIR / "apps"))
 
@@ -18,6 +17,9 @@ ALLOWED_HOSTS = list(map(str.strip, env.list("ALLOWED_HOSTS", default=["*"])))
 CSRF_TRUSTED_ORIGINS = list(
     map(str.strip, env.list("CSRF_TRUSTED_ORIGINS", default=["https://127.0.0.1", "https://localhost"]))
 )
+
+
+PERSISTANCE_PATH = "persistance_data/persistance_file"
 
 INSTALLED_APPS = [
     "django.contrib.admin",
