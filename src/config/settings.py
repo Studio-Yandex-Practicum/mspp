@@ -18,9 +18,9 @@ CSRF_TRUSTED_ORIGINS = list(
     map(str.strip, env.list("CSRF_TRUSTED_ORIGINS", default=["https://127.0.0.1", "https://localhost"]))
 )
 
-
 PERSISTANCE_DIR = BASE_DIR / "persistance_data"
 PERSISTANCE_PATH = PERSISTANCE_DIR / "persistance_file"
+Path.mkdir(PERSISTANCE_DIR, exist_ok=True)
 
 INSTALLED_APPS = [
     "django.contrib.admin",
