@@ -19,7 +19,8 @@ CSRF_TRUSTED_ORIGINS = list(
 )
 
 
-PERSISTANCE_PATH = "persistance_data/persistance_file"
+PERSISTANCE_DIR = BASE_DIR / "persistance_data"
+PERSISTANCE_PATH = PERSISTANCE_DIR / "persistance_file"
 
 INSTALLED_APPS = [
     "django.contrib.admin",
