@@ -123,7 +123,16 @@ async def new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def read_new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
     json.loads(update.effective_message.web_app_data.data)
     data = json.loads(update.effective_message.web_app_data.data)
-    table_row = list(data.values())
+    table_data = {
+        "surname": data.get("surname", ""),
+        "name": data.get("name", ""),
+        "location": data.get("location", ""),
+        "email": data.get("email", ""),
+        "phone": data.get("phone_number", ""),
+        "fund_name": data.get("fund", ""),
+        "age": context.user_data.get("age", ""),
+    }
+    table_row = list(table_data.values())
     values = [table_row]
     await send_to_google_sheets(values, spreadsheetid=settings.SPREADSHEET_ID)
     await update.message.reply_html(
