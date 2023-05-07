@@ -144,10 +144,7 @@ async def country(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [
                 [InlineKeyboardButton("Казахстан", callback_data="Казахстан")],
                 # TODO: добавить пагинацию
-                [
-                    InlineKeyboardButton("Далее", callback_data="next"),
-                    InlineKeyboardButton("Назад", callback_data="prev"),
-                ],
+
                 [InlineKeyboardButton("Другая страна", callback_data="no_fund")],
             ]
         ),
