@@ -16,18 +16,18 @@ const errMsgTextInput = {
   max: "Допускается ввод не более 100 символов",
   capsPattern: "Убедитесь, что у Вас выключен CAPS LOCK",
 };
-  
+
 const errMsg = {
-  surname: errMsgTextInput,    
+  surname: errMsgTextInput,
   name: errMsgTextInput,
-  patronimic: errMsgTextInput,      
+  patronimic: errMsgTextInput,
   occupation: errMsgTextInput,
-  location: errMsgTextInput,   
+  location: errMsgTextInput,
   fund: {
     required: "Пожалуйста, укажите название фонда, допускаются любые буквы, цифры и знак пробела",
     min: "Введите не менее 2 символов",
     max: "Допускается ввод не более 100 символов",
-  },             
+  },
   email: {
     required: "Пожалуйста, укажите адрес электронной почты, допустимые символы [a-z 0-9 _ @ .]",
     min: "Введите не менее 5 символов",
@@ -39,12 +39,12 @@ const errMsg = {
     max: "Вы ввели более 10 цифр, откорректируйте ввод номера",
   },
 };
-  
+
 const setValid = (element, errElement) => {
     element.classList.remove("invalid");
     errElement.textContent = "";
 };
-  
+
 const setInvalid = (element, errElement, errName) => {
     element.classList.add("invalid");
     errElement.textContent = errMsg[element.name][errName];
@@ -56,9 +56,9 @@ const checkInputValidity = (element, errElement) => {
   const capsPattern = /[А-ЯЁ]{2,}/;
   let newValue = element.value;
 
-  switch (element.name) { 
+  switch (element.name) {
    case "email":
-    not_allowed_simbols = /[^a-z0-9_@\.]/;
+    not_allowed_simbols = /[^a-z0-9_@\.\-]/;
     isCapitalize = false;
     break;
    case "phone_number":
@@ -71,32 +71,32 @@ const checkInputValidity = (element, errElement) => {
     break;
    default:
     not_allowed_simbols = /[^А-Яа-я]/;
-    isCapitalize = true;    
-  } 
-  
+    isCapitalize = true;
+  }
+
   if (not_allowed_simbols) {
     newValue = newValue.trimStart().replace(not_allowed_simbols, "");
   }
-  
-    
+
+
   if (!newValue) {
     setInvalid(element, errElement, "required");
-  } 
+  }
   else if (element.name == "phone_number" && newValue[0] != "8") {
     newValue = "8" + newValue;
   }
   else if (minlength && newValue.length < minlength) {
     setInvalid(element, errElement, "min");
-  } 
+  }
   else if (maxlength && newValue.length > maxlength) {
     setInvalid(element, errElement, "max");
-  } 
+  }
   else if (newValue.match(capsPattern)) {
     setInvalid(element, errElement, "capsPattern");
   }
-  else if (element.name == "email" && !newValue.match(/^\w+[\.\w]*@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/)) {
+  else if (element.name == "email" && !newValue.match(/^\w+[\-\.\w]*@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/)) {
     setInvalid(element, errElement, "required");
-  } 
+  }
   else {
     if (isCapitalize && ![/[А-Я]/].includes(newValue[0])) {
       newValue = newValue[0].toUpperCase() + newValue.slice(1)
@@ -181,7 +181,7 @@ const handleSubmit = (inputs, tg) => {
   const data = Array.from(inputs).reduce((data, input) => {
     data[input.name] = input.value.trim();
     return data;
-  }, {}); 
+  }, {});
   tg.sendData(JSON.stringify(data));
   tg.close();
 };
@@ -193,4 +193,3 @@ const handleBack = (tg) => {
 
 tg.BackButton.onClick(() => handleBack(tg));
 tg.MainButton.onClick(() => handleSubmit(inputElements, tg));
-
