@@ -1,5 +1,6 @@
 import json
 import logging
+import urllib
 
 from django.conf import settings
 from django.urls import reverse
@@ -118,9 +119,13 @@ async def no_fund(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    age = context.user_data.get(AGE)
     webapp_url_new_fund = (
         f"{settings.WEBHOOK_URL}"
-        f"{reverse('new_fund', args=[context.user_data.get(AGE)])}")
+        f"{reverse('new_fund')}"
+        '?' + urllib.urlencode(age=age)
+    )
+
     await webapp(update, context, webapp_url_new_fund)
     return NEW_FUND
 
@@ -285,9 +290,18 @@ async def fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
     region = context.user_data.get(REGION, ' ')
     city = context.user_data.get(CITY, ' ')
     fund = context.user_data.get(FUND).get("name")
+
     webapp_url_user = (
-        f"{settings.WEBHOOK_URL}"
-        f"{reverse('new_user', args=[age, region, city, fund])}")
+        f"{settings.WEBHOOK_URL}" 
+        f"{reverse('new_user')}"
+        '?' + urllib.urlencode(age=age,
+                               region=region,
+                               city=city,
+                               fund=fund)
+    )
+
+
+
     await webapp(update, context, webapp_url_user)
     return FUND
 
