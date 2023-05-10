@@ -14,7 +14,7 @@ from telegram.ext import (
 )
 
 from apps.core.services.spreadsheets import AsyncGoogleFormSubmitter
-from apps.core.services.spreadsheets.runner import send_to_google_sheets
+from apps.core.services.spreadsheets.spreadsheets import send, set_user_permissions
 from apps.registration.utils import webapp
 
 from .models import CoverageArea, Fund
@@ -135,7 +135,8 @@ async def read_new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE)
     table_row = list(table_data.values())
     table_values = [table_row]
     spreadsheetid = settings.SPREADSHEET_ID
-    send_to_google_sheets(table_values, spreadsheetid)
+    await set_user_permissions(spreadsheetid)
+    await send(table_values, spreadsheetid)
     await update.message.reply_html(
         "Спасибо! Я передал твою заявку. Поcтараемся запустить проект в "
         "твоем городе как можно скорее и обязательно свяжемся с тобой.",
