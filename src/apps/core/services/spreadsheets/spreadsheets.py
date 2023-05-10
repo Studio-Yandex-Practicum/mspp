@@ -9,6 +9,9 @@ from django.conf import settings
 
 from .auth import creds
 
+DRIVE_VERS = "v3"
+SHEETS_VERS = "v4"
+
 logger = logging.getLogger(__name__)
 
 
@@ -28,10 +31,24 @@ class AsyncGoogleFormSubmitter:
                 return response.status == HTTPStatus.OK
 
 
-async def send(
+async def set_user_permissions(
     spreadsheetid: str,
-    table_values: list[list[Any]],
 ) -> None:
+
+    permissions_body = {"type": "user", "role": "writer", "emailAddress": settings.EMAIL_USER}
+    async with Aiogoogle(service_account_creds=creds) as aiogoogle:
+        try:
+            service = await aiogoogle.discover("drive", DRIVE_VERS)
+            await aiogoogle.as_service_account(
+                service.permissions.create(fileId=spreadsheetid, json=permissions_body, fields="id")
+            )
+        except HTTPError as e:
+            msg = "Не удалось авторизоваться!"
+            logger.critical(msg, e)
+            raise HTTPError(msg)
+
+
+async def send(table_values: list[list[Any]], spreadsheetid: str) -> None:
     """Отправляет переданные данные в Google таблицы.
 
     Args:
@@ -43,9 +60,9 @@ async def send(
     async with Aiogoogle(service_account_creds=creds) as aiogoogle:
         range = f"1:{len(table_values)}"
 
-        update_body = {"majorDimension": "COLUMNS", "values": table_values}
+        update_body = {"majorDimension": "ROWS", "values": table_values}
         try:
-            service = await aiogoogle.discover("sheets", "v4")
+            service = await aiogoogle.discover("sheets", SHEETS_VERS)
             await aiogoogle.as_service_account(
                 service.spreadsheets.values.append(
                     spreadsheetId=spreadsheetid, range=range, valueInputOption="USER_ENTERED", json=update_body

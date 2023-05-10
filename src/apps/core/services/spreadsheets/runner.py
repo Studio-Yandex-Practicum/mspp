@@ -2,11 +2,11 @@ from typing import Any
 
 from django.conf import settings
 
-from .spreadsheets import sender
+from .spreadsheets import send, set_user_permissions
 
 
-def send_to_google_sheets(
-    values: list[list[Any]],
+async def send_to_google_sheets(
+    table_values: list[list[Any]],
     spreadsheetid: str = settings.SPREADSHEET_ID,
 ) -> None:
     """Отправляет переданные данные в Google таблицы.
@@ -18,4 +18,5 @@ def send_to_google_sheets(
     Raises:
         HTTPError: Не удалось отправить сроку в таблицу
     """
-    sender(values, spreadsheetid)
+    await set_user_permissions(spreadsheetid)
+    await send(table_values, spreadsheetid)
