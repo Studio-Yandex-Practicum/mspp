@@ -1,3 +1,4 @@
+import asyncio
 from typing import Any
 
 from django.conf import settings
@@ -18,5 +19,7 @@ async def send_to_google_sheets(
     Raises:
         HTTPError: Не удалось отправить сроку в таблицу
     """
-    await set_user_permissions(spreadsheetid)
-    await send(table_values, spreadsheetid)
+    task_1 = asyncio.create_task(set_user_permissions(spreadsheetid))
+    task_2 = asyncio.create_task(send(table_values, spreadsheetid))
+    await task_1
+    await task_2
