@@ -1,4 +1,3 @@
-import asyncio
 import json
 import logging
 
@@ -136,7 +135,7 @@ async def read_new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE)
     table_row = list(table_data.values())
     table_values = [table_row]
     spreadsheetid = settings.SPREADSHEET_ID
-    asyncio.run(send_to_google_sheets(table_values, spreadsheetid))
+    send_to_google_sheets(table_values, spreadsheetid)
     await update.message.reply_html(
         "Спасибо! Я передал твою заявку. Поcтараемся запустить проект в "
         "твоем городе как можно скорее и обязательно свяжемся с тобой.",
