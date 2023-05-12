@@ -9,9 +9,6 @@ from django.conf import settings
 
 from .auth import creds
 
-DRIVE_VERS = "v3"
-SHEETS_VERS = "v4"
-
 logger = logging.getLogger(__name__)
 
 
@@ -32,15 +29,15 @@ class AsyncGoogleFormSubmitter:
 
 
 async def set_user_permissions(
-    spreadsheetid: str,
+    spreadsheet_id: str,
 ) -> None:
 
     permissions_body = {"type": "user", "role": "writer", "emailAddress": settings.EMAIL_USER}
     async with Aiogoogle(service_account_creds=creds) as aiogoogle:
         try:
-            service = await aiogoogle.discover("drive", DRIVE_VERS)
+            service = await aiogoogle.discover("drive", settings.DRIVE_VERS)
             await aiogoogle.as_service_account(
-                service.permissions.create(fileId=spreadsheetid, json=permissions_body, fields="id")
+                service.permissions.create(fileId=spreadsheet_id, json=permissions_body, fields="id")
             )
         except HTTPError as e:
             msg = "Не удалось авторизоваться!"
@@ -48,7 +45,7 @@ async def set_user_permissions(
             raise HTTPError(msg)
 
 
-async def send(table_values: list[list[Any]], spreadsheetid: str) -> None:
+async def send(table_values: list[list[Any]], spreadsheet_id: str) -> None:
     """Отправляет переданные данные в Google таблицы.
 
     Args:
@@ -62,17 +59,17 @@ async def send(table_values: list[list[Any]], spreadsheetid: str) -> None:
 
         update_body = {"majorDimension": "ROWS", "values": table_values}
         try:
-            service = await aiogoogle.discover("sheets", SHEETS_VERS)
+            service = await aiogoogle.discover("sheets", settings.SHEETS_VERS)
             await aiogoogle.as_service_account(
                 service.spreadsheets.values.append(
-                    spreadsheetId=spreadsheetid, range=range, valueInputOption="USER_ENTERED", json=update_body
+                    spreadsheetId=spreadsheet_id, range=range, valueInputOption="USER_ENTERED", json=update_body
                 )
             )
         except HTTPError as e:
             msg = "Не удалось отправить сроку в таблицу!"
             logger.critical(msg, e)
             raise HTTPError(msg)
-        logger.info(settings.SPREADSHEETS_URL.format(spreadsheetid))
+        logger.info(settings.SPREADSHEETS_URL.format(spreadsheet_id))
 
 
 def sender(

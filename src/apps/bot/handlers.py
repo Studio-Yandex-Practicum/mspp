@@ -13,7 +13,6 @@ from telegram.ext import (
     filters,
 )
 
-# from apps.core.services.spreadsheets import AsyncGoogleFormSubmitter
 from apps.core.services.spreadsheets.spreadsheets import send, set_user_permissions
 from apps.registration.utils import webapp
 
@@ -132,11 +131,10 @@ async def read_new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE)
         "fund_name": data.get("fund", ""),
         "age": context.user_data.get("age", ""),
     }
-    table_row = list(table_data.values())
-    table_values = [table_row]
-    spreadsheetid = settings.SPREADSHEET_ID_NEW_FUND
-    await set_user_permissions(spreadsheetid)
-    await send(table_values, spreadsheetid)
+    table_values = [list(table_data.values())]
+    spreadsheet_id = settings.SPREADSHEET_ID_NEW_FUND
+    await set_user_permissions(spreadsheet_id)
+    await send(table_values, spreadsheet_id)
     await update.message.reply_html(
         "Спасибо! Я передал твою заявку. Поcтараемся запустить проект в "
         "твоем городе как можно скорее и обязательно свяжемся с тобой.",
@@ -303,8 +301,7 @@ async def read_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
     data = json.loads(update.effective_message.web_app_data.data)
     back = data.get("back")
     if back is not None:
-        return await location(update, context)  # must be a method fund, but it doesn't work - filtration problem
-    # google_form = AsyncGoogleFormSubmitter()
+        return await location(update, context)
     form_data = {
         "surname": data.get("surname", ""),
         "first_name": data.get("name", ""),
@@ -318,12 +315,10 @@ async def read_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "phone": data.get("phone_number", ""),
         "fund_name": context.user_data.get("fund", {}).get("name", ""),
     }
-    # await google_form.submit_form(form_data) - Без привязанной гугл-формы бот падает
-    table_row = list(form_data.values())
-    table_values = [table_row]
-    spreadsheetid = settings.SPREADSHEET_ID_VOLUNTEER
-    await set_user_permissions(spreadsheetid)
-    await send(table_values, spreadsheetid)
+    table_values = [list(form_data.values())]
+    spreadsheet_id = settings.SPREADSHEET_ID_VOLUNTEER
+    await set_user_permissions(spreadsheet_id)
+    await send(table_values, spreadsheet_id)
     await update.message.reply_html(
         "Спасибо! Я передал твою заявку. Фонд свяжется с тобой, чтобы "
         "уточнить детали и пригласить на собеседование.",
