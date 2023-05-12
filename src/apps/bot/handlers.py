@@ -13,7 +13,7 @@ from telegram.ext import (
     filters,
 )
 
-from apps.core.services.spreadsheets import AsyncGoogleFormSubmitter
+# from apps.core.services.spreadsheets import AsyncGoogleFormSubmitter
 from apps.core.services.spreadsheets.spreadsheets import send, set_user_permissions
 from apps.registration.utils import webapp
 
@@ -115,15 +115,12 @@ async def no_fund(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    print("Открываю форму")
     webapp_url_new_fund = f"{settings.WEBHOOK_URL}" f"{reverse('new_fund', args=[context.user_data.get(AGE)])}"
     await webapp(update, context, webapp_url_new_fund)
-    print("Записал форму")
     return NEW_FUND
 
 
 async def read_new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    print("Планирую прочить данные из формы")
     json.loads(update.effective_message.web_app_data.data)
     data = json.loads(update.effective_message.web_app_data.data)
     table_data = {
@@ -137,13 +134,9 @@ async def read_new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE)
     }
     table_row = list(table_data.values())
     table_values = [table_row]
-    spreadsheetid = settings.SPREADSHEET_ID
-    print("Going to authorize")
+    spreadsheetid = settings.SPREADSHEET_ID_NEW_FUND
     await set_user_permissions(spreadsheetid)
-    print("Authorize")
-    print("Going to send data")
     await send(table_values, spreadsheetid)
-    print("Sent data")
     await update.message.reply_html(
         "Спасибо! Я передал твою заявку. Поcтараемся запустить проект в "
         "твоем городе как можно скорее и обязательно свяжемся с тобой.",
@@ -311,7 +304,7 @@ async def read_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
     back = data.get("back")
     if back is not None:
         return await location(update, context)  # must be a method fund, but it doesn't work - filtration problem
-    google_form = AsyncGoogleFormSubmitter()
+    # google_form = AsyncGoogleFormSubmitter()
     form_data = {
         "surname": data.get("surname", ""),
         "first_name": data.get("name", ""),
@@ -325,7 +318,12 @@ async def read_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "phone": data.get("phone_number", ""),
         "fund_name": context.user_data.get("fund", {}).get("name", ""),
     }
-    await google_form.submit_form(form_data)
+    # await google_form.submit_form(form_data) - Без привязанной гугл-формы бот падает
+    table_row = list(form_data.values())
+    table_values = [table_row]
+    spreadsheetid = settings.SPREADSHEET_ID_VOLUNTEER
+    await set_user_permissions(spreadsheetid)
+    await send(table_values, spreadsheetid)
     await update.message.reply_html(
         "Спасибо! Я передал твою заявку. Фонд свяжется с тобой, чтобы "
         "уточнить детали и пригласить на собеседование.",

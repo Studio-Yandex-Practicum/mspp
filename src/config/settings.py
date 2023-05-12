@@ -140,7 +140,9 @@ WEBHOOK_URL = env("WEBHOOK_URL", default=environ.Env.NOTSET if WEBHOOK_MODE else
 # Google Spreadsheets Variables
 CREDENTIALS_TYPE = env("CREDENTIALS_TYPE", default="env")
 SPREADSHEETS_URL = "https://docs.google.com/spreadsheets/d/{0}"
-SPREADSHEET_ID = env("SPREADSHEET_ID", default="_")
+SPREADSHEET_ID_NEW_FUND = env("SPREADSHEET_ID_NEW_FUND", default="_")
+SPREADSHEET_ID_VOLUNTEER = env("SPREADSHEET_ID_VOLUNTEER", default="_")
+
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
 
 GOOGLE_FORM_URL = "https://docs.google.com/forms/u/0/d/e/{0}/formResponse"

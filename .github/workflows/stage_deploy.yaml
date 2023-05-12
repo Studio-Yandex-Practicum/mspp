@@ -132,7 +132,8 @@ jobs:
             CLIENT_EMAIL=${{ secrets.CLIENT_EMAIL }}
             CLIENT_ID=${{ secrets.CLIENT_ID }}
             CLIENT_X509_CERT_URL=${{ secrets.CLIENT_X509_CERT_URL }}
-            SPREADSHEET_ID=${{ secrets.SPREADSHEET_ID }}
+            SPREADSHEET_ID_NEW_FUND=${{ secrets.SPREADSHEET_ID_NEW_FUND }}
+            SPREADSHEET_ID_VOLUNTEER=${{ secrets.SPREADSHEET_ID_VOLUNTEER }}
             EMAIL=${{ secrets.EMAIL }}
 
             EOM
