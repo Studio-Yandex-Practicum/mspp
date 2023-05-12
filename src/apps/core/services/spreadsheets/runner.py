@@ -1,14 +1,12 @@
 import asyncio
 from typing import Any
 
-from django.conf import settings
-
 from .spreadsheets import send, set_user_permissions
 
 
 async def send_to_google_sheets(
     table_values: list[list[Any]],
-    spreadsheetid: str = settings.SPREADSHEET_ID,
+    spreadsheetid: str,
 ) -> None:
     """Отправляет переданные данные в Google таблицы.
 
