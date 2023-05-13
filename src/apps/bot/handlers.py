@@ -132,7 +132,7 @@ async def read_new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE)
         "age": context.user_data.get("age", ""),
     }
     table_values = [list(table_data.values())]
-    spreadsheet_id = settings.SPREADSHEET_ID_NEW_FUND
+    spreadsheet_id = settings.SPREADSHEET_ID_FUND
     await set_user_permissions(spreadsheet_id)
     await send(table_values, spreadsheet_id)
     await update.message.reply_html(
