@@ -147,23 +147,25 @@ python manage.py fill_data
     - Ввести адрес вашего личного аккаунта в поле Service account admins role и нажать кнопку Done.
 6. Получаем JSON-файл с ключом доступа к сервисному аккаунту:
     - Перейnb на экран Credentials, нажмите на строчку с названием вашего сервисного аккаунта/
-    - Нажать Keys – Add Key – Create New Key.
+    - Нажать Keys –> Add Key –> Create New Key.
     - Выбрать формат JSON и нажать Create.
 7. Из скачавшегося файла копируем необходимые переменные окружения:
-    PRIVATE_KEY=
-    PRIVATE_KEY_ID=
-    PROJECT_ID=
-    CLIENT_EMAIL=
-    CLIENT_ID=
-    CLIENT_X509_CERT_URL=
-    Для EMAIL указываем значение адреса электронной почты гугл-аккаунта, в котром был создан проект.
+    - PRIVATE_KEY=
+    - PRIVATE_KEY_ID=
+    - PROJECT_ID=
+    - CLIENT_EMAIL=
+    - CLIENT_ID=
+    - CLIENT_X509_CERT_URL=
+    - EMAIL - указываем значение адреса электронной почты гугл-аккаунта, в котром был создан проект.
 8. Подключаем таблицы.
     - Создать таблицы  для заявок (https://docs.google.com/spreadsheets)
-    - Скопировать id твблиц в соответсвующие переменные:
-        SPREADSHEET_ID_FUND=
-        SPREADSHEET_ID_VOLUNTEER=
+    - Скопировать id таблиц в соответсвующие переменные:
+        - SPREADSHEET_ID_FUND=
+        - SPREADSHEET_ID_VOLUNTEER=
     Id можно получить скопировав символьную комбинацию из их URL-адресов (.../d/<"id таблицы">/edit...)
-9. Версии API указываются в настроках в константах DRIVE_VERS = , SHEETS_VERS = и должны соответствовать версиям на момент развертывания проекта (https://developers.google.com/drive/api/reference/rest/, https://developers.google.com/sheets/api/reference/rest)
+9. Версии API указываются в настроках в константах и должны соответствовать версиям на момент развертывания проекта. Необходимая информация доступна по ссылкам указанным ниже для каждой из констант соответственно.
+    - DRIVE_VERS = https://developers.google.com/drive/api/reference/rest/
+    - SHEETS_VERS = https://developers.google.com/sheets/api/reference/rest
 
 ### Авторы:
 [Anton Zelinsky](https://github.com/AntonZelinsky)<br>
