@@ -161,8 +161,8 @@ python manage.py fill_data
     - Создать таблицы  для заявок (https://docs.google.com/spreadsheets)
     - Скопировать id таблиц в соответсвующие переменные:
         - SPREADSHEET_ID_FUND=
-        - SPREADSHEET_ID_VOLUNTEER=
-Id можно получить скопировав символьную комбинацию из их URL-адресов (.../d/<"id таблицы">/edit...)
+        - SPREADSHEET_ID_VOLUNTEER= <br />
+    Id можно получить скопировав символьную комбинацию из их URL-адресов (.../d/<"id таблицы">/edit...)
 9. Версии API указываются в настроках в константах и должны соответствовать версиям на момент развертывания проекта. Необходимая информация доступна по ссылкам указанным ниже для каждой из констант соответственно.
     - DRIVE_VERS = https://developers.google.com/drive/api/reference/rest/
     - SHEETS_VERS = https://developers.google.com/sheets/api/reference/rest
