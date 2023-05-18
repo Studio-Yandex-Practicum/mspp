@@ -22,7 +22,7 @@
     ```bash
     poetry shell
     poetry install
-    ```
+
 
 2. Установите pre-commit хуки
     ```bash
@@ -130,6 +130,42 @@ WEBHOOK_URL=https://example.com
 ```bash
 python manage.py fill_data
 ```
+## Подключение Google API, использвоание Google-таблиц для хранения данных о заявках.
+1. Взаимодействие с Goodle-таблицами оранизовано посредством Google Cloud Platform (https://console.cloud.google.com/projectselector2/home/dashboard) и соответствующих API.
+2. Для использования Google Cloud Platform необходим гугл-аккаунт.
+3. После авторизации на платформе cоздаём проект в Google Cloud Platform:
+    - Нажать на кнопку Create Project в рабочей области.
+    - Заполнить форму и нажать Create.
+4. Подключаем Google Drive API и Google Sheets API:
+    - На плитке APIs нажать кнопку Go to APIs overview.
+    - Нажать кнопку Enabled APIs and services или выбрать в меню слева пункт Library.
+    - Поочерёдно найти Google Drive API, Google Sheets API и подключить их к проекту.
+5. Создаём сервисный аккаунт.
+    - Перейти в раздел Credentials.
+    - Нажать кнопку Create credentials и выбрать пункт Service account.
+    - Заполнить форму, выбрать роль для сервисного аккаунта (рекомендуется Editor).
+    - Ввести адрес вашего личного аккаунта в поле Service account admins role и нажать кнопку Done.
+6. Получаем JSON-файл с ключом доступа к сервисному аккаунту:
+    - Перейти на экран Credentials, нажмите на строчку с названием вашего сервисного аккаунта
+    - Нажать Keys –> Add Key –> Create New Key.
+    - Выбрать формат JSON и нажать Create.
+7. Из скачавшегося файла копируем необходимые переменные окружения:
+    - PRIVATE_KEY=
+    - PRIVATE_KEY_ID=
+    - PROJECT_ID=
+    - CLIENT_EMAIL=
+    - CLIENT_ID=
+    - CLIENT_X509_CERT_URL=
+    - EMAIL - указываем значение адреса электронной почты гугл-аккаунта, в котром был создан проект.
+8. Подключаем таблицы.
+    - Создать таблицы  для заявок (https://docs.google.com/spreadsheets)
+    - Скопировать id таблиц в соответсвующие переменные:
+        - SPREADSHEET_ID_FUND=
+        - SPREADSHEET_ID_VOLUNTEER= <br />
+    Id можно получить скопировав символьную комбинацию из их URL-адресов (.../d/<"id таблицы">/edit...)
+9. Версии API указываются в настроках в константах и должны соответствовать версиям на момент развертывания проекта. Необходимая информация доступна по ссылкам указанным ниже для каждой из констант соответственно.
+    - DRIVE_VERS = https://developers.google.com/drive/api/reference/rest/
+    - SHEETS_VERS = https://developers.google.com/sheets/api/reference/rest
 
 ### Авторы:
 [Anton Zelinsky](https://github.com/AntonZelinsky)<br>
