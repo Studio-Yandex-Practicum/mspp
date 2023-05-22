@@ -70,7 +70,7 @@ const checkInputValidity = (element, errElement) => {
     isCapitalize = false;
     break;
    default:
-    not_allowed_simbols = /[^A-Za-zА-Яа-я]/;
+    not_allowed_simbols = /[^A-Za-zА-Яа-я\-\ ]/;
     isCapitalize = true;
   }
 
