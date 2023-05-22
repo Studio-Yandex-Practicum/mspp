@@ -53,7 +53,7 @@ const setInvalid = (element, errElement, errName) => {
 const checkInputValidity = (element, errElement) => {
   const minlength = element.getAttribute("minlength");
   const maxlength = element.getAttribute("maximumlength");
-  const capsPattern = /[А-ЯЁ]{2,}/;
+  const capsPattern = /[А-Я]{2,}/;
   let newValue = element.value;
 
   switch (element.name) {
@@ -66,11 +66,11 @@ const checkInputValidity = (element, errElement) => {
     isCapitalize = false;
     break;
    case "fund":
-    not_allowed_simbols = /[^А-Яа-я\w\s]/
+    not_allowed_simbols = /[^A-Za-zА-Яа-я\w\s]/
     isCapitalize = false;
     break;
    default:
-    not_allowed_simbols = /[^А-Яа-я]/;
+    not_allowed_simbols = /[^A-Za-zА-Яа-я]/;
     isCapitalize = true;
   }
 
