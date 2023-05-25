@@ -60,6 +60,8 @@ async def check_age(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "исполнится 18. А пока, я уверен, ты сможешь найти себя в другом "
             "волонтерском проекте)"
         )
+    if int(update.message.text) > 99:
+        await update.message.reply_html("Извини, но ты не можешь стать наставником, если тебе больше 99 лет")
         return ConversationHandler.END
     else:
         context.user_data[AGE] = update.message.text
