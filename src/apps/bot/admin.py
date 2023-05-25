@@ -1,8 +1,11 @@
 from django.contrib import admin
+from django.contrib.auth.models import Group
 from mptt.admin import MPTTModelAdmin
 
 from .forms import FundAdminForm
 from .models import AgeLimit, CoverageArea, Fund
+
+admin.site.unregister(Group)
 
 
 @admin.register(CoverageArea)
@@ -11,7 +14,7 @@ class CoverageAreaAdmin(MPTTModelAdmin):
 
 
 @admin.register(AgeLimit)
-class АgeLimitAdmin(admin.ModelAdmin):
+class AgeLimitAdmin(admin.ModelAdmin):
     pass
 
 
