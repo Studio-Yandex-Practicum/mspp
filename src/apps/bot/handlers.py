@@ -329,25 +329,15 @@ async def read_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def fund_info(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.callback_query.answer()
+    fund_list = []
+    async for fund in Fund.objects.filter(
+        coverage_area__name=context.user_data[CITY],
+        age_limit__from_age__lte=context.user_data[AGE],
+        age_limit__to_age__gte=context.user_data[AGE],
+    ):
+        fund_list.append(fund.description)
     await update.callback_query.edit_message_text(
-        "\n\n".join(
-            [
-                "Арифметка добра - помогает детям-сиротам стать личностью, "
-                "поддерживает приемные семьи, содействует семейному устройству.",
-                "Старшие братья старшие сестры - подбирает наставников детям и "
-                "подросткам, находящихся в трудной жизненной ситуации.",
-                "В твоих руках - помогает подросткам, оставшимся без поддержки "
-                "родителям, подготовиться к самостоятельной жизни.",
-                "Волонтеры в помощь детям-сиротам - помогает детям сиротам в "
-                "детских домах и больницах, ищет им приемных родителей и "
-                "поддерживает семьи в трудной жизненной ситуации.",
-                "Дети+ - оказывает поддержку детям, подросткам и молодым людям с "
-                "ВИЧ, семьям, в которых живут дети с ВИЧ.",
-                "Дети наши - помогает в социальной адаптации воспитанников "
-                "детских домов, поддерживает кризисные семьи.",
-                "Солнечный город - помогает детям и семьям, которые оказались в трудной жизненной ситуации.",
-            ]
-        ),
+        "\n\n".join(fund_list),
         reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Понятно", callback_data="fund")]]),
     )
     return FUND
