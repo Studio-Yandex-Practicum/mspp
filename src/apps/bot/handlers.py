@@ -335,10 +335,12 @@ async def fund_info(update: Update, context: ContextTypes.DEFAULT_TYPE):
         age_limit__from_age__lte=context.user_data[AGE],
         age_limit__to_age__gte=context.user_data[AGE],
     ):
-        fund_list.append(fund.description)
+        fund_info = fund.description.split("-", 1)
+        fund_list.append("<b>" + fund_info[0] + "-</b>" + fund_info[1])
     await update.callback_query.edit_message_text(
         "\n\n".join(fund_list),
         reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Понятно", callback_data="fund")]]),
+        parse_mode="HTML",
     )
     return FUND
 
