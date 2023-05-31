@@ -56,8 +56,8 @@ async def age(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def check_age(update: Update, context: ContextTypes.DEFAULT_TYPE):
     age_message = update.message.text
     if age_message.isnumeric() is False:
-        await update.message.reply_html("Введен неверный формат, используй только цифры")
-        return ConversationHandler.END
+        await update.message.reply_html("Введен неверный формат, повторите ввод используя только цифры")
+        return AGE
     if int(age_message) < 18:
         await update.message.reply_html(
             "Извини, но стать наставником ты сможешь только, когда тебе "
