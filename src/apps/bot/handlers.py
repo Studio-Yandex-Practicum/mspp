@@ -54,16 +54,22 @@ async def age(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def check_age(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if int(update.message.text) < 18:
+    age_message = update.message.text
+    if age_message.isnumeric() is False:
+        await update.message.reply_html("Введен неверный формат, повторите ввод используя только цифры")
+        return AGE
+    if int(age_message) < 18:
         await update.message.reply_html(
             "Извини, но стать наставником ты сможешь только, когда тебе "
             "исполнится 18. А пока, я уверен, ты сможешь найти себя в другом "
             "волонтерском проекте)"
         )
         return ConversationHandler.END
-    else:
-        context.user_data[AGE] = update.message.text
-        return await location(update, context)
+    if int(age_message) > 99:
+        await update.message.reply_html("Извини, но ты не можешь стать наставником, если тебе больше 99 лет")
+        return ConversationHandler.END
+    context.user_data[AGE] = update.message.text
+    return await location(update, context)
 
 
 async def location(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -359,7 +365,7 @@ HANDLERS = (
         states={
             AGE: [
                 CallbackQueryHandler(age, "^age$"),
-                MessageHandler(filters.Regex(r"^\d{1,3}$"), check_age),
+                MessageHandler(filters.TEXT, check_age),
             ],
             LOCATION: [
                 CallbackQueryHandler(region, "^other_city$"),
