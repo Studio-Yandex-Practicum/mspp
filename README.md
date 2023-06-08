@@ -130,6 +130,34 @@ WEBHOOK_URL=https://example.com
 ```bash
 python manage.py fill_data
 ```
+
+## Скрипт для бэкапа БД
+
+Скрипт backup_maker.bash расположен на сервере в корневой директории //MSPP
+
+
+на одном уровне с директориями infra и nginx_logs
+
+
+Обращается к контейнеру "postgres_stage" и делает pg_dump базы данного контейнера
+
+
+Каждый день создает копии БД в директории /dumps и зачищает от бэкапов 
+
+
+длительностью хранения более 15 дней.
+
+
+За ежедневный запуск скрипта отвечает crontab
+
+
+Необходимо выполнить "crontab -e" и вписать значения вида "* * * * * //MSPP/backups_maker.bash", 
+
+
+где * -расписание времени в формате cron, а //MSPP/backups_maker.bash -расположение скрипта
+ 
+
+
 ## Подключение Google API, использвоание Google-таблиц для хранения данных о заявках.
 1. Взаимодействие с Goodle-таблицами оранизовано посредством Google Cloud Platform (https://console.cloud.google.com/projectselector2/home/dashboard) и соответствующих API.
 2. Для использования Google Cloud Platform необходим гугл-аккаунт.
