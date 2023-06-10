@@ -345,7 +345,10 @@ async def fund_info(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context.user_data[AGE],
         context.user_data[AGE],
     ):
-        fund_list.append(f"<b>{fund.name}</b>\n\n{fund.description}\n")
+        fund_list.append(f"<b>{fund.name}</b> - {fund.description}\n")
+    fund_list.append(
+        "Дополнительную информацию о программе можно найти <a href='https://a-dobra.ru/programs/nastavniki/'>тут</a>"
+    )
     await update.callback_query.edit_message_text(
         "\n\n".join(fund_list),
         reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Понятно", callback_data="fund")]]),
