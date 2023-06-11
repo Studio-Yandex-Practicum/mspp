@@ -32,10 +32,13 @@ MAIN_DISPLAY_REGIONS = ("Москва", "Московская область", "
 logger = logging.getLogger(__name__)
 
 
-async def find_available_funds(area_name, age_limit_lte, age_limit_gte):
-    return Fund.objects.filter(
+async def find_available_funds(area_name, age_limit_lte, age_limit_gte, exists=False):
+    fund_list = Fund.objects.filter(
         coverage_area__name=area_name, age_limit__from_age__lte=age_limit_lte, age_limit__to_age__gte=age_limit_gte
     )
+    if exists:
+        return await fund_list.aexists()
+    return fund_list
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -185,7 +188,7 @@ async def check_country(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return ConversationHandler.END
 
 
-async def region(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def region(update: Update, context: ContextTypes.DEFAULT_TYPE):  # TODO: добавить пагинацию
     regions_buttons = [
         [InlineKeyboardButton(region.name, callback_data=region.name)]
         async for region in CoverageArea.objects.filter(level=1).exclude(name__in=MAIN_DISPLAY_REGIONS)
@@ -209,7 +212,9 @@ async def region(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def check_region(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data[REGION] = update.callback_query.data
-    if await find_available_funds(update.callback_query.data, context.user_data[AGE], context.user_data[AGE]).aexists():
+    if await find_available_funds(
+        update.callback_query.data, context.user_data[AGE], context.user_data[AGE], exists=True
+    ):
         return await fund(update, context)
     elif await CoverageArea.objects.filter(parent__name=update.callback_query.data).aexists():
         return await city(update, context)
@@ -231,11 +236,8 @@ async def check_city(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data[CITY] = update.callback_query.data
     region_from_mtpp = await CoverageArea.objects.aget(name=context.user_data[REGION])
     city_from_mtpp = await CoverageArea.objects.aget(name=context.user_data[CITY])
-    if (
-        region_from_mtpp.id == city_from_mtpp.parent_id
-        and await find_available_funds(
-            context.user_data[CITY], context.user_data[AGE], context.user_data[AGE]
-        ).aexists()
+    if region_from_mtpp.id == city_from_mtpp.parent_id and await find_available_funds(
+        context.user_data[CITY], context.user_data[AGE], context.user_data[AGE], exists=True
     ):
         return await fund(update, context)
     return await no_fund(update, context)
