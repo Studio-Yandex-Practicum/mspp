@@ -1,6 +1,7 @@
 import json
 import logging
 
+from asgiref.sync import sync_to_async
 from django.conf import settings
 from django.urls import reverse
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove, Update
@@ -17,6 +18,7 @@ from apps.core.services.spreadsheets.spreadsheets import send, set_user_permissi
 from apps.registration.utils import webapp
 
 from .models import CoverageArea, Fund
+from .paginator import paginate
 
 AGE = "age"
 LOCATION = "location"
@@ -163,21 +165,10 @@ async def read_new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
 
 async def country(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    countries = await sync_to_async(list)(CoverageArea.objects.filter(parent=None).exclude(name="Россия"))
+    country_buttons = await paginate(countries, update.callback_query.data, "Нет моей страны", "no_fund")
     await update.callback_query.answer()
-    await update.callback_query.edit_message_text(
-        "Выбери страну",
-        reply_markup=InlineKeyboardMarkup(
-            [
-                [InlineKeyboardButton("Казахстан", callback_data="Казахстан")],
-                # TODO: добавить пагинацию
-                [
-                    InlineKeyboardButton("Далее", callback_data="next"),
-                    InlineKeyboardButton("Назад", callback_data="prev"),
-                ],
-                [InlineKeyboardButton("Другая страна", callback_data="no_fund")],
-            ]
-        ),
-    )
+    await update.callback_query.edit_message_text("Выбери страну", reply_markup=InlineKeyboardMarkup(country_buttons))
     return COUNTRY
 
 
@@ -188,20 +179,9 @@ async def check_country(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return ConversationHandler.END
 
 
-async def region(update: Update, context: ContextTypes.DEFAULT_TYPE):  # TODO: добавить пагинацию
-    regions_buttons = [
-        [InlineKeyboardButton(region.name, callback_data=region.name)]
-        async for region in CoverageArea.objects.filter(level=1).exclude(name__in=MAIN_DISPLAY_REGIONS)
-    ]
-    regions_buttons.extend(
-        [
-            [
-                InlineKeyboardButton("Далее", callback_data="next"),
-                InlineKeyboardButton("Назад", callback_data="prev"),
-            ],
-            [InlineKeyboardButton("Нет моего региона", callback_data="no_fund")],
-        ]
-    )
+async def region(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    regions = await sync_to_async(list)(CoverageArea.objects.filter(level=1).exclude(name__in=MAIN_DISPLAY_REGIONS))
+    regions_buttons = await paginate(regions, update.callback_query.data, "Нет моего региона", "no_fund")
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
         "Выбери регион",
