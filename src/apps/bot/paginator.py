@@ -1,15 +1,20 @@
 from django.conf import settings
 from telegram import InlineKeyboardButton
 
-PAGE = 0
+page = 0
 
 
 async def paginate(quary, callback_query_data: str, exit_message: str, exit_callback_data: str):
-    global PAGE
+    global page
     if callback_query_data == "next":
-        PAGE += 1
+        page += 1
+        print("-")
     elif callback_query_data == "prev":
-        PAGE -= 1
+        page -= 1
+        print("+")
+    else:
+        print("1")
+        page = 0
     if len(quary) < settings.PAGINATION_LIMIT:
         item_buttons = [[InlineKeyboardButton(item.name, callback_data=item.name)] for item in quary]
         item_buttons.extend([[InlineKeyboardButton(exit_message, callback_data=exit_callback_data)]])
@@ -17,7 +22,7 @@ async def paginate(quary, callback_query_data: str, exit_message: str, exit_call
     item_buttons = [
         [InlineKeyboardButton(item.name, callback_data=item.name)]
         for item in quary[
-            PAGE * settings.PAGINATION_LIMIT : PAGE * settings.PAGINATION_LIMIT + settings.PAGINATION_LIMIT
+            page * settings.PAGINATION_LIMIT : page * settings.PAGINATION_LIMIT + settings.PAGINATION_LIMIT
         ]
     ]
     items_count = len(item_buttons)
@@ -30,10 +35,10 @@ async def paginate(quary, callback_query_data: str, exit_message: str, exit_call
             [InlineKeyboardButton(exit_message, callback_data=exit_callback_data)],
         ]
     )
-    if items_count < settings.PAGINATION_LIMIT and PAGE == 0:
+    if items_count < settings.PAGINATION_LIMIT and page == 0:
         del item_buttons[-2]
-    elif items_count < settings.PAGINATION_LIMIT and PAGE > 0:
+    elif items_count < settings.PAGINATION_LIMIT and page > 0:
         del item_buttons[-2][0]
-    elif PAGE == 0:
+    elif page == 0:
         del item_buttons[-2][1]
     return item_buttons

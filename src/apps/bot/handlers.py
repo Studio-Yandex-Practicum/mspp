@@ -202,13 +202,11 @@ async def check_region(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def city(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    button_list = [
-        [InlineKeyboardButton(city.name, callback_data=city.name)]
-        async for city in CoverageArea.objects.filter(parent__name=context.user_data[REGION])
-    ]
-    button_list.append([InlineKeyboardButton("Нет моего города", callback_data="no_fund")])
+    cities = await sync_to_async(list)(CoverageArea.objects.filter(parent__name=context.user_data[REGION]))
+    city_buttons = await paginate(cities, update.callback_query.data, "Нет моего города", "no_fund")
+    print(city_buttons)
     await update.callback_query.answer()
-    await update.callback_query.edit_message_text("Выбери город", reply_markup=InlineKeyboardMarkup(button_list))
+    await update.callback_query.edit_message_text("Выбери город", reply_markup=InlineKeyboardMarkup(city_buttons))
     return CITY
 
 
