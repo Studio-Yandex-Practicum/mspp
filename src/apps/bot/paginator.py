@@ -8,12 +8,9 @@ async def paginate(quary, callback_query_data: str, exit_message: str, exit_call
     global page
     if callback_query_data == "next":
         page += 1
-        print("-")
     elif callback_query_data == "prev":
         page -= 1
-        print("+")
     else:
-        print("1")
         page = 0
     if len(quary) < settings.PAGINATION_LIMIT:
         item_buttons = [[InlineKeyboardButton(item.name, callback_data=item.name)] for item in quary]
