@@ -1,7 +1,6 @@
 import json
 import logging
 
-from asgiref.sync import sync_to_async
 from django.conf import settings
 from django.urls import reverse
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove, Update
@@ -165,7 +164,7 @@ async def read_new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
 
 async def country(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    countries = await sync_to_async(list)(CoverageArea.objects.filter(parent=None).exclude(name="Россия"))
+    countries = CoverageArea.objects.filter(parent=None).exclude(name="Россия")
     country_buttons = await paginate(countries, update.callback_query.data, "Нет моей страны", "no_fund")
     await update.callback_query.answer()
     await update.callback_query.edit_message_text("Выбери страну", reply_markup=InlineKeyboardMarkup(country_buttons))
@@ -180,7 +179,7 @@ async def check_country(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def region(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    regions = await sync_to_async(list)(CoverageArea.objects.filter(level=1).exclude(name__in=MAIN_DISPLAY_REGIONS))
+    regions = CoverageArea.objects.filter(level=1).exclude(name__in=MAIN_DISPLAY_REGIONS)
     regions_buttons = await paginate(regions, update.callback_query.data, "Нет моего региона", "no_fund")
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
@@ -202,7 +201,7 @@ async def check_region(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def city(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    cities = await sync_to_async(list)(CoverageArea.objects.filter(parent__name=context.user_data[REGION]))
+    cities = CoverageArea.objects.filter(parent__name=context.user_data[REGION])
     city_buttons = await paginate(cities, update.callback_query.data, "Нет моего города", "no_fund")
     await update.callback_query.answer()
     await update.callback_query.edit_message_text("Выбери город", reply_markup=InlineKeyboardMarkup(city_buttons))
@@ -228,19 +227,13 @@ async def fund(update: Update, context: ContextTypes.DEFAULT_TYPE):
     fund_list = [
         [InlineKeyboardButton("Почитать про фонды", callback_data="info")],
     ]
-    fund_list.extend(
-        [
-            [InlineKeyboardButton(fund.name, callback_data=fund.name)]
-            async for fund in await find_available_funds(
-                context.user_data[CITY],
-                context.user_data[AGE],
-                context.user_data[AGE],
-            )
-        ]
+    fund_quary = await find_available_funds(
+        context.user_data[CITY],
+        context.user_data[AGE],
+        context.user_data[AGE],
     )
-    fund_list.append(
-        [InlineKeyboardButton("Изменить город?", callback_data="change_city")],
-    )
+    fund_buttons = await paginate(fund_quary, update.callback_query.data, "Изменить город?", "change_city")
+    fund_list.extend(fund_buttons)
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
         "Фонды, доступные в твоем городе",

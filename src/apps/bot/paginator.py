@@ -1,3 +1,4 @@
+from asgiref.sync import sync_to_async
 from django.conf import settings
 from telegram import InlineKeyboardButton
 
@@ -12,6 +13,7 @@ async def paginate(quary, callback_query_data: str, exit_message: str, exit_call
         page -= 1
     else:
         page = 0
+    quary = await sync_to_async(list)(quary)
     if len(quary) < settings.PAGINATION_LIMIT:
         item_buttons = [[InlineKeyboardButton(item.name, callback_data=item.name)] for item in quary]
         item_buttons.extend([[InlineKeyboardButton(exit_message, callback_data=exit_callback_data)]])
@@ -22,20 +24,17 @@ async def paginate(quary, callback_query_data: str, exit_message: str, exit_call
             page * settings.PAGINATION_LIMIT : page * settings.PAGINATION_LIMIT + settings.PAGINATION_LIMIT
         ]
     ]
-    items_count = len(item_buttons)
     item_buttons.extend(
         [
             [
-                InlineKeyboardButton("Далее", callback_data="next"),
                 InlineKeyboardButton("Назад", callback_data="prev"),
+                InlineKeyboardButton("Далее", callback_data="next"),
             ],
             [InlineKeyboardButton(exit_message, callback_data=exit_callback_data)],
         ]
     )
-    if items_count < settings.PAGINATION_LIMIT and page == 0:
-        del item_buttons[-2]
-    elif items_count < settings.PAGINATION_LIMIT and page > 0:
-        del item_buttons[-2][0]
-    elif page == 0:
+    if page >= len(quary) / settings.PAGINATION_LIMIT - 1:
         del item_buttons[-2][1]
+    elif page == 0:
+        del item_buttons[-2][0]
     return item_buttons
