@@ -17,6 +17,7 @@ from apps.core.services.spreadsheets.spreadsheets import send, set_user_permissi
 from apps.registration.utils import webapp
 
 from .models import CoverageArea, Fund
+from .paginator import paginate
 
 AGE = "age"
 LOCATION = "location"
@@ -32,10 +33,13 @@ MAIN_DISPLAY_REGIONS = ("Москва", "Московская область", "
 logger = logging.getLogger(__name__)
 
 
-async def find_available_funds(area_name, age_limit_lte, age_limit_gte):
-    return Fund.objects.filter(
+async def find_available_funds(area_name, age_limit_lte, age_limit_gte, exists=False):
+    fund_list = Fund.objects.filter(
         coverage_area__name=area_name, age_limit__from_age__lte=age_limit_lte, age_limit__to_age__gte=age_limit_gte
     )
+    if exists:
+        return await fund_list.aexists()
+    return fund_list
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -160,21 +164,10 @@ async def read_new_fund_form(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
 
 async def country(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    countries = CoverageArea.objects.filter(parent=None).exclude(name="Россия")
+    country_buttons = await paginate(countries, update.callback_query.data, "Нет моей страны", "no_fund")
     await update.callback_query.answer()
-    await update.callback_query.edit_message_text(
-        "Выбери страну",
-        reply_markup=InlineKeyboardMarkup(
-            [
-                [InlineKeyboardButton("Казахстан", callback_data="Казахстан")],
-                # TODO: добавить пагинацию
-                [
-                    InlineKeyboardButton("Далее", callback_data="next"),
-                    InlineKeyboardButton("Назад", callback_data="prev"),
-                ],
-                [InlineKeyboardButton("Другая страна", callback_data="no_fund")],
-            ]
-        ),
-    )
+    await update.callback_query.edit_message_text("Выбери страну", reply_markup=InlineKeyboardMarkup(country_buttons))
     return COUNTRY
 
 
@@ -186,19 +179,8 @@ async def check_country(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def region(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    regions_buttons = [
-        [InlineKeyboardButton(region.name, callback_data=region.name)]
-        async for region in CoverageArea.objects.filter(level=1).exclude(name__in=MAIN_DISPLAY_REGIONS)
-    ]
-    regions_buttons.extend(
-        [
-            [
-                InlineKeyboardButton("Далее", callback_data="next"),
-                InlineKeyboardButton("Назад", callback_data="prev"),
-            ],
-            [InlineKeyboardButton("Нет моего региона", callback_data="no_fund")],
-        ]
-    )
+    regions = CoverageArea.objects.filter(level=1).exclude(name__in=MAIN_DISPLAY_REGIONS)
+    regions_buttons = await paginate(regions, update.callback_query.data, "Нет моего региона", "no_fund")
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
         "Выбери регион",
@@ -209,7 +191,9 @@ async def region(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def check_region(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data[REGION] = update.callback_query.data
-    if await find_available_funds(update.callback_query.data, context.user_data[AGE], context.user_data[AGE]).aexists():
+    if await find_available_funds(
+        update.callback_query.data, context.user_data[AGE], context.user_data[AGE], exists=True
+    ):
         return await fund(update, context)
     elif await CoverageArea.objects.filter(parent__name=update.callback_query.data).aexists():
         return await city(update, context)
@@ -217,13 +201,10 @@ async def check_region(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def city(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    button_list = [
-        [InlineKeyboardButton(city.name, callback_data=city.name)]
-        async for city in CoverageArea.objects.filter(parent__name=context.user_data[REGION])
-    ]
-    button_list.append([InlineKeyboardButton("Нет моего города", callback_data="no_fund")])
+    cities = CoverageArea.objects.filter(parent__name=context.user_data[REGION])
+    city_buttons = await paginate(cities, update.callback_query.data, "Нет моего города", "no_fund")
     await update.callback_query.answer()
-    await update.callback_query.edit_message_text("Выбери город", reply_markup=InlineKeyboardMarkup(button_list))
+    await update.callback_query.edit_message_text("Выбери город", reply_markup=InlineKeyboardMarkup(city_buttons))
     return CITY
 
 
@@ -231,11 +212,8 @@ async def check_city(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data[CITY] = update.callback_query.data
     region_from_mtpp = await CoverageArea.objects.aget(name=context.user_data[REGION])
     city_from_mtpp = await CoverageArea.objects.aget(name=context.user_data[CITY])
-    if (
-        region_from_mtpp.id == city_from_mtpp.parent_id
-        and await find_available_funds(
-            context.user_data[CITY], context.user_data[AGE], context.user_data[AGE]
-        ).aexists()
+    if region_from_mtpp.id == city_from_mtpp.parent_id and await find_available_funds(
+        context.user_data[CITY], context.user_data[AGE], context.user_data[AGE], exists=True
     ):
         return await fund(update, context)
     return await no_fund(update, context)
@@ -249,19 +227,13 @@ async def fund(update: Update, context: ContextTypes.DEFAULT_TYPE):
     fund_list = [
         [InlineKeyboardButton("Почитать про фонды", callback_data="info")],
     ]
-    fund_list.extend(
-        [
-            [InlineKeyboardButton(fund.name, callback_data=fund.name)]
-            async for fund in await find_available_funds(
-                context.user_data[CITY],
-                context.user_data[AGE],
-                context.user_data[AGE],
-            )
-        ]
+    fund_quary = await find_available_funds(
+        context.user_data[CITY],
+        context.user_data[AGE],
+        context.user_data[AGE],
     )
-    fund_list.append(
-        [InlineKeyboardButton("Изменить город?", callback_data="change_city")],
-    )
+    fund_buttons = await paginate(fund_quary, update.callback_query.data, "Изменить город?", "change_city")
+    fund_list.extend(fund_buttons)
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
         "Фонды, доступные в твоем городе",

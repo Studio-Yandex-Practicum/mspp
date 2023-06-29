@@ -22,6 +22,8 @@ PERSISTANCE_DIR = BASE_DIR / "persistance_data"
 PERSISTANCE_PATH = PERSISTANCE_DIR / "persistance_file"
 Path.mkdir(PERSISTANCE_DIR, exist_ok=True)
 
+PAGINATION_LIMIT = 10
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
