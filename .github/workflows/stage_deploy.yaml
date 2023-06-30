@@ -7,6 +7,7 @@ concurrency:
 on:
   push:
     branches:
+      - master
       - develop
       - 'feature/**'
       - 'fix/**'
@@ -21,7 +22,6 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: mssp
-  DEPLOY_PATH: /MSPP
 
 defaults:
   run:
@@ -60,7 +60,7 @@ jobs:
         with:
           context: "{{defaultContext}}"
           push: true
-          tags: ${{ steps.repo_slug.outputs.result }}:stage
+          tags: ${{ steps.repo_slug.outputs.result }}:${{ env.LABEL }}
 
   deploy:
     name: Deploy changes on server
@@ -144,5 +144,4 @@ jobs:
             sudo docker compose -f infra/docker-compose.staging.yml up -d --quiet-pull
 
             sudo docker compose -f infra/docker-compose.staging.yml exec backend python manage.py migrate
-            sudo docker compose -f infra/docker-compose.staging.yml exec backend python manage.py fill_data
             sudo docker compose -f infra/docker-compose.staging.yml exec backend python manage.py collectstatic --no-input
