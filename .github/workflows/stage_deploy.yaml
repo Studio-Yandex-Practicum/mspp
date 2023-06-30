@@ -60,7 +60,7 @@ jobs:
         with:
           context: "{{defaultContext}}"
           push: true
-          tags: ${{ steps.repo_slug.outputs.result }}:${{ env.LABEL }}
+          tags: ${{ steps.repo_slug.outputs.result }}:${{ vars.LABEL }}
 
   deploy:
     name: Deploy changes on server
@@ -85,8 +85,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            sudo mkdir -p ${{ env.DEPLOY_PATH }}
-            sudo chmod 777 ${{ env.DEPLOY_PATH }}
+            sudo mkdir -p ${{ vars.DEPLOY_PATH }}
+            sudo chmod 777 ${{ vars.DEPLOY_PATH }}
       - name: copy file via ssh
         uses: appleboy/scp-action@master
         with:
@@ -95,7 +95,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           source: "infra/docker-compose.staging.yml, infra/swag_nginx.conf"
-          target: ${{ env.DEPLOY_PATH }}
+          target: ${{ vars.DEPLOY_PATH }}
       - name: executing remote ssh commands to deploy
         uses: appleboy/ssh-action@master
         with:
@@ -104,7 +104,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            cd ${{ env.DEPLOY_PATH }}
+            cd ${{ vars.DEPLOY_PATH }}
             sudo cat > infra/.env <<- EOM
             SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
             ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }}
