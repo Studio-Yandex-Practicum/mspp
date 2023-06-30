@@ -1,0 +1,42 @@
+{% extends 'registration/base.html' %}
+{% block title %}Регистрация нового пользователя{% endblock %} 
+{% block content %}
+    <form class="form row" name="registration_new_user">
+      <div class="form-title">
+        <p id="formtitle">Пожалуйста, заполните данную форму.</p>
+      </div>
+
+      {% include "registration/includes/surname_field.html" %}
+      {% include "registration/includes/name_field.html" %}      
+
+      <div class="input-field col s12">
+        <input id="patronimic" name="patronimic" type="text" class="validate" minlength="1" maximumlength="30" required>
+        <label for="patronimic">Отчество</label>
+        <span class="helper-text patronimic"></span>
+      </div>
+     
+      <div class="input-field col s12">
+        <input id="occupation" name="occupation" type="text" class="validate"  minlength="1" maximumlength="100" required>
+        <label for="occupation">Кем ты работаешь?</label>
+        <span class="helper-text occupation"></span>
+      </div>     
+
+      {% include "registration/includes/email_field.html" %}
+      {% include "registration/includes/phone_field.html" %} 
+
+<!-- PREFILLED fields - DISABLED -->  
+      {% include "registration/includes/age_field.html" %} 
+      
+      <div class="input-field col s12">
+        <input id="location" name="location" type="text" disabled>
+        <label for="location">Город и/или Регион: {{ city }}  {{ region }}</label>
+        <span class="helper-text location"></span>
+      </div>
+      
+      <div class="input-field col s12">
+        <input id="fund" name="fund" type="text" disabled>
+        <label for="fund">Фонд: {{ fund }}</label>
+        <span class="helper-text fund"></span>
+      </div>      
+    </form>
+{% endblock %}

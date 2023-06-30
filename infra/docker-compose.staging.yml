@@ -1,0 +1,56 @@
+services:
+  postgres:
+    image: postgres:15.2
+    container_name: postgres_stage
+    restart: always
+    ports:
+      - "9999:5432"
+    volumes:
+      - postgres_data_stage:/var/lib/postgresql/data
+    env_file:
+      - .env
+
+  backend:
+    image: "ghcr.io/studio-yandex-practicum/mspp:stage"
+    container_name: backend_stage
+    restart: always
+
+    depends_on:
+      - postgres
+    volumes:
+      - ./logs:/app/logs
+      - static_value_stage:/app/static/
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+
+  swag:
+    image: linuxserver/swag:2.4.0
+    container_name: swag_stage
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - TZ=Europe/Moscow
+      - URL=msppbot.duckdns.org
+      - VALIDATION=http
+      - CERTPROVIDER=zerossl
+      - EMAIL=yandex-practicum@yandex.ru
+    env_file:
+      - .env
+    volumes:
+      - /MSPP/nginx_logs:/var/log/nginx
+      - ./swag_nginx.conf:/config/nginx/site-confs/default.conf
+      - static_value_stage:/var/html/static/
+      - keys:/config/keys
+    ports:
+      - "443:443"
+      - "80:80"
+    restart: unless-stopped
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data_stage:
+  static_value_stage:
+  keys:

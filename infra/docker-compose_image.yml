@@ -1,0 +1,31 @@
+services:
+
+  backend:
+    image: mspp/mspp:latest
+    container_name: backend_production
+    restart: always
+    volumes:
+      - ./logs:/logs
+      - static_value:/app/static/
+    env_file:
+      - ./.env
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx_production
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - static_value_prod:/var/html/static/
+
+    restart: always
+    depends_on:
+      - backend
+
+
+volumes:
+  data_prod:
+    name: sql_data_prod
+  static_value_prod:
+    name: static_value_prod

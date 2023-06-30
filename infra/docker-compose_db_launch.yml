@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:15.2-alpine
+    environment:
+      - POSTGRES_USER=mspp
+      - POSTGRES_PASSWORD=pg_password
+      - POSTGRES_DB=mspp
+    ports:
+      - "5432:5432"
+    volumes:
+     - postrges_data_mspp:/var/lib/postrgesql/data
+
+
+volumes:
+  postrges_data_mspp:
+    name: postrges_data_mspp
