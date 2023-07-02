@@ -14,7 +14,7 @@ async def paginate(quary, callback_query_data: str, exit_message: str, exit_call
     else:
         page = 0
     quary = await sync_to_async(list)(quary)
-    if len(quary) < settings.PAGINATION_LIMIT:
+    if len(quary) <= settings.PAGINATION_LIMIT:
         item_buttons = [[InlineKeyboardButton(item.name, callback_data=item.name)] for item in quary]
         item_buttons.extend([[InlineKeyboardButton(exit_message, callback_data=exit_callback_data)]])
         return item_buttons
