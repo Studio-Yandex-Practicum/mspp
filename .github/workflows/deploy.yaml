@@ -62,7 +62,7 @@ jobs:
     name: Deploy changes on server
     runs-on: ubuntu-latest
     environment:
-      name: ${{ if github.ref_name == "master" then "prod_deploy" else "stage_deploy" fi }}
+      name: ${{ inputs.environment }}
 
     needs: build-and-push-image-to-github-packages
     steps:
