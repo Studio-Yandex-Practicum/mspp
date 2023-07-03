@@ -7,12 +7,12 @@ on:
         description: "Deploy Environment."
         required: true
         type: string
-        defaults: stage_deploy
+        default: stage_deploy
       label:
         description: "Docker image label"
         required: true
         type: string
-        defaults: stage
+        default: stage
 
 env:
   REGISTRY: ghcr.io
