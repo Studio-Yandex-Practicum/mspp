@@ -5,15 +5,9 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  push:
-    branches:
-      - develop
-      - 'feature/**'
-      - 'fix/**'
-      - 'refactoring/**'
   pull_request:
     branches:
-      - develop
+      - master
     types: [closed]
 
 
@@ -21,5 +15,5 @@ jobs:
   deploy:
     uses: ./.github/workflows/deploy.yaml
     with:
-      environment: stage_deploy
-      label: stage
+      environment: prod_deploy
+      label: stable
