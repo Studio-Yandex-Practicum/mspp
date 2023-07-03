@@ -1,0 +1,26 @@
+name: Stage Deploy
+
+concurrency:
+  group: stage_deploy
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - develop
+      - 'feature/**'
+      - 'fix/**'
+      - 'refactoring/**'
+  pull_request:
+    branches:
+      - develop
+      - master
+    types: [closed]
+
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/deploy.yaml
+    with:
+      environment: stage_deploy
+      label: stage

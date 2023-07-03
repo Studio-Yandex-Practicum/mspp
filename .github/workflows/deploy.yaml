@@ -1,23 +1,18 @@
-name: Stage Deploy
-
-concurrency:
-  group: stage_deploy
-  cancel-in-progress: true
+name: Deploy
 
 on:
-  push:
-    branches:
-      - develop
-      - 'feature/**'
-      - 'fix/**'
-      - 'refactoring/**'
-  pull_request:
-    branches:
-      - develop
-      - master
-    types: [closed]
-
-  workflow_dispatch:
+  workflow_call:
+    inputs:
+      environment:
+        description: "Deploy Environment."
+        required: true
+        type: string
+        defaults: stage_deploy
+      label:
+        description: "Docker image label"
+        required: true
+        type: string
+        defaults: stage
 
 env:
   REGISTRY: ghcr.io
@@ -32,7 +27,7 @@ jobs:
     name: Push Docker image to GitHub Packages
     runs-on: ubuntu-latest
     environment:
-      name: ${{ if github.ref_name == "master" then "prod_deploy" else "stage_deploy" fi }}
+      name: ${{ inputs.environment }}
 
     permissions:
       contents: read
@@ -61,7 +56,7 @@ jobs:
         with:
           context: "{{defaultContext}}"
           push: true
-          tags: ${{ steps.repo_slug.outputs.result }}:${{ vars.LABEL }}
+          tags: ${{ steps.repo_slug.outputs.result }}:${{ inputs.LABEL }}
 
   deploy:
     name: Deploy changes on server
