@@ -1,7 +1,7 @@
-name: Stage Deploy
+name: Prod/Master Deploy
 
 concurrency:
-  group: stage_deploy
+  group: master_deploy
   cancel-in-progress: true
 
 on:
@@ -17,3 +17,4 @@ jobs:
     with:
       environment: prod_deploy
       label: stable
+    secrets: inherit
