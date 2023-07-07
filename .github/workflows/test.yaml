@@ -19,5 +19,6 @@ jobs:
     environment:
       name: ${{ inputs.environment }}
     steps:
-      - run: echo "{secrets}"
-      - run: echo "{secrets.HOST}"
+      - run: echo "${{ inputs.environment }}"
+      - run: echo "${{ secrets }}"
+      - run: echo "${{ secrets.HOST }}"
