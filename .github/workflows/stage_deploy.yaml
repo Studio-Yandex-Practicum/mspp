@@ -19,7 +19,6 @@ on:
 
 jobs:
   deploy:
-    environment: stage_deploy
     uses: ./.github/workflows/test.yaml
     with:
       environment: stage_deploy
