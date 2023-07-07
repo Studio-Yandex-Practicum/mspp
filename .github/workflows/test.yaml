@@ -1,0 +1,23 @@
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: "Deploy Environment."
+        required: true
+        type: string
+        default: stage_deploy
+      label:
+        description: "Docker image label"
+        required: true
+        type: string
+        default: stage
+
+jobs:
+  test-env:
+    name: Push Docker image to GitHub Packages
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.environment }}
+    steps:
+      - run: echo "{secrets}"
+      - run: echo "{secrets.HOST}"
