@@ -16,8 +16,6 @@ jobs:
   test-env:
     name: Push Docker image to GitHub Packages
     runs-on: ubuntu-latest
-    environment:
-      name: ${{ inputs.environment }}
     steps:
       - run: echo "${{ inputs.environment }}"
       - run: echo "${{ secrets }}"
