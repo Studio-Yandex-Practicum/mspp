@@ -19,7 +19,7 @@ on:
 
 jobs:
   deploy:
-    uses: ./.github/workflows/deploy.yaml
+    uses: ./.github/workflows/test.yaml
     with:
       environment: stage_deploy
       label: stage
