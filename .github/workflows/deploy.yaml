@@ -111,15 +111,15 @@ jobs:
             # Telegram
             TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }}
             # Webhook
-            WEBHOOK_MODE=${{ secrets.WEBHOOK_MODE || "False"}}
+            WEBHOOK_MODE=${{ secrets.WEBHOOK_MODE }}
             WEBHOOK_URL=${{ secrets.WEBHOOK_URL }}
 
             # Postgres
-            POSTGRES_DB=${{ secrets.POSTGRES_DB || "mspp" }}
-            POSTGRES_USER=${{ secrets.POSTGRES_USER || "postgres" }}
+            POSTGRES_DB=${{ secrets.POSTGRES_DB }}
+            POSTGRES_USER=${{ secrets.POSTGRES_USER }}
             POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
-            POSTGRES_HOST=${{ secrets.POSTGRES_HOST || "postgres" }}
-            POSTGRES_PORT=${{ secrets.POSTGRES_PORT || "5432" }}
+            POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}
+            POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}
 
             # Google account
             GOOGLE_PRIVATE_KEY=${{ secrets.GOOGLE_PRIVATE_KEY }}
@@ -137,7 +137,7 @@ jobs:
 
             # SWAG
             URL=${{ secrets.SWAG_URL }}
-            CERTPROVIDER=${{ secrets.SWAG_CERTPROVIDER || "zerossl" }}
+            CERTPROVIDER=${{ secrets.SWAG_CERTPROVIDER }}
             EOM
 
             sudo docker compose -f infra/docker-compose.staging.yml stop
