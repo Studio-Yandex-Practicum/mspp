@@ -22,7 +22,7 @@ services:
 
     depends_on:
       postgres:
-        conditions: service_healthy
+        condition: service_healthy
     volumes:
       - ./logs:/app/logs
       - static_value_stage:/app/static/
